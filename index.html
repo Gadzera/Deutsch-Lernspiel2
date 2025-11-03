@@ -1,0 +1,2435 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Deutsch Lernspiel</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; 
+            margin: 0;
+            padding: 10px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            line-height: 1.4;
+        }
+        
+        .container { 
+            max-width: 100%; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 15px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        h1 { 
+            text-align: center; 
+            color: #333; 
+            margin-bottom: 15px;
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+        
+        h2 {
+            font-size: 1.2em;
+            margin-bottom: 12px;
+            color: #444;
+        }
+        
+        h3 {
+            font-size: 1.1em;
+            margin: 12px 0 8px;
+            color: #555;
+        }
+        
+        .section { 
+            margin: 15px 0; 
+            padding: 15px; 
+            border: 1px solid #e0e0e0; 
+            border-radius: 8px; 
+            background: #f9f9f9;
+        }
+        
+        .menu-btn { 
+            padding: 12px 16px; 
+            margin: 6px; 
+            cursor: pointer; 
+            border: none;
+            border-radius: 8px;
+            background: #6c757d;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            min-height: 44px;
+        }
+        
+        .menu-btn.active { 
+            background: #4CAF50;
+        }
+        
+        .menu-btn:active {
+            transform: scale(0.96);
+        }
+        
+        .filter-btn { 
+            background: #6c757d; 
+            font-size: 13px;
+            padding: 10px 14px;
+        }
+        
+        .filter-btn.active {
+            background: #2196F3;
+        }
+        
+        input, select { 
+            padding: 12px; 
+            margin: 8px 0; 
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            width: 100%;
+            font-size: 16px;
+            min-height: 44px;
+        }
+        
+        #quiz, #result { 
+            display: none; 
+            text-align: center; 
+        }
+        
+        #answers button { 
+            display: block; 
+            width: 100%; 
+            margin: 8px 0; 
+            background: #666;
+            font-size: 16px;
+            padding: 16px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 10px 0;
+        }
+
+        .button-row button {
+            flex: 1;
+            min-width: calc(50% - 6px);
+        }
+        
+        .learning-status {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .status-btn {
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            width: 100%;
+            color: #333;
+            min-height: 50px;
+        }
+        
+        .status-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .word-learned {
+            border-color: #4CAF50;
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .article-learned {
+            border-color: #2196F3;
+            background: #2196F3;
+            color: white;
+        }
+        
+        .status-icon {
+            font-size: 18px;
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        #wordDisplay {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .word-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .article-display {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .word-text {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            word-break: break-word;
+        }
+        
+        .correct-answer {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #22c55e;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .back-btn {
+            background: #6c757d;
+        }
+        
+        .stats-btn {
+            background: #17a2b8;
+        }
+
+        .repeat-same-btn {
+            background: #9C27B0;
+        }
+        
+        .repeat-unlearned-btn {
+            background: #FF9800;
+        }
+        
+        .info-bar {
+            background: #e3f2fd;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .learned-words-info {
+            background: #e8f5e8;
+            border: 1px solid #4CAF50;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .subliminal-settings {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #e9ecef;
+        }
+
+        .subliminal-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .subliminal-toggle input {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+        }
+
+        .visit-counter {
+            text-align: center;
+            margin-top: 10px;
+            color: #666;
+            font-size: 11px;
+        }
+        
+        .subliminal-frame {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.05s ease;
+            pointer-events: none;
+            padding: 20px;
+        }
+
+        .subliminal-frame.visible {
+            opacity: 1;
+        }
+
+        .subliminal-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 90%;
+            max-width: 300px;
+        }
+
+        .subliminal-combined {
+            font-size: 2.5em;
+            color: #4CAF50;
+            text-align: center;
+            line-height: 1.2;
+            font-weight: 700;
+        }
+
+        .subliminal-translation {
+            font-size: 1.6em;
+            color: #FF9800;
+            text-align: center;
+            font-style: italic;
+        }
+
+        @keyframes subliminalFlash {
+            0% { opacity: 0; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 0; transform: scale(0.95); }
+        }
+
+        .subliminal-frame.visible .subliminal-content {
+            animation: subliminalFlash 0.04s ease;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .section {
+                padding: 12px;
+                margin: 10px 0;
+            }
+            
+            .menu-btn {
+                padding: 14px 12px;
+                margin: 4px;
+                font-size: 14px;
+            }
+            
+            .word-text {
+                font-size: 1.6em;
+            }
+            
+            .article-display {
+                font-size: 1.6em;
+            }
+            
+            .subliminal-combined {
+                font-size: 2em;
+            }
+            
+            .subliminal-translation {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🇩🇪 Deutsch Lernspiel</h1>
+        
+        <div id="info" class="info-bar"></div>
+        
+        <div id="nameBox" class="section">
+            <h2>Spieler Name</h2>
+            <input type="text" id="playerName" placeholder="Dein Name">
+            <button class="menu-btn" onclick="saveName()">Name speichern</button>
+        </div>
+        
+        <div id="menu" class="section" style="display:none">
+            <h2>Einstellungen</h2>
+            
+            <div id="learnedWordsInfo" class="learned-words-info" style="display:none">
+                <strong>Gelernte Wörter: <span id="learnedCount">0</span> | Gelernte Artikel: <span id="learnedArticlesCount">0</span></strong>
+            </div>
+            
+            <div>
+                <h3>Sprache / Language:</h3>
+                <div class="button-row">
+                    <button class="menu-btn" id="langRu" onclick="setLang('ru')">Русский</button>
+                    <button class="menu-btn" id="langTr" onclick="setLang('tr')">Türkçe</button>
+                    <button class="menu-btn" id="langFa" onclick="setLang('fa')">فارسی</button>
+                </div>
+            </div>
+            
+            <div>
+                <h3>Spielmodus:</h3>
+                <div class="button-row">
+                    <button class="menu-btn" id="modeArticle" onclick="setMode('article')">Artikel wählen</button>
+                    <button class="menu-btn" id="modeDeToL1" onclick="setMode('de_to_l1')">Deutsch → Übersetzung</button>
+                    <button class="menu-btn" id="modeL1ToDe" onclick="setMode('l1_to_de')">Übersetzung → Deutsch</button>
+                </div>
+            </div>
+            
+            <div>
+                <h3>Wörterbuch wählen:</h3>
+                <div class="button-row">
+                    <button class="menu-btn filter-btn" id="dictWithArticles" onclick="setDictionary('with_articles')">Wörter mit Artikeln</button>
+                    <button class="menu-btn filter-btn" id="dictWithoutArticles" onclick="setDictionary('without_articles')">Wörter ohne Artikel</button>
+                    <button class="menu-btn filter-btn" id="dictAll" onclick="setDictionary('all')" style="background: #9C27B0;">ALLE WÖRTER</button>
+                </div>
+            </div>
+            
+            <div>
+                <h3>Wörter Filter:</h3>
+                <div class="button-row">
+                    <button class="menu-btn filter-btn" id="filterAll" onclick="setWordFilter('all')">Alle Wörter</button>
+                    <button class="menu-btn filter-btn" id="filterUnlearned" onclick="setWordFilter('unlearned')">Noch nicht gelernt</button>
+                    <button class="menu-btn filter-btn" id="filterNoArticle" onclick="setWordFilter('no_article')">Artikel nicht gelernt</button>
+                    <button class="menu-btn filter-btn" id="filterNoWord" onclick="setWordFilter('no_word')">Wörter nicht gelernt</button>
+                </div>
+            </div>
+            
+            <div id="wordCountInfo"></div>
+            
+            <div>
+                <h3>Anzahl Fragen:</h3>
+                <input type="number" id="qCount" value="10" min="5" max="100">
+            </div>
+
+            <div class="subliminal-settings">
+                <div class="subliminal-toggle">
+                    <input type="checkbox" id="subliminalToggle" checked>
+                    <span>25. Frame Technologie (Unterbewusstes Lernen)</span>
+                </div>
+            </div>
+            
+            <div id="statsBox"></div>
+            
+            <div class="navigation-buttons">
+                <button class="menu-btn stats-btn" onclick="showStats()">📊 Meine Statistik</button>
+                <button class="menu-btn" onclick="startQuiz()" style="background: #FF5722;">Quiz starten! 🚀</button>
+            </div>
+
+            <div class="visit-counter">
+                Besucher heute: <span id="dailyVisits">0</span> | Gesamt: <span id="totalVisits">0</span>
+            </div>
+        </div>
+        
+        <div id="quiz" class="section">
+            <h2>Quiz</h2>
+            <div id="question"></div>
+            <div id="wordDisplay">
+                <div class="word-container">
+                    <div id="articleDisplay" class="article-display"></div>
+                    <div id="word" class="word-text"></div>
+                </div>
+                <div id="correctAnswerDisplay" class="correct-answer"></div>
+            </div>
+            <div id="translationBox" style="font-style: italic; margin: 12px 0; font-size: 1.1em;"></div>
+            <div id="answers"></div>
+            
+            <div class="learning-status">
+                <button class="status-btn" id="wordLearnedBtn" onclick="toggleWordLearned()">
+                    <span class="status-icon" id="wordLearnedIcon">□</span> 
+                    <span class="status-text">Wort als gelernt markieren</span>
+                </button>
+                <button class="status-btn" id="articleLearnedBtn" onclick="toggleArticleLearned()">
+                    <span class="status-icon" id="articleLearnedIcon">□</span> 
+                    <span class="status-text">Artikel als gelernt markieren</span>
+                </button>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="menu-btn back-btn" onclick="backToMenu()">← Zurück</button>
+                <div id="progress" style="font-weight: bold; font-size: 1em; padding: 12px;">Frage <span id="currentQuestion">1</span> von <span id="totalQuestions">10</span></div>
+            </div>
+        </div>
+        
+        <div id="result" class="section">
+            <h2>Ergebnis</h2>
+            <div id="score" style="font-size: 1.5em; margin: 20px 0;"></div>
+            
+            <div id="resultStats" style="margin: 20px 0;"></div>
+            
+            <div class="navigation-buttons">
+                <button class="menu-btn back-btn" onclick="backToMenu()">← Zurück zum Menü</button>
+                <button class="menu-btn" onclick="restart()">Neues Spiel</button>
+                <button class="menu-btn repeat-same-btn" onclick="repeatSameQuiz()" id="repeatSameBtn">
+                    🔄 Nochmal mit denselben Wörtern
+                </button>
+                <button class="menu-btn repeat-unlearned-btn" onclick="repeatUnlearned()" id="repeatUnlearnedBtn" style="display:none">
+                    📚 Nochmal mit ungelernter Wörtern
+                </button>
+            </div>
+        </div>
+
+        <div id="stats" class="section" style="display:none">
+            <h2>📊 Meine Statistik</h2>
+            <div id="detailedStats"></div>
+            <div class="navigation-buttons">
+                <button class="menu-btn back-btn" onclick="backToMenu()">← Zurück</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="subliminalFrame" class="subliminal-frame">
+        <div class="subliminal-content">
+            <div id="subliminalCombined" class="subliminal-combined"></div>
+            <div id="subliminalTranslation" class="subliminal-translation"></div>
+        </div>
+    </div>
+
+    <script>
+// Версия приложения для сброса кеша
+const APP_VERSION = '2.4';
+
+// Game state
+let lang = 'ru';
+let mode = 'article';
+let index = 0;
+let score = 0;
+let words = [];
+let filteredWords = [];
+let quizWords = [];
+let playerName = '';
+let playerId = '';
+let wordFilter = 'all';
+let learnedWords = [];
+let learnedArticles = [];
+let startTime = Date.now();
+let currentDictionary = 'all'; // Теперь по умолчанию ВСЕ слова
+let currentQuizWords = [];
+let currentSessionLearnedWords = [];
+let currentSessionLearnedArticles = [];
+
+// Настройки 25-го кадра
+let subliminalEnabled = true;
+let subliminalDuration = 40;
+
+// Глобальная статистика и посещения
+let globalStats = JSON.parse(localStorage.getItem('globalStats') || '{"users": {}, "onlineUsers": {}, "visits": {"daily": 0, "total": 0, "lastVisit": ""}}');
+let onlineUsers = globalStats.onlineUsers;
+
+// ==============================================
+// ⭐⭐⭐ СЛОВАРИ ⭐⭐⭐
+// ==============================================
+
+// Словарь С АРТИКЛЯМИ (примеры)
+const wordDictionaryWithArticles = [
+  {"article": "das", "word": "Geborensein", "translation_ru": "быть рожденным", "translation_tr": "doğmak", "translation_fa": "متولد شدن"},
+  {"article": "das", "word": "Geschiedensein", "translation_ru": "быть разведенным", "translation_tr": "boşanmış olmak", "translation_fa": "طلاق گرفته بودن"},
+  {"article": "die", "word": "Hochzeit", "translation_ru": "свадьба", "translation_tr": "düğün", "translation_fa": "عروسی"},
+  {"article": "der", "word": "Rentner", "translation_ru": "пенсионер", "translation_tr": "emekli", "translation_fa": "بازنشسته"},
+  {"article": "die", "word": "Rentnerin", "translation_ru": "пенсионерка", "translation_tr": "emekli kadın", "translation_fa": "بازنشسته زن"},
+  {"article": "die", "word": "Ausbildung", "translation_ru": "обучение", "translation_tr": "eğitim", "translation_fa": "آموزش"},
+  {"article": "der", "word": "Verein", "translation_ru": "клуб, объединение", "translation_tr": "dernek", "translation_fa": "انجمن"},
+  {"article": "der", "word": "Aufenthalt", "translation_ru": "пребывание", "translation_tr": "kalış", "translation_fa": "اقامت"},
+  {"article": "die", "word": "Bankkauffrau", "translation_ru": "банковский служащий (ж)", "translation_tr": "banka çalışanı kadın", "translation_fa": "کارمند بانک زن"},
+  {"article": "der", "word": "Bankkaufmann", "translation_ru": "банковский служащий (м)", "translation_tr": "banka çalışanı erkek", "translation_fa": "کارمند بانک مرد"},
+  {"article": "die", "word": "Note", "translation_ru": "оценка, нота", "translation_tr": "not", "translation_fa": "نمره"},
+  {"article": "das", "word": "Stadtzentrum", "translation_ru": "центр города", "translation_tr": "şehir merkezi", "translation_fa": "مرکز شهر"},
+  {"article": "die", "word": "Freizeit", "translation_ru": "свободное время", "translation_tr": "boş zaman", "translation_fa": "اوقات فراغت"},
+  {"article": "der", "word": "Plan", "translation_ru": "план", "translation_tr": "plan", "translation_fa": "برنامه"},
+  {"article": "der", "word": "Eingang", "translation_ru": "вход", "translation_tr": "giriş", "translation_fa": "ورودی"},
+  {"article": "der", "word": "Platz", "translation_ru": "место, площадь", "translation_tr": "yer, meydan", "translation_fa": "مکان, میدان"},
+  {"article": "die", "word": "Reservierung", "translation_ru": "бронирование", "translation_tr": "rezervasyon", "translation_fa": "رزرو"},
+  {"article": "das", "word": "WC", "translation_ru": "туалет", "translation_tr": "tuvalet", "translation_fa": "توالت"},
+  {"article": "die", "word": "Zigarette", "translation_ru": "сигарета", "translation_tr": "sigara", "translation_fa": "سیگار"},
+  {"article": "der", "word": "Gegenstand", "translation_ru": "предмет", "translation_tr": "nesne", "translation_fa": "شیء"},
+  {"article": "der", "word": "Sinn", "translation_ru": "смысл, чувство", "translation_tr": "anlam, duyu", "translation_fa": "معنی, حس"},
+  {"article": "die", "word": "Angst", "translation_ru": "страх", "translation_tr": "korku", "translation_fa": "ترس"},
+  {"article": "die", "word": "Grippe", "translation_ru": "грипп", "translation_tr": "grip", "translation_fa": "آنفولانزا"},
+  {"article": "das", "word": "Handy", "translation_ru": "мобильный телефон", "translation_tr": "cep telefonu", "translation_fa": "تلفن همراه"},
+  {"article": "der", "word": "Abschluss", "translation_ru": "окончание", "translation_tr": "mezuniyet", "translation_fa": "پایان"},
+  {"article": "der", "word": "Schulabschluss", "translation_ru": "окончание школы", "translation_tr": "okul bitirme", "translation_fa": "پایان مدرسه"},
+  {"article": "das", "word": "Abitur", "translation_ru": "аттестат зрелости", "translation_tr": "lise bitirme sınavı", "translation_fa": "دیپلم"},
+  {"article": "das", "word": "Zeugnis", "translation_ru": "свидетельство", "translation_tr": "sertifika", "translation_fa": "گواهی"},
+  {"article": "die", "word": "Direktorin", "translation_ru": "директор (ж)", "translation_tr": "müdür kadın", "translation_fa": "مدیر زن"},
+  {"article": "der", "word": "Schüler", "translation_ru": "ученик", "translation_tr": "öğrenci", "translation_fa": "شاگرد"},
+  {"article": "die", "word": "Schülerin", "translation_ru": "ученица", "translation_tr": "kız öğrenci", "translation_fa": "شاگرد دختر"},
+  {"article": "die", "word": "Klasse", "translation_ru": "класс", "translation_tr": "sınıf", "translation_fa": "کلاس"},
+  {"article": "der", "word": "Klassenlehrer", "translation_ru": "классный руководитель", "translation_tr": "sınıf öğretmeni", "translation_fa": "معلم کلاس"},
+  {"article": "die", "word": "Klassenlehrerin", "translation_ru": "классный руководитель (ж)", "translation_tr": "sınıf öğretmeni kadın", "translation_fa": "معلم کلاس زن"},
+  {"article": "der", "word": "Kiosk", "translation_ru": "киоск", "translation_tr": "büfe", "translation_fa": "کیوسک"},
+  {"article": "die", "word": "Pause", "translation_ru": "перерыв", "translation_tr": "ara", "translation_fa": "استراحت"},
+  {"article": "die", "word": "Cafeteria", "translation_ru": "кафетерий", "translation_tr": "kafeterya", "translation_fa": "کافه تریا"},
+  {"article": "die", "word": "Unterrichtszeit", "translation_ru": "время занятий", "translation_tr": "ders zamanı", "translation_fa": "زمان درس"},
+  {"article": "die", "word": "Stunde", "translation_ru": "час, урок", "translation_tr": "saat, ders", "translation_fa": "ساعت, درس"},
+  {"article": "die", "word": "Dauer", "translation_ru": "продолжительность", "translation_tr": "süre", "translation_fa": "مدت"},
+  {"article": "die", "word": "Schuluniform", "translation_ru": "школьная форма", "translation_tr": "okul üniforması", "translation_fa": "یونیفرم مدرسه"},
+  {"article": "die", "word": "Vorbereitung", "translation_ru": "подготовка", "translation_tr": "hazırlık", "translation_fa": "آماده سازی"},
+  {"article": "die", "word": "Ferien", "translation_ru": "каникулы", "translation_tr": "tatil", "translation_fa": "تعطیلات"},
+  {"article": "die", "word": "AG", "translation_ru": "акционерное общество", "translation_tr": "anonim şirket", "translation_fa": "شرکت سهامی"},
+  {"article": "die", "word": "Grundschule", "translation_ru": "начальная школа", "translation_tr": "ilkokul", "translation_fa": "مدرسه ابتدایی"},
+  {"article": "die", "word": "Hauptschule", "translation_ru": "основная школа", "translation_tr": "ortaokul", "translation_fa": "مدرسه راهنمایی"},
+  {"article": "die", "word": "Realschule", "translation_ru": "реальная школа", "translation_tr": "lise", "translation_fa": "دبیرستان"},
+  {"article": "das", "word": "Gymnasium", "translation_ru": "гимназия", "translation_tr": "lise", "translation_fa": "دبیرستان"},
+  {"article": "die", "word": "Gesamtschule", "translation_ru": "общеобразовательная школа", "translation_tr": "kapsamlı okul", "translation_fa": "مدرسه جامع"},
+  {"article": "die", "word": "Berufsschule", "translation_ru": "профессиональное училище", "translation_tr": "meslek okulu", "translation_fa": "مدرسه فنی حرفه ای"},
+  {"article": "das", "word": "Schulsystem", "translation_ru": "школьная система", "translation_tr": "okul sistemi", "translation_fa": "سیستم مدرسه"},
+  {"article": "das", "word": "Bundesland", "translation_ru": "федеральная земля", "translation_tr": "eyalet", "translation_fa": "ایالت"},
+  {"article": "der", "word": "Altenpfleger", "translation_ru": "сиделка для пожилых", "translation_tr": "yaşlı bakıcısı", "translation_fa": "پرستار سالمندان"},
+  {"article": "die", "word": "Altenpflegerin", "translation_ru": "сиделка для пожилых (ж)", "translation_tr": "yaşlı bakıcısı kadın", "translation_fa": "پرستار سالمندان زن"},
+  {"article": "der", "word": "Arzt", "translation_ru": "врач", "translation_tr": "doktor", "translation_fa": "پزشک"},
+  {"article": "die", "word": "Ärztin", "translation_ru": "врач (ж)", "translation_tr": "doktor kadın", "translation_fa": "پزشک زن"},
+  {"article": "das", "word": "Au-pair", "translation_ru": "ау-паир", "translation_tr": "au pair", "translation_fa": "اوپیر"},
+  {"article": "der", "word": "Busfahrer", "translation_ru": "водитель автобуса", "translation_tr": "otobüs şoförü", "translation_fa": "راننده اتوبوس"},
+  {"article": "die", "word": "Busfahrerin", "translation_ru": "водитель автобуса (ж)", "translation_tr": "otobüs şoförü kadın", "translation_fa": "راننده اتوبوس زن"},
+  {"article": "der", "word": "Grafikdesigner", "translation_ru": "графический дизайнер", "translation_tr": "grafik tasarımcı", "translation_fa": "طراح گرافیک"},
+  {"article": "der", "word": "Grafiker", "translation_ru": "график", "translation_tr": "grafikçi", "translation_fa": "گرافیست"},
+  {"article": "der", "word": "Hotelfachmann", "translation_ru": "гостиничный специалист", "translation_tr": "otel uzmanı", "translation_fa": "متخصص هتل"},
+  {"article": "die", "word": "Hotelfachfrau", "translation_ru": "гостиничный специалист (ж)", "translation_tr": "otel uzmanı kadın", "translation_fa": "متخصص هتل زن"},
+  {"article": "die", "word": "Krankenschwester", "translation_ru": "медсестра", "translation_tr": "hemşire", "translation_fa": "پرستار"},
+  {"article": "der", "word": "Krankenpfleger", "translation_ru": "медбрат", "translation_tr": "erkek hemşire", "translation_fa": "پرستار مرد"},
+  {"article": "die", "word": "Arbeitswelt", "translation_ru": "мир труда", "translation_tr": "iş dünyası", "translation_fa": "دنیای کار"},
+  {"article": "der", "word": "Auszubildende", "translation_ru": "ученик", "translation_tr": "stajyer", "translation_fa": "کارآموز"},
+  {"article": "die", "word": "Lehre", "translation_ru": "ученичество", "translation_tr": "çıraklık", "translation_fa": "شاگردی"},
+  {"article": "die", "word": "Erfahrung", "translation_ru": "опыт", "translation_tr": "deneyim", "translation_fa": "تجربه"},
+  {"article": "die", "word": "Berufserfahrung", "translation_ru": "профессиональный опыт", "translation_tr": "mesleki deneyim", "translation_fa": "تجربه حرفه ای"},
+  {"article": "das", "word": "Handwerk", "translation_ru": "ремесло", "translation_tr": "zanaat", "translation_fa": "صنعت دستی"},
+  {"article": "die", "word": "Adresse", "translation_ru": "адрес", "translation_tr": "adres", "translation_fa": "آدرس"},
+  {"article": "die", "word": "Arztpraxis", "translation_ru": "врачебная практика", "translation_tr": "doktor muayenehanesi", "translation_fa": "مطب پزشکی"},
+  {"article": "das", "word": "Reisebüro", "translation_ru": "туристическое агентство", "translation_tr": "seyahat acentesi", "translation_fa": "آژانس مسافرتی"},
+  {"article": "die", "word": "Werbung", "translation_ru": "реклама", "translation_tr": "reklam", "translation_fa": "تبلیغات"},
+  {"article": "das", "word": "Fach", "translation_ru": "предмет", "translation_tr": "ders", "translation_fa": "درس"},
+  {"article": "die", "word": "Vorlesung", "translation_ru": "лекция", "translation_tr": "ders", "translation_fa": "سخنرانی"},
+  {"article": "die", "word": "Meinung", "translation_ru": "мнение", "translation_tr": "görüş", "translation_fa": "نظر"},
+  {"article": "die", "word": "Hausaufgabe", "translation_ru": "домашнее задание", "translation_tr": "ev ödevi", "translation_fa": "تکلیف خانه"},
+  {"article": "die", "word": "Freude", "translation_ru": "радость", "translation_tr": "sevinç", "translation_fa": "شادی"},
+  {"article": "die", "word": "Gemeinsamkeit", "translation_ru": "общность", "translation_tr": "ortaklık", "translation_fa": "اشتراک"},
+  {"article": "der", "word": "Unterschied", "translation_ru": "разница", "translation_tr": "fark", "translation_fa": "تفاوت"},
+  {"article": "die", "word": "Beziehung", "translation_ru": "отношение", "translation_tr": "ilişki", "translation_fa": "رابطه"},
+  {"article": "der", "word": "Rollstuhl", "translation_ru": "инвалидная коляска", "translation_tr": "tekerlekli sandalye", "translation_fa": "صندلی چرخدار"},
+  {"article": "die", "word": "Erholung", "translation_ru": "отдых", "translation_tr": "dinlenme", "translation_fa": "استراحت"},
+  {"article": "die", "word": "Erinnerung", "translation_ru": "воспоминание", "translation_tr": "hatıra", "translation_fa": "خاطره"},
+  {"article": "die", "word": "Weltreise", "translation_ru": "кругосветное путешествие", "translation_tr": "dünya turu", "translation_fa": "سفر دور دنیا"},
+  {"article": "der", "word": "Kontakt", "translation_ru": "контакт", "translation_tr": "iletişim", "translation_fa": "تماس"},
+  {"article": "das", "word": "E-Book", "translation_ru": "электронная книга", "translation_tr": "e-kitap", "translation_fa": "کتاب الکترونیکی"},
+  {"article": "der", "word": "E-Book-Reader", "translation_ru": "ридер электронных книг", "translation_tr": "e-kitap okuyucu", "translation_fa": "خواننده کتاب الکترونیکی"},
+  {"article": "der", "word": "Laptop", "translation_ru": "ноутбук", "translation_tr": "dizüstü bilgisayar", "translation_fa": "لپ تاپ"},
+  {"article": "das", "word": "Radio", "translation_ru": "радио", "translation_tr": "radyo", "translation_fa": "رادیو"},
+  {"article": "die", "word": "Spielkonsole", "translation_ru": "игровая консоль", "translation_tr": "oyun konsolu", "translation_fa": "کنسول بازی"},
+  {"article": "das", "word": "Tablet", "translation_ru": "планшет", "translation_tr": "tablet", "translation_fa": "تبلت"},
+  {"article": "der", "word": "Bildschirm", "translation_ru": "экран", "translation_tr": "ekran", "translation_fa": "صفحه نمایش"},
+  {"article": "die", "word": "Tastatur", "translation_ru": "клавиатура", "translation_tr": "klavye", "translation_fa": "صفحه کلید"},
+  {"article": "die", "word": "Maus", "translation_ru": "мышь", "translation_tr": "fare", "translation_fa": "ماوس"},
+  {"article": "die", "word": "Kamera", "translation_ru": "камера", "translation_tr": "kamera", "translation_fa": "دوربین"},
+  {"article": "die", "word": "Kopfhörer", "translation_ru": "наушники", "translation_tr": "kulaklık", "translation_fa": "هدفون"},
+  {"article": "die", "word": "Lautsprecher", "translation_ru": "колонки", "translation_tr": "hoparlör", "translation_fa": "بلندگو"},
+  {"article": "die", "word": "Webseite", "translation_ru": "веб-сайт", "translation_tr": "web sitesi", "translation_fa": "وب سایت"},
+  {"article": "der", "word": "Link", "translation_ru": "ссылка", "translation_tr": "bağlantı", "translation_fa": "لینک"},
+  {"article": "der", "word": "Blogbeitrag", "translation_ru": "запись в блоге", "translation_tr": "blog yazısı", "translation_fa": "پست وبلاگ"},
+  {"article": "der", "word": "Vergleich", "translation_ru": "сравнение", "translation_tr": "karşılaştırma", "translation_fa": "مقایسه"},
+  {"article": "das", "word": "Start-up", "translation_ru": "стартап", "translation_tr": "start-up", "translation_fa": "استارتاپ"},
+  {"article": "der", "word": "Actionfilm", "translation_ru": "боевик", "translation_tr": "aksiyon filmi", "translation_fa": "فیلم اکشن"},
+  {"article": "der", "word": "Fantasyfilm", "translation_ru": "фэнтези фильм", "translation_tr": "fantastik film", "translation_fa": "فیلم فانتزی"},
+  {"article": "die", "word": "Komödie", "translation_ru": "комедия", "translation_tr": "komedi", "translation_fa": "کمدی"},
+  {"article": "der", "word": "Liebesfilm", "translation_ru": "романтический фильм", "translation_tr": "aşk filmi", "translation_fa": "فیلم عاشقانه"},
+  {"article": "der", "word": "Thriller", "translation_ru": "триллер", "translation_tr": "gerilim filmi", "translation_fa": "فیلم هیجان انگیز"},
+  {"article": "die", "word": "Filmmusik", "translation_ru": "музыка к фильму", "translation_tr": "film müziği", "translation_fa": "موسیقی فیلم"},
+  {"article": "die", "word": "Handlung", "translation_ru": "сюжет", "translation_tr": "konu", "translation_fa": "داستان"},
+  {"article": "der", "word": "Trailer", "translation_ru": "трейлер", "translation_tr": "fragman", "translation_fa": "تیزر"},
+  {"article": "die", "word": "Hauptperson", "translation_ru": "главный персонаж", "translation_tr": "ana karakter", "translation_fa": "شخصیت اصلی"},
+  {"article": "das", "word": "Talent", "translation_ru": "талант", "translation_tr": "yetenek", "translation_fa": "استعداد"},
+  {"article": "der", "word": "Humor", "translation_ru": "юмор", "translation_tr": "mizah", "translation_fa": "شوخ طبعی"},
+  {"article": "der", "word": "Enkel", "translation_ru": "внук", "translation_tr": "torun", "translation_fa": "نوه"},
+  {"article": "die", "word": "Enkelin", "translation_ru": "внучка", "translation_tr": "kız torun", "translation_fa": "نوه دختر"},
+  {"article": "die", "word": "Freundschaft", "translation_ru": "дружба", "translation_tr": "arkadaşlık", "translation_fa": "دوستی"},
+  {"article": "die", "word": "Kindheit", "translation_ru": "детство", "translation_tr": "çocukluk", "translation_fa": "کودکی"},
+  {"article": "das", "word": "Schicksal", "translation_ru": "судьба", "translation_tr": "kader", "translation_fa": "سرنوشت"},
+  {"article": "die", "word": "Sorge", "translation_ru": "забота, беспокойство", "translation_tr": "endişe", "translation_fa": "نگرانی"},
+  {"article": "das", "word": "Tier", "translation_ru": "животное", "translation_tr": "hayvan", "translation_fa": "حیوان"},
+  {"article": "die", "word": "Geburt", "translation_ru": "рождение", "translation_tr": "doğum", "translation_fa": "تولد"},
+  {"article": "das", "word": "Geschenk", "translation_ru": "подарок", "translation_tr": "hediye", "translation_fa": "هدیه"},
+  {"article": "die", "word": "Geburtstagsparty", "translation_ru": "день рождения", "translation_tr": "doğum günü partisi", "translation_fa": "جشن تولد"},
+  {"article": "der", "word": "Schultag", "translation_ru": "школьный день", "translation_tr": "okul günü", "translation_fa": "روز مدرسه"},
+  {"article": "der", "word": "Führerschein", "translation_ru": "водительские права", "translation_tr": "ehliyet", "translation_fa": "گواهینامه رانندگی"},
+  {"article": "die", "word": "Prüfung", "translation_ru": "экзамен", "translation_tr": "sınav", "translation_fa": "امتحان"},
+  {"article": "der", "word": "Club", "translation_ru": "клуб", "translation_tr": "kulüp", "translation_fa": "باشگاه"},
+  {"article": "der", "word": "Ring", "translation_ru": "кольцо", "translation_tr": "yüzük", "translation_fa": "حلقه"},
+  {"article": "die", "word": "Medaille", "translation_ru": "медаль", "translation_tr": "madalya", "translation_fa": "مدال"},
+  {"article": "das", "word": "Feuerwerk", "translation_ru": "фейерверк", "translation_tr": "havai fişek", "translation_fa": "آتش بازی"},
+  {"article": "die", "word": "Laune", "translation_ru": "настроение", "translation_tr": "ruh hali", "translation_fa": "حالت"},
+  {"article": "die", "word": "Liebesgeschichte", "translation_ru": "любовная история", "translation_tr": "aşk hikayesi", "translation_fa": "داستان عاشقانه"},
+  {"article": "die", "word": "Liebe", "translation_ru": "любовь", "translation_tr": "aşk", "translation_fa": "عشق"},
+  {"article": "das", "word": "Bedauern", "translation_ru": "сожаление", "translation_tr": "pişmanlık", "translation_fa": "پشیمانی"},
+  {"article": "die", "word": "Absage", "translation_ru": "отмена", "translation_tr": "iptal", "translation_fa": "لغو"},
+  {"article": "das", "word": "Gefühl", "translation_ru": "чувство", "translation_tr": "duygu", "translation_fa": "احساس"},
+  {"article": "die", "word": "Emotion", "translation_ru": "эмоция", "translation_tr": "duygu", "translation_fa": "احساس"},
+  {"article": "der", "word": "Gefallen", "translation_ru": "услуга", "translation_tr": "iyilik", "translation_fa": "لطف"},
+  {"article": "das", "word": "Beste", "translation_ru": "лучшее", "translation_tr": "en iyi", "translation_fa": "بهترین"},
+  {"article": "der", "word": "Erfolg", "translation_ru": "успех", "translation_tr": "başarı", "translation_fa": "موفقیت"},
+  {"article": "der", "word": "Fan", "translation_ru": "фанат", "translation_tr": "hayran", "translation_fa": "طرفدار"},
+  {"article": "der", "word": "Daumen", "translation_ru": "большой палец", "translation_tr": "başparmak", "translation_fa": "شست"},
+  {"article": "der", "word": "Gedanke", "translation_ru": "мысль", "translation_tr": "düşünce", "translation_fa": "فکر"},
+  {"article": "die", "word": "Ruhe", "translation_ru": "покой", "translation_tr": "sessizlik", "translation_fa": "آرامش"},
+  {"article": "die", "word": "Entspannung", "translation_ru": "расслабление", "translation_tr": "rahatlama", "translation_fa": "آرامش"},
+  {"article": "das", "word": "Wunder", "translation_ru": "чудо", "translation_tr": "mucize", "translation_fa": "معجزه"},
+  {"article": "der", "word": "Dom", "translation_ru": "собор", "translation_tr": "katedral", "translation_fa": "کلیسای جامع"},
+  {"article": "die", "word": "Disco", "translation_ru": "дискотека", "translation_tr": "disko", "translation_fa": "دیسکو"},
+  {"article": "der", "word": "Stadtplan", "translation_ru": "план города", "translation_tr": "şehir planı", "translation_fa": "نقشه شهر"},
+  {"article": "der", "word": "Tourist", "translation_ru": "турист", "translation_tr": "turist", "translation_fa": "گردشگر"},
+  {"article": "die", "word": "Touristin", "translation_ru": "туристка", "translation_tr": "turist kadın", "translation_fa": "گردشگر زن"},
+  {"article": "der", "word": "Politiker", "translation_ru": "политик", "translation_tr": "politikacı", "translation_fa": "سیاستمدار"},
+  {"article": "die", "word": "Politikerin", "translation_ru": "политик (ж)", "translation_tr": "politikacı kadın", "translation_fa": "سیاستمدار زن"},
+  {"article": "das", "word": "Parlament", "translation_ru": "парламент", "translation_tr": "parlamento", "translation_fa": "پارلمان"},
+  {"article": "das", "word": "Gesetz", "translation_ru": "закон", "translation_tr": "yasa", "translation_fa": "قانون"},
+  {"article": "die", "word": "Verwaltung", "translation_ru": "администрация", "translation_tr": "yönetim", "translation_fa": "اداره"},
+  {"article": "das", "word": "Gebäude", "translation_ru": "здание", "translation_tr": "bina", "translation_fa": "ساختمان"},
+  {"article": "die", "word": "Tätigkeit", "translation_ru": "деятельность", "translation_tr": "faaliyet", "translation_fa": "فعالیت"},
+  {"article": "der", "word": "Abflug", "translation_ru": "вылет", "translation_tr": "kalkış", "translation_fa": "پرواز"},
+  {"article": "der", "word": "Bahnsteig", "translation_ru": "платформа", "translation_tr": "peron", "translation_fa": "سکو"},
+  {"article": "der", "word": "Fahrplan", "translation_ru": "расписание", "translation_tr": "tarife", "translation_fa": "برنامه حرکت"},
+  {"article": "die", "word": "Zugverbindung", "translation_ru": "железнодорожное сообщение", "translation_tr": "tren bağlantısı", "translation_fa": "اتصال قطار"},
+  {"article": "der", "word": "Wagen", "translation_ru": "вагон, автомобиль", "translation_tr": "vagon, araba", "translation_fa": "واگن, ماشین"},
+  {"article": "die", "word": "Geschäftreise", "translation_ru": "деловая поездка", "translation_tr": "iş seyahati", "translation_fa": "سفر کاری"},
+  {"article": "die", "word": "Rückfahrt", "translation_ru": "обратная поездка", "translation_tr": "dönüş yolculuğu", "translation_fa": "سفر بازگشت"},
+  {"article": "der", "word": "Beruf", "translation_ru": "профессия", "translation_tr": "meslek", "translation_fa": "شغل"},
+  {"article": "der", "word": "Berufswunsch", "translation_ru": "желаемая профессия", "translation_tr": "meslek isteği", "translation_fa": "آرزوی شغلی"},
+  {"article": "der", "word": "Neuanfang", "translation_ru": "новое начало", "translation_tr": "yeni başlangıç", "translation_fa": "شروع جدید"},
+  {"article": "die", "word": "Chance", "translation_ru": "шанс", "translation_tr": "şans", "translation_fa": "فرصت"},
+  {"article": "die", "word": "Umwelt", "translation_ru": "окружающая среда", "translation_tr": "çevre", "translation_fa": "محیط زیست"},
+  {"article": "das", "word": "Plastik", "translation_ru": "пластик", "translation_tr": "plastik", "translation_fa": "پلاستیک"},
+  {"article": "die", "word": "Chirurgin", "translation_ru": "хирург (ж)", "translation_tr": "cerrah kadın", "translation_fa": "جراح زن"},
+  {"article": "der", "word": "Chirurg", "translation_ru": "хирург", "translation_tr": "cerrah", "translation_fa": "جراح"},
+  {"article": "das", "word": "Herz", "translation_ru": "сердце", "translation_tr": "kalp", "translation_fa": "قلب"},
+  {"article": "der", "word": "Lkw", "translation_ru": "грузовик", "translation_tr": "kamyon", "translation_fa": "کامیون"},
+  {"article": "der", "word": "Lastwagen", "translation_ru": "грузовик", "translation_tr": "kamyon", "translation_fa": "کامیون"},
+  {"article": "die", "word": "Freiheit", "translation_ru": "свобода", "translation_tr": "özgürlük", "translation_fa": "آزادی"},
+  {"article": "der", "word": "Anruf", "translation_ru": "звонок", "translation_tr": "arama", "translation_fa": "تماس"},
+  {"article": "der", "word": "Anrufbeantworter", "translation_ru": "автоответчик", "translation_tr": "telesekreter", "translation_fa": "پاسخگوی خودکار"},
+  {"article": "der", "word": "Sänger", "translation_ru": "певец", "translation_tr": "şarkıcı", "translation_fa": "خواننده"},
+  {"article": "die", "word": "Band", "translation_ru": "группа", "translation_tr": "grup", "translation_fa": "گروه"},
+  {"article": "der", "word": "Musiker", "translation_ru": "музыкант", "translation_tr": "müzisyen", "translation_fa": "موسیقیدان"},
+  {"article": "das", "word": "Album", "translation_ru": "альбом", "translation_tr": "albüm", "translation_fa": "آلبوم"},
+  {"article": "der", "word": "Arbeitstag", "translation_ru": "рабочий день", "translation_tr": "iş günü", "translation_fa": "روز کاری"},
+  {"article": "die", "word": "Fabrik", "translation_ru": "фабрика", "translation_tr": "fabrika", "translation_fa": "کارخانه"},
+  {"article": "die", "word": "Maschine", "translation_ru": "машина", "translation_tr": "makine", "translation_fa": "ماشین"},
+  {"article": "der", "word": "Roboter", "translation_ru": "робот", "translation_tr": "robot", "translation_fa": "ربات"},
+  {"article": "die", "word": "Digitalisierung", "translation_ru": "цифровизация", "translation_tr": "dijitalleşme", "translation_fa": "دیجیتالی شدن"},
+  {"article": "der", "word": "Austausch", "translation_ru": "обмен", "translation_tr": "değişim", "translation_fa": "تبادل"},
+  {"article": "die", "word": "Zusammenarbeit", "translation_ru": "сотрудничество", "translation_tr": "işbirliği", "translation_fa": "همکاری"},
+  {"article": "die", "word": "Hausarbeit", "translation_ru": "домашняя работа", "translation_tr": "ev işi", "translation_fa": "کار خانه"},
+  {"article": "das", "word": "Blatt", "translation_ru": "лист", "translation_tr": "yaprak", "translation_fa": "برگ"},
+  {"article": "der", "word": "Schwager", "translation_ru": "шурин", "translation_tr": "kayınbirader", "translation_fa": "برادر همسر"},
+  {"article": "der", "word": "Schritt", "translation_ru": "шаг", "translation_tr": "adım", "translation_fa": "قدم"},
+  {"article": "der", "word": "Feiertag", "translation_ru": "праздничный день", "translation_tr": "resmi tatil", "translation_fa": "روز تعطیل"},
+  {"article": "das", "word": "Jahrhundert", "translation_ru": "век", "translation_tr": "yüzyıl", "translation_fa": "قرن"},
+  {"article": "der", "word": "Mann", "translation_ru": "мужчина", "translation_tr": "erkek", "translation_fa": "مرد"},
+  {"article": "die", "word": "Frau", "translation_ru": "женщина", "translation_tr": "kadın", "translation_fa": "زن"},
+  {"article": "das", "word": "Kind", "translation_ru": "ребёнок", "translation_tr": "çocuk", "translation_fa": "کودک"},
+  {"article": "der", "word": "Junge", "translation_ru": "мальчик", "translation_tr": "erkek çocuk", "translation_fa": "پسر"},
+  {"article": "das", "word": "Mädchen", "translation_ru": "девочка", "translation_tr": "kız çocuk", "translation_fa": "دختر"},
+  {"article": "der", "word": "Freund", "translation_ru": "друг", "translation_tr": "arkadaş", "translation_fa": "دوست"},
+  {"article": "die", "word": "Freundin", "translation_ru": "подруга", "translation_tr": "kız arkadaş", "translation_fa": "دوست دختر"},
+  {"article": "der", "word": "Kollege", "translation_ru": "коллега (м)", "translation_tr": "iş arkadaşı", "translation_fa": "همکار"},
+  {"article": "die", "word": "Kollegin", "translation_ru": "коллега (ж)", "translation_tr": "kadın iş arkadaşı", "translation_fa": "همکار زن"},
+  {"article": "der", "word": "Nachbar", "translation_ru": "сосед", "translation_tr": "komşu", "translation_fa": "همسایه"},
+  {"article": "die", "word": "Nachbarin", "translation_ru": "соседка", "translation_tr": "kadın komşu", "translation_fa": "همسایه زن"},
+  {"article": "der", "word": "Chef", "translation_ru": "начальник", "translation_tr": "patron", "translation_fa": "رئیس"},
+  {"article": "der", "word": "Lehrer", "translation_ru": "учитель", "translation_tr": "öğretmen", "translation_fa": "معلم"},
+  {"article": "die", "word": "Lehrerin", "translation_ru": "учительница", "translation_tr": "kadın öğretmen", "translation_fa": "معلم زن"},
+  {"article": "der", "word": "Student", "translation_ru": "студент", "translation_tr": "öğrenci", "translation_fa": "دانشجو"},
+  {"article": "die", "word": "Studentin", "translation_ru": "студентка", "translation_tr": "kız öğrenci", "translation_fa": "دانشجوی زن"},
+  {"article": "der", "word": "Polizist", "translation_ru": "полицейский", "translation_tr": "polis", "translation_fa": "پلیس"},
+  {"article": "der", "word": "Gast", "translation_ru": "гость", "translation_tr": "misafir", "translation_fa": "مهمان"},
+  {"article": "der", "word": "Mensch", "translation_ru": "человек", "translation_tr": "insan", "translation_fa": "انسان"},
+  {"article": "der", "word": "Herr", "translation_ru": "господин", "translation_tr": "beyefendi", "translation_fa": "آقا"},
+  {"article": "die", "word": "Dame", "translation_ru": "дама", "translation_tr": "bayan", "translation_fa": "خانم"},
+  {"article": "die", "word": "Mutter", "translation_ru": "мать", "translation_tr": "anne", "translation_fa": "مادر"},
+  {"article": "der", "word": "Vater", "translation_ru": "отец", "translation_tr": "baba", "translation_fa": "پدر"},
+  {"article": "der", "word": "Sohn", "translation_ru": "сын", "translation_tr": "oğul", "translation_fa": "پسر"},
+  {"article": "die", "word": "Tochter", "translation_ru": "дочь", "translation_tr": "kız", "translation_fa": "دختر"},
+  {"article": "der", "word": "Bruder", "translation_ru": "брат", "translation_tr": "erkek kardeş", "translation_fa": "برادر"},
+  {"article": "die", "word": "Schwester", "translation_ru": "сестра", "translation_tr": "kız kardeş", "translation_fa": "خواهر"},
+  {"article": "die", "word": "Oma", "translation_ru": "бабушка", "translation_tr": "büyükanne", "translation_fa": "مادربزرگ"},
+  {"article": "der", "word": "Opa", "translation_ru": "дедушка", "translation_tr": "büyükbaba", "translation_fa": "پدربزرگ"},
+  {"article": "die", "word": "Familie", "translation_ru": "семья", "translation_tr": "aile", "translation_fa": "خانواده"},
+  {"article": "der", "word": "Hund", "translation_ru": "собака", "translation_tr": "köpek", "translation_fa": "سگ"},
+  {"article": "die", "word": "Katze", "translation_ru": "кошка", "translation_tr": "kedi", "translation_fa": "گربه"},
+  {"article": "das", "word": "Haustier", "translation_ru": "домашнее животное", "translation_tr": "evcil hayvan", "translation_fa": "حیوان خانگی"},
+  {"article": "der", "word": "Vogel", "translation_ru": "птица", "translation_tr": "kuş", "translation_fa": "پرنده"},
+  {"article": "der", "word": "Fisch", "translation_ru": "рыба", "translation_tr": "balık", "translation_fa": "ماهی"},
+  {"article": "der", "word": "Hase", "translation_ru": "заяц", "translation_tr": "tavşan", "translation_fa": "خرگوش"},
+  {"article": "das", "word": "Kaninchen", "translation_ru": "кролик", "translation_tr": "tavşan", "translation_fa": "خرگوش"},
+  {"article": "der", "word": "Löwe", "translation_ru": "лев", "translation_tr": "aslan", "translation_fa": "شیر"},
+  {"article": "der", "word": "Schmetterling", "translation_ru": "бабочка", "translation_tr": "kelebek", "translation_fa": "پروانه"},
+  {"article": "die", "word": "Kuh", "translation_ru": "корова", "translation_tr": "inek", "translation_fa": "گاو"},
+  {"article": "die", "word": "Maus", "translation_ru": "мышь", "translation_tr": "fare", "translation_fa": "موش"},
+  {"article": "das", "word": "Essen", "translation_ru": "еда", "translation_tr": "yemek", "translation_fa": "غذا"},
+  {"article": "das", "word": "Wasser", "translation_ru": "вода", "translation_tr": "su", "translation_fa": "آب"},
+  {"article": "der", "word": "Kaffee", "translation_ru": "кофе", "translation_tr": "kahve", "translation_fa": "قهوه"},
+  {"article": "der", "word": "Tee", "translation_ru": "чай", "translation_tr": "çay", "translation_fa": "چای"},
+  {"article": "die", "word": "Milch", "translation_ru": "молоко", "translation_tr": "süt", "translation_fa": "شیر"},
+  {"article": "der", "word": "Saft", "translation_ru": "сок", "translation_tr": "meyve suyu", "translation_fa": "آب میوه"},
+  {"article": "der", "word": "Wein", "translation_ru": "вино", "translation_tr": "şarap", "translation_fa": "شراب"},
+  {"article": "das", "word": "Bier", "translation_ru": "пиво", "translation_tr": "bira", "translation_fa": "آبجو"},
+  {"article": "der", "word": "Sekt", "translation_ru": "игристое вино", "translation_tr": "şampanya", "translation_fa": "شامپاین"},
+  {"article": "der", "word": "Schnaps", "translation_ru": "крепкий алкоголь", "translation_tr": "içki", "translation_fa": "نوشیدنی الکلی"},
+  {"article": "das", "word": "Brot", "translation_ru": "хлеб", "translation_tr": "ekmek", "translation_fa": "نان"},
+  {"article": "das", "word": "Brötchen", "translation_ru": "булочка", "translation_tr": "ekmekçik", "translation_fa": "نان کوچک"},
+  {"article": "der", "word": "Kuchen", "translation_ru": "пирог, торт", "translation_tr": "pasta", "translation_fa": "کیک"},
+  {"article": "der", "word": "Käse", "translation_ru": "сыр", "translation_tr": "peynir", "translation_fa": "پنیر"},
+  {"article": "das", "word": "Fleisch", "translation_ru": "мясо", "translation_tr": "et", "translation_fa": "گوشت"},
+  {"article": "das", "word": "Hähnchen", "translation_ru": "цыплёнок", "translation_tr": "tavuk", "translation_fa": "مرغ"},
+  {"article": "das", "word": "Schnitzel", "translation_ru": "шницель", "translation_tr": "şinitzel", "translation_fa": "شنیتسل"},
+  {"article": "die", "word": "Wurst", "translation_ru": "колбаса", "translation_tr": "sosis", "translation_fa": "سوسیس"},
+  {"article": "das", "word": "Obst", "translation_ru": "фрукты", "translation_tr": "meyve", "translation_fa": "میوه"},
+  {"article": "das", "word": "Gemüse", "translation_ru": "овощи", "translation_tr": "sebze", "translation_fa": "سبزیجات"},
+  {"article": "der", "word": "Salat", "translation_ru": "салат", "translation_tr": "salata", "translation_fa": "سالاد"},
+  {"article": "die", "word": "Suppe", "translation_ru": "суп", "translation_tr": "çorba", "translation_fa": "سوپ"},
+  {"article": "die", "word": "Pizza", "translation_ru": "пицца", "translation_tr": "pizza", "translation_fa": "پیتزا"},
+  {"article": "das", "word": "Eis", "translation_ru": "мороженое", "translation_tr": "dondurma", "translation_fa": "بستنی"},
+  {"article": "die", "word": "Schokolade", "translation_ru": "шоколад", "translation_tr": "çikolata", "translation_fa": "شکلات"},
+  {"article": "der", "word": "Joghurt", "translation_ru": "йогурт", "translation_tr": "yoğurt", "translation_fa": "ماست"},
+  {"article": "der", "word": "Apfel", "translation_ru": "яблоко", "translation_tr": "elma", "translation_fa": "سیب"},
+  {"article": "die", "word": "Banane", "translation_ru": "банан", "translation_tr": "muz", "translation_fa": "موز"},
+  {"article": "die", "word": "Kartoffel", "translation_ru": "картофель", "translation_tr": "patates", "translation_fa": "سیب زمینی"},
+  {"article": "der", "word": "Reis", "translation_ru": "рис", "translation_tr": "pirinç", "translation_fa": "برنج"},
+  {"article": "der", "word": "Zucker", "translation_ru": "сахар", "translation_tr": "şeker", "translation_fa": "شکر"},
+  {"article": "das", "word": "Frühstück", "translation_ru": "завтрак", "translation_tr": "kahvaltı", "translation_fa": "صبحانه"},
+  {"article": "das", "word": "Mittagessen", "translation_ru": "обед", "translation_tr": "öğle yemeği", "translation_fa": "ناهار"},
+  {"article": "das", "word": "Abendbrot", "translation_ru": "ужин", "translation_tr": "akşam yemeği", "translation_fa": "شام"},
+  {"article": "die", "word": "Stadt", "translation_ru": "город", "translation_tr": "şehir", "translation_fa": "شهر"},
+  {"article": "das", "word": "Haus", "translation_ru": "дом", "translation_tr": "ev", "translation_fa": "خانه"},
+  {"article": "die", "word": "Wohnung", "translation_ru": "квартира", "translation_tr": "daire", "translation_fa": "آپارتمان"},
+  {"article": "das", "word": "Zimmer", "translation_ru": "комната", "translation_tr": "oda", "translation_fa": "اتاق"},
+  {"article": "die", "word": "Schule", "translation_ru": "школа", "translation_tr": "okul", "translation_fa": "مدرسه"},
+  {"article": "die", "word": "Bank", "translation_ru": "банк", "translation_tr": "banka", "translation_fa": "بانک"},
+  {"article": "die", "word": "Post", "translation_ru": "почта", "translation_tr": "posta", "translation_fa": "پست"},
+  {"article": "das", "word": "Restaurant", "translation_ru": "ресторан", "translation_tr": "restoran", "translation_fa": "رستوران"},
+  {"article": "das", "word": "Café", "translation_ru": "кафе", "translation_tr": "kafe", "translation_fa": "کافه"},
+  {"article": "das", "word": "Kino", "translation_ru": "кинотеатр", "translation_tr": "sinema", "translation_fa": "سینما"},
+  {"article": "das", "word": "Theater", "translation_ru": "театр", "translation_tr": "tiyatro", "translation_fa": "تئاتر"},
+  {"article": "das", "word": "Museum", "translation_ru": "музей", "translation_tr": "müze", "translation_fa": "موزه"},
+  {"article": "das", "word": "Hotel", "translation_ru": "отель", "translation_tr": "otel", "translation_fa": "هتل"},
+  {"article": "der", "word": "Bahnhof", "translation_ru": "вокзал", "translation_tr": "istasyon", "translation_fa": "ایستگاه"},
+  {"article": "der", "word": "Flughafen", "translation_ru": "аэропорт", "translation_tr": "havaalanı", "translation_fa": "فرودگاه"},
+  {"article": "der", "word": "Supermarkt", "translation_ru": "супермаркет", "translation_tr": "süpermarket", "translation_fa": "فروشگاه"},
+  {"article": "der", "word": "Markt", "translation_ru": "рынок", "translation_tr": "pazar", "translation_fa": "بازار"},
+  {"article": "der", "word": "Park", "translation_ru": "парк", "translation_tr": "park", "translation_fa": "پارک"},
+  {"article": "der", "word": "Garten", "translation_ru": "сад", "translation_tr": "bahçe", "translation_fa": "باغ"},
+  {"article": "die", "word": "Straße", "translation_ru": "улица", "translation_tr": "sokak", "translation_fa": "خیابان"},
+  {"article": "die", "word": "Oper", "translation_ru": "опера", "translation_tr": "opera", "translation_fa": "اپرا"},
+  {"article": "die", "word": "Kirche", "translation_ru": "церковь", "translation_tr": "kilise", "translation_fa": "کلیسا"},
+  {"article": "das", "word": "Schwimmbad", "translation_ru": "бассейн", "translation_tr": "yüzme havuzu", "translation_fa": "استخر"},
+  {"article": "das", "word": "Fitnessstudio", "translation_ru": "фитнес-клуб", "translation_tr": "spor salonu", "translation_fa": "باشگاه ورزشی"},
+  {"article": "die", "word": "Apotheke", "translation_ru": "аптека", "translation_tr": "eczane", "translation_fa": "داروخانه"},
+  {"article": "das", "word": "Krankenhaus", "translation_ru": "больница", "translation_tr": "hastane", "translation_fa": "بیمارستان"},
+  {"article": "das", "word": "Auto", "translation_ru": "машина", "translation_tr": "araba", "translation_fa": "ماشین"},
+  {"article": "das", "word": "Fahrrad", "translation_ru": "велосипед", "translation_tr": "bisiklet", "translation_fa": "دوچرخه"},
+  {"article": "der", "word": "Bus", "translation_ru": "автобус", "translation_tr": "otobüs", "translation_fa": "اتوبوس"},
+  {"article": "die", "word": "U-Bahn", "translation_ru": "метро", "translation_tr": "metro", "translation_fa": "مترو"},
+  {"article": "die", "word": "Straßenbahn", "translation_ru": "трамвай", "translation_tr": "tramvay", "translation_fa": "تراموا"},
+  {"article": "der", "word": "Zug", "translation_ru": "поезд", "translation_tr": "tren", "translation_fa": "قطار"},
+  {"article": "das", "word": "Taxi", "translation_ru": "такси", "translation_tr": "taksi", "translation_fa": "تاکسی"},
+  {"article": "das", "word": "Flugzeug", "translation_ru": "самолёт", "translation_tr": "uçak", "translation_fa": "هواپیما"},
+  {"article": "der", "word": "Tisch", "translation_ru": "стол", "translation_tr": "masa", "translation_fa": "میز"},
+  {"article": "der", "word": "Stuhl", "translation_ru": "стул", "translation_tr": "sandalye", "translation_fa": "صندلی"},
+  {"article": "der", "word": "Sessel", "translation_ru": "кресло", "translation_tr": "koltuk", "translation_fa": "صندلی راحتی"},
+  {"article": "das", "word": "Sofa", "translation_ru": "диван", "translation_tr": "kanepe", "translation_fa": "مبلمان"},
+  {"article": "das", "word": "Bett", "translation_ru": "кровать", "translation_tr": "yatak", "translation_fa": "تخت"},
+  {"article": "der", "word": "Schrank", "translation_ru": "шкаф", "translation_tr": "dolap", "translation_fa": "کمد"},
+  {"article": "das", "word": "Regal", "translation_ru": "полка", "translation_tr": "raf", "translation_fa": "قفسه"},
+  {"article": "die", "word": "Lampe", "translation_ru": "лампа", "translation_tr": "lamba", "translation_fa": "چراغ"},
+  {"article": "das", "word": "Bild", "translation_ru": "картина, фото", "translation_tr": "resim", "translation_fa": "تصویر"},
+  {"article": "der", "word": "Spiegel", "translation_ru": "зеркало", "translation_tr": "ayna", "translation_fa": "آینه"},
+  {"article": "der", "word": "Fernseher", "translation_ru": "телевизор", "translation_tr": "televizyon", "translation_fa": "تلویزیون"},
+  {"article": "der", "word": "Computer", "translation_ru": "компьютер", "translation_tr": "bilgisayar", "translation_fa": "کامپیوتر"},
+  {"article": "das", "word": "Telefon", "translation_ru": "телефон", "translation_tr": "telefon", "translation_fa": "تلفن"},
+  {"article": "das", "word": "Buch", "translation_ru": "книга", "translation_tr": "kitap", "translation_fa": "کتاب"},
+  {"article": "der", "word": "Stift", "translation_ru": "ручка, карандаш", "translation_tr": "kalem", "translation_fa": "مداد"},
+  {"article": "der", "word": "Kugelschreiber", "translation_ru": "шариковая ручка", "translation_tr": "tükenmez kalem", "translation_fa": "خودکار"},
+  {"article": "das", "word": "Papier", "translation_ru": "бумага", "translation_tr": "kağıt", "translation_fa": "کاغذ"},
+  {"article": "der", "word": "Brief", "translation_ru": "письмо", "translation_tr": "mektup", "translation_fa": "نامه"},
+  {"article": "der", "word": "Schlüssel", "translation_ru": "ключ", "translation_tr": "anahtar", "translation_fa": "کلید"},
+  {"article": "die", "word": "Tasche", "translation_ru": "сумка", "translation_tr": "çanta", "translation_fa": "کیف"},
+  {"article": "der", "word": "Koffer", "translation_ru": "чемодан", "translation_tr": "bavul", "translation_fa": "چمدان"},
+  {"article": "das", "word": "Geld", "translation_ru": "деньги", "translation_tr": "para", "translation_fa": "پول"},
+  {"article": "die", "word": "Uhr", "translation_ru": "часы", "translation_tr": "saat", "translation_fa": "ساعت"},
+  {"article": "die", "word": "Brille", "translation_ru": "очки", "translation_tr": "gözlük", "translation_fa": "عینک"},
+  {"article": "der", "word": "Schirm", "translation_ru": "зонт", "translation_tr": "şemsiye", "translation_fa": "چتر"},
+  {"article": "das", "word": "Kleid", "translation_ru": "платье", "translation_tr": "elbise", "translation_fa": "لباس"},
+  {"article": "die", "word": "Hose", "translation_ru": "брюки", "translation_tr": "pantolon", "translation_fa": "شلوار"},
+  {"article": "der", "word": "Rock", "translation_ru": "юбка", "translation_tr": "etek", "translation_fa": "دامن"},
+  {"article": "das", "word": "Hemd", "translation_ru": "рубашка", "translation_tr": "gömlek", "translation_fa": "پیراهن"},
+  {"article": "die", "word": "Bluse", "translation_ru": "блузка", "translation_tr": "bluz", "translation_fa": "بلوز"},
+  {"article": "der", "word": "Pullover", "translation_ru": "свитер", "translation_tr": "kazak", "translation_fa": "پلیور"},
+  {"article": "die", "word": "Jacke", "translation_ru": "куртка", "translation_tr": "ceket", "translation_fa": "ژاکت"},
+  {"article": "der", "word": "Mantel", "translation_ru": "пальто", "translation_tr": "palto", "translation_fa": "پالتو"},
+  {"article": "die", "word": "Natur", "translation_ru": "природа", "translation_tr": "doğa", "translation_fa": "طبیعت"},
+  {"article": "der", "word": "Berg", "translation_ru": "гора", "translation_tr": "dağ", "translation_fa": "کوه"},
+  {"article": "der", "word": "Fluss", "translation_ru": "река", "translation_tr": "nehir", "translation_fa": "رودخانه"},
+  {"article": "der", "word": "See", "translation_ru": "озеро", "translation_tr": "göl", "translation_fa": "دریاچه"},
+  {"article": "das", "word": "Meer", "translation_ru": "море", "translation_tr": "deniz", "translation_fa": "دریا"},
+  {"article": "der", "word": "Strand", "translation_ru": "пляж", "translation_tr": "plaj", "translation_fa": "ساحل"},
+  {"article": "der", "word": "Wald", "translation_ru": "лес", "translation_tr": "orman", "translation_fa": "جنگل"},
+  {"article": "der", "word": "Baum", "translation_ru": "дерево", "translation_tr": "ağaç", "translation_fa": "درخت"},
+  {"article": "das", "word": "Gras", "translation_ru": "трава", "translation_tr": "çimen", "translation_fa": "چمن"},
+  {"article": "die", "word": "Blume", "translation_ru": "цветок", "translation_tr": "çiçek", "translation_fa": "گل"},
+  {"article": "das", "word": "Wetter", "translation_ru": "погода", "translation_tr": "hava", "translation_fa": "آب و هوا"},
+  {"article": "die", "word": "Sonne", "translation_ru": "солнце", "translation_tr": "güneş", "translation_fa": "خورشید"},
+  {"article": "der", "word": "Regen", "translation_ru": "дождь", "translation_tr": "yağmur", "translation_fa": "باران"},
+  {"article": "der", "word": "Schnee", "translation_ru": "снег", "translation_tr": "kar", "translation_fa": "برف"},
+  {"article": "der", "word": "Wind", "translation_ru": "ветер", "translation_tr": "rüzgar", "translation_fa": "باد"},
+  {"article": "der", "word": "Sommer", "translation_ru": "лето", "translation_tr": "yaz", "translation_fa": "تابستان"},
+  {"article": "der", "word": "Winter", "translation_ru": "зима", "translation_tr": "kış", "translation_fa": "زمستان"},
+  {"article": "der", "word": "Frühling", "translation_ru": "весна", "translation_tr": "ilkbahar", "translation_fa": "بهار"},
+  {"article": "der", "word": "Herbst", "translation_ru": "осень", "translation_tr": "sonbahar", "translation_fa": "پاییز"},
+  {"article": "die", "word": "Zeit", "translation_ru": "время", "translation_tr": "zaman", "translation_fa": "زمان"},
+  {"article": "die", "word": "Minute", "translation_ru": "минута", "translation_tr": "dakika", "translation_fa": "دقیقه"},
+  {"article": "der", "word": "Tag", "translation_ru": "день", "translation_tr": "gün", "translation_fa": "روز"},
+  {"article": "die", "word": "Nacht", "translation_ru": "ночь", "translation_tr": "gece", "translation_fa": "شب"},
+  {"article": "der", "word": "Morgen", "translation_ru": "утро", "translation_tr": "sabah", "translation_fa": "صبح"},
+  {"article": "der", "word": "Vormittag", "translation_ru": "первая половина дня", "translation_tr": "öğleden önce", "translation_fa": "قبل از ظهر"},
+  {"article": "der", "word": "Mittag", "translation_ru": "полдень", "translation_tr": "öğle", "translation_fa": "ظهر"},
+  {"article": "der", "word": "Nachmittag", "translation_ru": "послеобеденное время", "translation_tr": "öğleden sonra", "translation_fa": "بعد از ظهر"},
+  {"article": "der", "word": "Abend", "translation_ru": "вечер", "translation_tr": "akşam", "translation_fa": "عصر"},
+  {"article": "die", "word": "Woche", "translation_ru": "неделя", "translation_tr": "hafta", "translation_fa": "هفته"},
+  {"article": "das", "word": "Wochenende", "translation_ru": "выходные", "translation_tr": "hafta sonu", "translation_fa": "آخر هفته"},
+  {"article": "der", "word": "Monat", "translation_ru": "месяц", "translation_tr": "ay", "translation_fa": "ماه"},
+  {"article": "das", "word": "Jahr", "translation_ru": "год", "translation_tr": "yıl", "translation_fa": "سال"},
+  {"article": "der", "word": "Urlaub", "translation_ru": "отпуск", "translation_tr": "tatil", "translation_fa": "تعطیلات"},
+  {"article": "der", "word": "Feiertag", "translation_ru": "праздник", "translation_tr": "resmi tatil", "translation_fa": "روز تعطیل"},
+  {"article": "der", "word": "Geburtstag", "translation_ru": "день рождения", "translation_tr": "doğum günü", "translation_fa": "تولد"},
+  {"article": "die", "word": "Party", "translation_ru": "вечеринка", "translation_tr": "parti", "translation_fa": "مهمانی"},
+  {"article": "das", "word": "Fest", "translation_ru": "праздник", "translation_tr": "kutlama", "translation_fa": "جشن"},
+  {"article": "die", "word": "Arbeit", "translation_ru": "работа", "translation_tr": "iş", "translation_fa": "کار"},
+  {"article": "der", "word": "Job", "translation_ru": "работа (неформ.)", "translation_tr": "iş", "translation_fa": "شغل"},
+  {"article": "der", "word": "Sport", "translation_ru": "спорт", "translation_tr": "spor", "translation_fa": "ورزش"},
+  {"article": "das", "word": "Spiel", "translation_ru": "игра", "translation_tr": "oyun", "translation_fa": "بازی"},
+  {"article": "der", "word": "Film", "translation_ru": "фильм", "translation_tr": "film", "translation_fa": "فیلم"},
+  {"article": "die", "word": "Musik", "translation_ru": "музыка", "translation_tr": "müzik", "translation_fa": "موسیقی"},
+  {"article": "die", "word": "Liebe", "translation_ru": "любовь", "translation_tr": "aşk", "translation_fa": "عشق"},
+  {"article": "das", "word": "Glück", "translation_ru": "счастье", "translation_tr": "mutluluk", "translation_fa": "خوشبختی"},
+  {"article": "das", "word": "Problem", "translation_ru": "проблема", "translation_tr": "sorun", "translation_fa": "مشکل"},
+  {"article": "die", "word": "Frage", "translation_ru": "вопрос", "translation_tr": "soru", "translation_fa": "سوال"},
+  {"article": "die", "word": "Antwort", "translation_ru": "ответ", "translation_tr": "cevap", "translation_fa": "پاسخ"},
+  {"article": "das", "word": "Wort", "translation_ru": "слово", "translation_tr": "kelime", "translation_fa": "کلمه"},
+  {"article": "der", "word": "Satz", "translation_ru": "предложение", "translation_tr": "cümle", "translation_fa": "جمله"},
+  {"article": "der", "word": "Text", "translation_ru": "текст", "translation_tr": "metin", "translation_fa": "متن"},
+  {"article": "die", "word": "Sprache", "translation_ru": "язык", "translation_tr": "dil", "translation_fa": "زبان"},
+  {"article": "das", "word": "Deutsch", "translation_ru": "немецкий язык", "translation_tr": "Almanca", "translation_fa": "آلمانی"},
+  {"article": "die", "word": "Grammatik", "translation_ru": "грамматика", "translation_tr": "dilbilgisi", "translation_fa": "دستور زبان"},
+  {"article": "das", "word": "Verb", "translation_ru": "глагол", "translation_tr": "fiil", "translation_fa": "فعل"},
+  {"article": "das", "word": "Nomen", "translation_ru": "существительное", "translation_tr": "isim", "translation_fa": "اسم"},
+  {"article": "das", "word": "Adjektiv", "translation_ru": "прилагательное", "translation_tr": "sıfat", "translation_fa": "صفت"},
+  {"article": "die", "word": "Endung", "translation_ru": "окончание", "translation_tr": "son ek", "translation_fa": "پایان"},
+  {"article": "die", "word": "Übung", "translation_ru": "упражнение", "translation_tr": "alıştırma", "translation_fa": "تمرین"},
+  {"article": "die", "word": "Prüfung", "translation_ru": "экзамен", "translation_tr": "sınav", "translation_fa": "امتحان"},
+  {"article": "der", "word": "Kurs", "translation_ru": "курс", "translation_tr": "kurs", "translation_fa": "دوره"},
+  {"article": "die", "word": "Lösung", "translation_ru": "решение", "translation_tr": "çözüm", "translation_fa": "راه حل"},
+  {"article": "die", "word": "Information", "translation_ru": "информация", "translation_tr": "bilgi", "translation_fa": "اطلاعات"},
+  {"article": "die", "word": "Geschichte", "translation_ru": "история, рассказ", "translation_tr": "tarih, hikaye", "translation_fa": "تاریخ, داستان"},
+  {"article": "das", "word": "Märchen", "translation_ru": "сказка", "translation_tr": "masal", "translation_fa": "افسانه"},
+  {"article": "die", "word": "Möglichkeit", "translation_ru": "возможность", "translation_tr": "olasılık", "translation_fa": "امکان"},
+  {"article": "der", "word": "Wunsch", "translation_ru": "желание", "translation_tr": "dilek", "translation_fa": "آرزو"},
+  {"article": "der", "word": "Traum", "translation_ru": "мечта", "translation_tr": "rüya", "translation_fa": "رویا"},
+  {"article": "der", "word": "Spaß", "translation_ru": "удовольствие", "translation_tr": "eğlence", "translation_fa": "سرگرمی"},
+  {"article": "der", "word": "Stress", "translation_ru": "стресс", "translation_tr": "stres", "translation_fa": "استرس"},
+  {"article": "die", "word": "Meinung", "translation_ru": "мнение", "translation_tr": "görüş", "translation_fa": "نظر"},
+  {"article": "das", "word": "Beispiel", "translation_ru": "пример", "translation_tr": "örnek", "translation_fa": "مثال"},
+  {"article": "das", "word": "Gefühl", "translation_ru": "чувство", "translation_tr": "duygu", "translation_fa": "احساس"},
+  {"article": "das", "word": "Internet", "translation_ru": "интернет", "translation_tr": "internet", "translation_fa": "اینترنت"},
+  {"article": "die", "word": "App", "translation_ru": "приложение", "translation_tr": "uygulama", "translation_fa": "اپلیکیشن"},
+  {"article": "das", "word": "Deutschland", "translation_ru": "Германия", "translation_tr": "Almanya", "translation_fa": "آلمان"},
+  {"article": "die", "word": "Schweiz", "translation_ru": "Швейцария", "translation_tr": "İsviçre", "translation_fa": "سوئیس"},
+  {"article": "das", "word": "Österreich", "translation_ru": "Австрия", "translation_tr": "Avusturya", "translation_fa": "اتریش"},
+  {"article": "das", "word": "Italien", "translation_ru": "Италия", "translation_tr": "İtalya", "translation_fa": "ایتالیا"},
+  {"article": "das", "word": "Spanien", "translation_ru": "Испания", "translation_tr": "İspanya", "translation_fa": "اسپانیا"},
+  {"article": "die", "word": "Türkei", "translation_ru": "Турция", "translation_tr": "Türkiye", "translation_fa": "ترکیه"},
+  {"article": "die", "word": "USA", "translation_ru": "США", "translation_tr": "ABD", "translation_fa": "آمریکا"},
+  {"article": "das", "word": "Polen", "translation_ru": "Польша", "translation_tr": "Polonya", "translation_fa": "لهستان"},
+  {"article": "das", "word": "Russland", "translation_ru": "Россия", "translation_tr": "Rusya", "translation_fa": "روسیه"},
+  {"article": "das", "word": "China", "translation_ru": "Китай", "translation_tr": "Çin", "translation_fa": "چین"}
+];
+
+// Словарь БЕЗ АРТИКЛЕЙ
+const wordDictionaryWithoutArticles = [
+  {"word": "heiraten", "translation_ru": "жениться/выходить замуж", "translation_tr": "evlenmek", "translation_fa": "ازدواج کردن"},
+  {"word": "romantisch", "translation_ru": "романтичный", "translation_tr": "romantik", "translation_fa": "رمانتیک"},
+  {"word": "abschließen", "translation_ru": "завершать", "translation_tr": "tamamlamak", "translation_fa": "تمام کردن"},
+  {"word": "abgeschlossen", "translation_ru": "завершенный", "translation_tr": "tamamlanmış", "translation_fa": "تمام شده"},
+  {"word": "anmelden", "translation_ru": "регистрироваться", "translation_tr": "kaydolmak", "translation_fa": "ثبت نام کردن"},
+  {"word": "teilnehmen", "translation_ru": "участвовать", "translation_tr": "katılmak", "translation_fa": "شرکت کردن"},
+  {"word": "organisieren", "translation_ru": "организовывать", "translation_tr": "organize etmek", "translation_fa": "سازماندهی کردن"},
+  {"word": "Biologie", "translation_ru": "биология", "translation_tr": "biyoloji", "translation_fa": "زیست شناسی"},
+  {"word": "Mathematik", "translation_ru": "математика", "translation_tr": "matematik", "translation_fa": "ریاضیات"},
+  {"word": "mieten", "translation_ru": "арендовать", "translation_tr": "kiralamak", "translation_fa": "اجاره کردن"},
+  {"word": "renovieren", "translation_ru": "ремонтировать", "translation_tr": "yenilemek", "translation_fa": "نوسازی کردن"},
+  {"word": "wohnen", "translation_ru": "жить", "translation_tr": "yaşamak", "translation_fa": "زندگی کردن"},
+  {"word": "auf dem Land leben", "translation_ru": "жить в деревне", "translation_tr": "kırsalda yaşamak", "translation_fa": "در روستا زندگی کردن"},
+  {"word": "weitersuchen", "translation_ru": "продолжать искать", "translation_tr": "aramaya devam etmek", "translation_fa": "ادامه جستجو"},
+  {"word": "zusammenleben", "translation_ru": "жить вместе", "translation_tr": "birlikte yaşamak", "translation_fa": "با هم زندگی کردن"},
+  {"word": "schlagen", "translation_ru": "бить, предлагать", "translation_tr": "vurmak, önermek", "translation_fa": "زدن, پیشنهاد دادن"},
+  {"word": "vorschlagen", "translation_ru": "предлагать", "translation_tr": "önermek", "translation_fa": "پیشنهاد دادن"},
+  {"word": "vorgeschlagen", "translation_ru": "предложенный", "translation_tr": "önerilmiş", "translation_fa": "پیشنهاد شده"},
+  {"word": "vorhaben", "translation_ru": "планировать", "translation_tr": "planlamak", "translation_fa": "قصد داشتن"},
+  {"word": "absagen", "translation_ru": "отменять", "translation_tr": "iptal etmek", "translation_fa": "لغو کردن"},
+  {"word": "zusagen", "translation_ru": "соглашаться", "translation_tr": "kabul etmek", "translation_fa": "قبول کردن"},
+  {"word": "einverstanden sein", "translation_ru": "быть согласным", "translation_tr": "kabul etmek", "translation_fa": "موافق بودن"},
+  {"word": "einen Plan ändern", "translation_ru": "изменить план", "translation_tr": "bir planı değiştirmek", "translation_fa": "تغییر برنامه"},
+  {"word": "gemeinsam", "translation_ru": "вместе", "translation_tr": "birlikte", "translation_fa": "با هم"},
+  {"word": "liegen", "translation_ru": "лежать", "translation_tr": "yatmak", "translation_fa": "دراز کشیدن"},
+  {"word": "reiten", "translation_ru": "ездить верхом", "translation_tr": "binmek", "translation_fa": "سوارکاری کردن"},
+  {"word": "spannend", "translation_ru": "захватывающий", "translation_tr": "heyecan verici", "translation_fa": "هیجان انگیز"},
+  {"word": "empfangen", "translation_ru": "принимать", "translation_tr": "karşılamak", "translation_fa": "استقبال کردن"},
+  {"word": "informieren", "translation_ru": "информировать", "translation_tr": "bilgilendirmek", "translation_fa": "اطلاع دادن"},
+  {"word": "auswählen", "translation_ru": "выбирать", "translation_tr": "seçmek", "translation_fa": "انتخاب کردن"},
+  {"word": "spätestens", "translation_ru": "самое позднее", "translation_tr": "en geç", "translation_fa": "حداکثر"},
+  {"word": "bitter", "translation_ru": "горький", "translation_tr": "acı", "translation_fa": "تلخ"},
+  {"word": "salzig", "translation_ru": "соленый", "translation_tr": "tuzlu", "translation_fa": "شور"},
+  {"word": "sauer", "translation_ru": "кислый", "translation_tr": "ekşi", "translation_fa": "ترش"},
+  {"word": "scharf", "translation_ru": "острый", "translation_tr": "keskin", "translation_fa": "تند"},
+  {"word": "weiterhelfen", "translation_ru": "помогать дальше", "translation_tr": "yardım etmek", "translation_fa": "کمک کردن"},
+  {"word": "aus sein", "translation_ru": "быть выключенным", "translation_tr": "kapalı olmak", "translation_fa": "خاموش بودن"},
+  {"word": "fühlen", "translation_ru": "чувствовать", "translation_tr": "hissetmek", "translation_fa": "احساس کردن"},
+  {"word": "zuhören", "translation_ru": "слушать", "translation_tr": "dinlemek", "translation_fa": "گوش دادن"},
+  {"word": "fast", "translation_ru": "почти", "translation_tr": "neredeyse", "translation_fa": "تقریبا"},
+  {"word": "also", "translation_ru": "итак", "translation_tr": "yani", "translation_fa": "بنابراین"},
+  {"word": "fließend", "translation_ru": "бегло", "translation_tr": "akıcı", "translation_fa": "روان"},
+  {"word": "eine Sprache fließend sprechen", "translation_ru": "говорить на языке бегло", "translation_tr": "bir dili akıcı konuşmak", "translation_fa": "صحبت روان به یک زبان"},
+  {"word": "begründen", "translation_ru": "обосновывать", "translation_tr": "açıklamak", "translation_fa": "توجیه کردن"},
+  {"word": "rufen", "translation_ru": "звать", "translation_tr": "çağırmak", "translation_fa": "صدا زدن"},
+  {"word": "ganz", "translation_ru": "совсем", "translation_tr": "tamamen", "translation_fa": "کاملا"},
+  {"word": "Mal sehen", "translation_ru": "посмотрим", "translation_tr": "bakalım", "translation_fa": "ببینیم"},
+  {"word": "weil", "translation_ru": "потому что", "translation_tr": "çünkü", "translation_fa": "چون"},
+  {"word": "üben", "translation_ru": "тренировать", "translation_tr": "pratik yapmak", "translation_fa": "تمرین کردن"},
+  {"word": "streng", "translation_ru": "строгий", "translation_tr": "sıkı", "translation_fa": "سختگیر"},
+  {"word": "jobben", "translation_ru": "подрабатывать", "translation_tr": "ek iş yapmak", "translation_fa": "کار پاره وقت کردن"},
+  {"word": "Lieblings-", "translation_ru": "любимый", "translation_tr": "favori", "translation_fa": "مورد علاقه"},
+  {"word": "Chemie", "translation_ru": "химия", "translation_tr": "kimya", "translation_fa": "شیمی"},
+  {"word": "Geografie", "translation_ru": "география", "translation_tr": "coğrafya", "translation_fa": "جغرافیا"},
+  {"word": "Geschichte", "translation_ru": "история", "translation_tr": "tarih", "translation_fa": "تاریخ"},
+  {"word": "Informatik", "translation_ru": "информатика", "translation_tr": "bilişim", "translation_fa": "علوم کامپیوتر"},
+  {"word": "Latein", "translation_ru": "латынь", "translation_tr": "Latince", "translation_fa": "لاتین"},
+  {"word": "Kunst", "translation_ru": "искусство", "translation_tr": "sanat", "translation_fa": "هنر"},
+  {"word": "Physik", "translation_ru": "физика", "translation_tr": "fizik", "translation_fa": "فیزیک"},
+  {"word": "Sozialkunde", "translation_ru": "обществознание", "translation_tr": "sosyal bilgiler", "translation_fa": "علوم اجتماعی"},
+  {"word": "Jura", "translation_ru": "юриспруденция", "translation_tr": "hukuk", "translation_fa": "حقوق"},
+  {"word": "Medizin", "translation_ru": "медицина", "translation_tr": "tıp", "translation_fa": "پزشکی"},
+  {"word": "ablehnen", "translation_ru": "отклонять", "translation_tr": "reddetmek", "translation_fa": "رد کردن"},
+  {"word": "zustimmen", "translation_ru": "соглашаться", "translation_tr": "katılmak", "translation_fa": "موافقت کردن"},
+  {"word": "nützlich", "translation_ru": "полезный", "translation_tr": "yararlı", "translation_fa": "مفید"},
+  {"word": "witzig", "translation_ru": "смешной", "translation_tr": "komik", "translation_fa": "خنده دار"},
+  {"word": "schlecht", "translation_ru": "плохой", "translation_tr": "kötü", "translation_fa": "بد"},
+  {"word": "wütend", "translation_ru": "злой", "translation_tr": "kızgın", "translation_fa": "عصبانی"},
+  {"word": "Das sehe ich anders", "translation_ru": "Я вижу это иначе", "translation_tr": "Bunu farklı görüyorum", "translation_fa": "من این را متفاوت می بینم"},
+  {"word": "Das war bei mir auch so", "translation_ru": "У меня тоже так было", "translation_tr": "Benim için de öyleydi", "translation_fa": "برای من هم همینطور بود"},
+  {"word": "überraschen", "translation_ru": "удивлять", "translation_tr": "şaşırtmak", "translation_fa": "غافلگیر کردن"},
+  {"word": "interessant sein", "translation_ru": "быть интересным", "translation_tr": "ilginç olmak", "translation_fa": "جالب بودن"},
+  {"word": "wahrscheinlich", "translation_ru": "вероятно", "translation_tr": "muhtemelen", "translation_fa": "احتمالا"},
+  {"word": "wenigstens", "translation_ru": "по крайней мере", "translation_tr": "en azından", "translation_fa": "حداقل"},
+  {"word": "ziemlich", "translation_ru": "довольно", "translation_tr": "oldukça", "translation_fa": "نسبتا"},
+  {"word": "zum Beispiel", "translation_ru": "например", "translation_tr": "örneğin", "translation_fa": "مثلا"},
+  {"word": "ausschlafen", "translation_ru": "высыпаться", "translation_tr": "uykusunu almak", "translation_fa": "خواب کافی"},
+  {"word": "ehrlich", "translation_ru": "честный", "translation_tr": "dürüst", "translation_fa": "صادق"},
+  {"word": "erwachsen", "translation_ru": "взрослый", "translation_tr": "yetişkin", "translation_fa": "بالغ"},
+  {"word": "unabhängig", "translation_ru": "независимый", "translation_tr": "bağımsız", "translation_fa": "مستقل"},
+  {"word": "sozial", "translation_ru": "социальный", "translation_tr": "sosyal", "translation_fa": "اجتماعی"},
+  {"word": "heute", "translation_ru": "сегодня", "translation_tr": "bugün", "translation_fa": "امروز"},
+  {"word": "erst mal", "translation_ru": "сначала", "translation_tr": "önce", "translation_fa": "اول"},
+  {"word": "ein paar", "translation_ru": "несколько", "translation_tr": "birkaç", "translation_fa": "چند تا"},
+  {"word": "verlieren", "translation_ru": "терять", "translation_tr": "kaybetmek", "translation_fa": "گم کردن"},
+  {"word": "zwei", "translation_ru": "два", "translation_tr": "iki", "translation_fa": "دو"},
+  {"word": "anklicken", "translation_ru": "щелкнуть", "translation_tr": "tıklamak", "translation_fa": "کلیک کردن"},
+  {"word": "tippen", "translation_ru": "печатать", "translation_tr": "yazmak", "translation_fa": "تایپ کردن"},
+  {"word": "checken", "translation_ru": "проверять", "translation_tr": "kontrol etmek", "translation_fa": "چک کردن"},
+  {"word": "downloaden", "translation_ru": "скачивать", "translation_tr": "indirmek", "translation_fa": "دانلود کردن"},
+  {"word": "herunterladen", "translation_ru": "скачивать", "translation_tr": "indirmek", "translation_fa": "دانلود کردن"},
+  {"word": "hochladen", "translation_ru": "загружать", "translation_tr": "yüklemek", "translation_fa": "آپلود کردن"},
+  {"word": "kopieren", "translation_ru": "копировать", "translation_tr": "kopyalamak", "translation_fa": "کپی کردن"},
+  {"word": "löschen", "translation_ru": "удалять", "translation_tr": "silmek", "translation_fa": "پاک کردن"},
+  {"word": "mailen", "translation_ru": "отправлять по почте", "translation_tr": "e-posta göndermek", "translation_fa": "ایمیل فرستادن"},
+  {"word": "senden", "translation_ru": "отправлять", "translation_tr": "göndermek", "translation_fa": "فرستادن"},
+  {"word": "weiterleiten", "translation_ru": "пересылать", "translation_tr": "iletmek", "translation_fa": "ارسال کردن"},
+  {"word": "chatten", "translation_ru": "общаться в чате", "translation_tr": "sohbet etmek", "translation_fa": "چت کردن"},
+  {"word": "posten", "translation_ru": "публиковать", "translation_tr": "paylaşmak", "translation_fa": "پست کردن"},
+  {"word": "teilen", "translation_ru": "делиться", "translation_tr": "paylaşmak", "translation_fa": "اشتراک گذاری"},
+  {"word": "Fotos teilen", "translation_ru": "делиться фото", "translation_tr": "fotoğraf paylaşmak", "translation_fa": "اشتراک عکس"},
+  {"word": "leicht", "translation_ru": "легкий", "translation_tr": "hafif", "translation_fa": "سبک"},
+  {"word": "schwer", "translation_ru": "тяжелый", "translation_tr": "ağır", "translation_fa": "سنگین"},
+  {"word": "so ... wie", "translation_ru": "так же как", "translation_tr": "gibi", "translation_fa": "مانند"},
+  {"word": "genauso ... wie", "translation_ru": "точно так же как", "translation_tr": "tıpkı ... gibi", "translation_fa": "دقیقا مانند"},
+  {"word": "gründen", "translation_ru": "основывать", "translation_tr": "kurmak", "translation_fa": "تاسیس کردن"},
+  {"word": "studieren", "translation_ru": "учиться", "translation_tr": "okumak", "translation_fa": "تحصیل کردن"},
+  {"word": "entwickeln", "translation_ru": "разрабатывать", "translation_tr": "geliştirmek", "translation_fa": "توسعه دادن"},
+  {"word": "programmieren", "translation_ru": "программировать", "translation_tr": "programlamak", "translation_fa": "برنامه نویسی کردن"},
+  {"word": "Worum geht es im Film?", "translation_ru": "О чем фильм?", "translation_tr": "Film ne hakkında?", "translation_fa": "فیلم درباره چیست؟"},
+  {"word": "Berlin", "translation_ru": "Берлин", "translation_tr": "Berlin", "translation_fa": "برلین"},
+  {"word": "einfach", "translation_ru": "просто", "translation_tr": "basit", "translation_fa": "ساده"},
+  {"word": "logisch", "translation_ru": "логичный", "translation_tr": "mantıklı", "translation_fa": "منطقی"},
+  {"word": "real", "translation_ru": "реальный", "translation_tr": "gerçek", "translation_fa": "واقعی"},
+  {"word": "fröhlich", "translation_ru": "веселый", "translation_tr": "neşeli", "translation_fa": "شاد"},
+  {"word": "nah", "translation_ru": "близкий", "translation_tr": "yakın", "translation_fa": "نزدیک"},
+  {"word": "schwierig", "translation_ru": "трудный", "translation_tr": "zor", "translation_fa": "سخت"},
+  {"word": "still", "translation_ru": "тихий", "translation_tr": "sessiz", "translation_fa": "ساکت"},
+  {"word": "vorsichtig", "translation_ru": "осторожный", "translation_tr": "dikkatli", "translation_fa": "محتاط"},
+  {"word": "manche", "translation_ru": "некоторые", "translation_tr": "bazı", "translation_fa": "بعضی"},
+  {"word": "mehrmals", "translation_ru": "несколько раз", "translation_tr": "birkaç kez", "translation_fa": "چند بار"},
+  {"word": "plötzlich", "translation_ru": "вдруг", "translation_tr": "aniden", "translation_fa": "ناگهان"},
+  {"word": "überhaupt", "translation_ru": "вообще", "translation_tr": "hiç", "translation_fa": "اصلا"},
+  {"word": "unbedingt", "translation_ru": "обязательно", "translation_tr": "kesinlikle", "translation_fa": "حتما"},
+  {"word": "zuletzt", "translation_ru": "в последний раз", "translation_tr": "son olarak", "translation_fa": "آخرین بار"},
+  {"word": "ausprobieren", "translation_ru": "пробовать", "translation_tr": "denemek", "translation_fa": "امتحان کردن"},
+  {"word": "gewinnen", "translation_ru": "выигрывать", "translation_tr": "kazanmak", "translation_fa": "بردن"},
+  {"word": "lachen", "translation_ru": "смеяться", "translation_tr": "gülmek", "translation_fa": "خندیدن"},
+  {"word": "weinen", "translation_ru": "плакать", "translation_tr": "ağlamak", "translation_fa": "گریه کردن"},
+  {"word": "flüstern", "translation_ru": "шептать", "translation_tr": "fısıldamak", "translation_fa": "پچپچ کردن"},
+  {"word": "dümmer", "translation_ru": "глупее", "translation_tr": "daha aptal", "translation_fa": "احمقانه تر"},
+  {"word": "bestehen", "translation_ru": "сдавать экзамен", "translation_tr": "geçmek", "translation_fa": "قبول شدن"},
+  {"word": "dabei sein", "translation_ru": "присутствовать", "translation_tr": "orada olmak", "translation_fa": "حاضر بودن"},
+  {"word": "keine Ahnung haben", "translation_ru": "не иметь понятия", "translation_tr": "hiçbir fikri olmamak", "translation_fa": "هیچ ایده ای نداشتن"},
+  {"word": "sich wohlfühlen", "translation_ru": "чувствовать себя хорошо", "translation_tr": "iyi hissetmek", "translation_fa": "احساس خوب داشتن"},
+  {"word": "froh", "translation_ru": "радостный", "translation_tr": "mutlu", "translation_fa": "خوشحال"},
+  {"word": "glücklich", "translation_ru": "счастливый", "translation_tr": "mutlu", "translation_fa": "خوشبخت"},
+  {"word": "So ein Glück!", "translation_ru": "Какая удача!", "translation_tr": "Ne şans!", "translation_fa": "چه خوش شانسی!"},
+  {"word": "sich ärgern", "translation_ru": "злиться", "translation_tr": "sinirlenmek", "translation_fa": "عصبانی شدن"},
+  {"word": "streiten", "translation_ru": "спорить", "translation_tr": "tartışmak", "translation_fa": "بحث کردن"},
+  {"word": "Schade!", "translation_ru": "Жаль!", "translation_tr": "Yazık!", "translation_fa": "افسوس!"},
+  {"word": "Das macht nichts", "translation_ru": "Ничего страшного", "translation_tr": "Önemli değil", "translation_fa": "مهم نیست"},
+  {"word": "Es geht schon wieder", "translation_ru": "Уже проходит", "translation_tr": "Zaten geçiyor", "translation_fa": "در حال گذشتن است"},
+  {"word": "Es ist alles okay", "translation_ru": "Все в порядке", "translation_tr": "Her şey yolunda", "translation_fa": "همه چیز خوب است"},
+  {"word": "gratulieren", "translation_ru": "поздравлять", "translation_tr": "tebrik etmek", "translation_fa": "تبریک گفتن"},
+  {"word": "Wie schön, wir gratulieren!", "translation_ru": "Как прекрасно, мы поздравляем!", "translation_tr": "Ne güzel, tebrik ederiz!", "translation_fa": "چه خوب، تبریک می گوییم!"},
+  {"word": "Alles Gute!", "translation_ru": "Всего наилучшего!", "translation_tr": "Her şey gönlünce olsun!", "translation_fa": "همه چیز خوب!"},
+  {"word": "sich bedanken", "translation_ru": "благодарить", "translation_tr": "teşekkür etmek", "translation_fa": "تشکر کردن"},
+  {"word": "stehen", "translation_ru": "стоять, быть написанным", "translation_tr": "durmak, yazılı olmak", "translation_fa": "ایستادن, نوشته شده"},
+  {"word": "Angst haben", "translation_ru": "бояться", "translation_tr": "korkmak", "translation_fa": "ترسیدن"},
+  {"word": "sich langweilen", "translation_ru": "скучать", "translation_tr": "sıkılmak", "translation_fa": "حوصله سر رفتن"},
+  {"word": "aufregend", "translation_ru": "волнующий", "translation_tr": "heyecan verici", "translation_fa": "هیجان انگیز"},
+  {"word": "aufgeregt sein", "translation_ru": "быть взволнованным", "translation_tr": "heyecanlı olmak", "translation_fa": "هیجان زده بودن"},
+  {"word": "genervt", "translation_ru": "раздраженный", "translation_tr": "sinirli", "translation_fa": "عصبانی"},
+  {"word": "gestresst", "translation_ru": "напряженный", "translation_tr": "stresli", "translation_fa": "پر استرس"},
+  {"word": "nervös", "translation_ru": "нервный", "translation_tr": "gergin", "translation_fa": "عصبی"},
+  {"word": "schlimm", "translation_ru": "плохой", "translation_tr": "kötü", "translation_fa": "بد"},
+  {"word": "traurig", "translation_ru": "грустный", "translation_tr": "üzgün", "translation_fa": "غمگین"},
+  {"word": "stolz", "translation_ru": "гордый", "translation_tr": "gururlu", "translation_fa": "مغرور"},
+  {"word": "unangenehm", "translation_ru": "неприятный", "translation_tr": "rahatsız edici", "translation_fa": "ناخوشایند"},
+  {"word": "unglücklich", "translation_ru": "несчастный", "translation_tr": "mutsuz", "translation_fa": "ناراحت"},
+  {"word": "sich erinnern", "translation_ru": "вспоминать", "translation_tr": "hatırlamak", "translation_fa": "یاد آوردن"},
+  {"word": "sich gewöhnen", "translation_ru": "привыкать", "translation_tr": "alışmak", "translation_fa": "عادت کردن"},
+  {"word": "sich austauschen", "translation_ru": "обмениваться", "translation_tr": "değiş tokuş etmek", "translation_fa": "تبادل کردن"},
+  {"word": "fallen", "translation_ru": "падать", "translation_tr": "düşmek", "translation_fa": "افتادن"},
+  {"word": "gefallen", "translation_ru": "нравиться", "translation_tr": "beğenmek", "translation_fa": "پسندیدن"},
+  {"word": "sich unterhalten", "translation_ru": "разговаривать", "translation_tr": "sohbet etmek", "translation_fa": "صحبت کردن"},
+  {"word": "anbieten", "translation_ru": "предлагать", "translation_tr": "teklif etmek", "translation_fa": "پیشنهاد دادن"},
+  {"word": "sich ausruhen", "translation_ru": "отдыхать", "translation_tr": "dinlenmek", "translation_fa": "استراحت کردن"},
+  {"word": "aussprechen", "translation_ru": "произносить", "translation_tr": "telaffuz etmek", "translation_fa": "تلفظ کردن"},
+  {"word": "bewundern", "translation_ru": "восхищаться", "translation_tr": "hayran olmak", "translation_fa": "تحسین کردن"},
+  {"word": "sich entscheiden", "translation_ru": "решать", "translation_tr": "karar vermek", "translation_fa": "تصمیم گرفتن"},
+  {"word": "wegfahren", "translation_ru": "уезжать", "translation_tr": "yola çıkmak", "translation_fa": "رفتن"},
+  {"word": "außerdem", "translation_ru": "кроме того", "translation_tr": "ayrıca", "translation_fa": "علاوه بر این"},
+  {"word": "inzwischen", "translation_ru": "тем временем", "translation_tr": "bu arada", "translation_fa": "در این میان"},
+  {"word": "Frühjahr", "translation_ru": "весна", "translation_tr": "ilkbahar", "translation_fa": "بهار"},
+  {"word": "Zukunft", "translation_ru": "будущее", "translation_tr": "gelecek", "translation_fa": "آینده"},
+  {"word": "Gegenteil", "translation_ru": "противоположность", "translation_tr": "tersi", "translation_fa": "مخالف"},
+  {"word": "Wohnheim", "translation_ru": "общежитие", "translation_tr": "yurt", "translation_fa": "خوابگاه"},
+  {"word": "Verkehr", "translation_ru": "движение", "translation_tr": "trafik", "translation_fa": "ترافیک"},
+  {"word": "verspätet", "translation_ru": "запоздалый", "translation_tr": "gecikmiş", "translation_fa": "تاخیر داشته"},
+  {"word": "Währung", "translation_ru": "валюта", "translation_tr": "para birimi", "translation_fa": "ارز"},
+  {"word": "kostenlos", "translation_ru": "бесплатный", "translation_tr": "ücretsiz", "translation_fa": "رایگان"},
+  {"word": "niemand", "translation_ru": "никто", "translation_tr": "hiç kimse", "translation_fa": "هیچکس"},
+  {"word": "nirgends", "translation_ru": "нигде", "translation_tr": "hiçbir yerde", "translation_fa": "هیچجا"},
+  {"word": "hilfsbereit", "translation_ru": "готовый помочь", "translation_tr": "yardımsever", "translation_fa": "کمک رسان"},
+  {"word": "ordentlich", "translation_ru": "аккуратный", "translation_tr": "düzenli", "translation_fa": "منظم"},
+  {"word": "wahr", "translation_ru": "правдивый", "translation_tr": "gerçek", "translation_fa": "واقعی"},
+  {"word": "weltweit", "translation_ru": "всемирный", "translation_tr": "dünya çapında", "translation_fa": "در سراسر جهان"},
+  {"word": "wenn ... dann", "translation_ru": "если ... то", "translation_tr": "eğer ... o zaman", "translation_fa": "اگر ... پس"},
+  {"word": "Verkehrsmittel", "translation_ru": "транспортное средство", "translation_tr": "ulaşım aracı", "translation_fa": "وسیله نقلیه"},
+  {"word": "öffentlich", "translation_ru": "общественный", "translation_tr": "kamusal", "translation_fa": "عمومی"},
+  {"word": "Fahrer", "translation_ru": "водитель", "translation_tr": "sürücü", "translation_fa": "راننده"},
+  {"word": "Fahrerin", "translation_ru": "водитель (ж)", "translation_tr": "kadın sürücü", "translation_fa": "راننده زن"},
+  {"word": "transportieren", "translation_ru": "транспортировать", "translation_tr": "taşımak", "translation_fa": "حمل کردن"},
+  {"word": "Schutz", "translation_ru": "защита", "translation_tr": "koruma", "translation_fa": "محافظت"},
+  {"word": "Feuerwehr", "translation_ru": "пожарная охрана", "translation_tr": "itfaiye", "translation_fa": "آتش نشانی"},
+  {"word": "Sicherheit", "translation_ru": "безопасность", "translation_tr": "güvenlik", "translation_fa": "امنیت"},
+  {"word": "sich kümmern", "translation_ru": "заботиться", "translation_tr": "ilgilenmek", "translation_fa": "مراقبت کردن"},
+  {"word": "Operation", "translation_ru": "операция", "translation_tr": "ameliyat", "translation_fa": "عمل"},
+  {"word": "Organisation", "translation_ru": "организация", "translation_tr": "organizasyon", "translation_fa": "سازمان"},
+  {"word": "Müll", "translation_ru": "мусор", "translation_tr": "çöp", "translation_fa": "زباله"},
+  {"word": "Müllabfuhr", "translation_ru": "вывоз мусора", "translation_tr": "çöp toplama", "translation_fa": "جمع آوری زباله"},
+  {"word": "Aushilfe", "translation_ru": "помощник", "translation_tr": "yardımcı", "translation_fa": "کمک"},
+  {"word": "bedienen", "translation_ru": "обслуживать", "translation_tr": "servis yapmak", "translation_fa": "سرویس دادن"},
+  {"word": "servieren", "translation_ru": "подавать", "translation_tr": "servis etmek", "translation_fa": "سرو کردن"},
+  {"word": "Zutat", "translation_ru": "ингредиент", "translation_tr": "malzeme", "translation_fa": "ماده تشکیل دهنده"},
+  {"word": "Amt", "translation_ru": "учреждение", "translation_tr": "ofis", "translation_fa": "اداره"},
+  {"word": "Behörde", "translation_ru": "ведомство", "translation_tr": "kurum", "translation_fa": "سازمان"},
+  {"word": "Beamte", "translation_ru": "чиновник", "translation_tr": "memur", "translation_fa": "مامور"},
+  {"word": "Beamtin", "translation_ru": "чиновница", "translation_tr": "kadın memur", "translation_fa": "مامور زن"},
+  {"word": "erledigen", "translation_ru": "выполнять", "translation_tr": "halletmek", "translation_fa": "انجام دادن"},
+  {"word": "ausfüllen", "translation_ru": "заполнять", "translation_tr": "doldurmak", "translation_fa": "پر کردن"},
+  {"word": "Antrag", "translation_ru": "заявление", "translation_tr": "başvuru", "translation_fa": "درخواست"},
+  {"word": "genehmigen", "translation_ru": "утверждать", "translation_tr": "onaylamak", "translation_fa": "تایید کردن"},
+  {"word": "Dokument", "translation_ru": "документ", "translation_tr": "belge", "translation_fa": "سند"},
+  {"word": "abgeben", "translation_ru": "сдавать", "translation_tr": "teslim etmek", "translation_fa": "تحویل دادن"},
+  {"word": "beantragen", "translation_ru": "подавать заявление", "translation_tr": "talep etmek", "translation_fa": "درخواست دادن"},
+  {"word": "verlängern", "translation_ru": "продлевать", "translation_tr": "uzatmak", "translation_fa": "تمدید کردن"},
+  {"word": "Visum", "translation_ru": "виза", "translation_tr": "vize", "translation_fa": "ویزا"},
+  {"word": "gültig", "translation_ru": "действительный", "translation_tr": "geçerli", "translation_fa": "معتبر"},
+  {"word": "Grenze", "translation_ru": "граница", "translation_tr": "sınır", "translation_fa": "مرز"},
+  {"word": "Angestellte", "translation_ru": "служащий", "translation_tr": "çalışan", "translation_fa": "کارمند"},
+  {"word": "abheben", "translation_ru": "снимать деньги", "translation_tr": "para çekmek", "translation_fa": "پول برداشت کردن"},
+  {"word": "Betrag", "translation_ru": "сумма", "translation_tr": "tutar", "translation_fa": "مبلغ"},
+  {"word": "überweisen", "translation_ru": "переводить", "translation_tr": "havale etmek", "translation_fa": "حواله کردن"},
+  {"word": "ausgeben", "translation_ru": "тратить", "translation_tr": "harcamak", "translation_fa": "خرج کردن"},
+  {"word": "sperren", "translation_ru": "блокировать", "translation_tr": "bloke etmek", "translation_fa": "مسدود کردن"},
+  {"word": "Kredit", "translation_ru": "кредит", "translation_tr": "kredi", "translation_fa": "وام"},
+  {"word": "Geldbörse", "translation_ru": "кошелек", "translation_tr": "cüzdan", "translation_fa": "کیف پول"},
+  {"word": "Diebstahl", "translation_ru": "кража", "translation_tr": "hırsızlık", "translation_fa": "دزدی"},
+  {"word": "melden", "translation_ru": "сообщать", "translation_tr": "bildirmek", "translation_fa": "گزارش دادن"},
+  {"word": "weg sein", "translation_ru": "исчезнуть", "translation_tr": "yok olmak", "translation_fa": "رفتن"},
+  {"word": "bitten", "translation_ru": "просить", "translation_tr": "rica etmek", "translation_fa": "درخواست کردن"},
+  {"word": "dringend", "translation_ru": "срочно", "translation_tr": "acil", "translation_fa": "فوری"},
+  {"word": "drücken", "translation_ru": "нажимать", "translation_tr": "basmak", "translation_fa": "فشار دادن"},
+  {"word": "bunt", "translation_ru": "разноцветный", "translation_tr": "renkli", "translation_fa": "رنگی"},
+  {"word": "modern", "translation_ru": "современный", "translation_tr": "modern", "translation_fa": "مدرن"},
+  {"word": "funktionieren", "translation_ru": "функционировать", "translation_tr": "çalışmak", "translation_fa": "کار کردن"},
+  {"word": "neben", "translation_ru": "рядом", "translation_tr": "yanında", "translation_fa": "کنار"},
+  {"word": "über", "translation_ru": "над", "translation_tr": "üzerinde", "translation_fa": "روی"},
+  {"word": "vorstellen", "translation_ru": "представлять", "translation_tr": "hayal etmek", "translation_fa": "تصور کردن"},
+  {"word": "preiswert", "translation_ru": "недорогой", "translation_tr": "ucuz", "translation_fa": "ارزان"},
+  {"word": "fantastisch", "translation_ru": "фантастический", "translation_tr": "fantastik", "translation_fa": "فوق العاده"},
+  {"word": "sich verändern", "translation_ru": "меняться", "translation_tr": "değişmek", "translation_fa": "تغییر کردن"},
+  {"word": "virtuell", "translation_ru": "виртуальный", "translation_tr": "sanal", "translation_fa": "مجازی"},
+  {"word": "erreichbar", "translation_ru": "доступный", "translation_tr": "ulaşılabilir", "translation_fa": "در دسترس"},
+  {"word": "zunehmen", "translation_ru": "увеличиваться", "translation_tr": "artmak", "translation_fa": "افزایش یافتن"},
+  {"word": "mithelfen", "translation_ru": "помогать", "translation_tr": "yardım etmek", "translation_fa": "کمک کردن"},
+  {"word": "fest", "translation_ru": "постоянный", "translation_tr": "kalıcı", "translation_fa": "ثابت"},
+  {"word": "befristet", "translation_ru": "ограниченный сроком", "translation_tr": "sınırlı", "translation_fa": "محدود"},
+  {"word": "mobil", "translation_ru": "мобильный", "translation_tr": "mobil", "translation_fa": "سیار"},
+  {"word": "Wissen", "translation_ru": "знание", "translation_tr": "bilgi", "translation_fa": "دانش"},
+  {"word": "Kompetenz", "translation_ru": "компетенция", "translation_tr": "yeterlilik", "translation_fa": "صلاحیت"},
+  {"word": "problemlos", "translation_ru": "беспроблемный", "translation_tr": "sorunsuz", "translation_fa": "بدون مشکل"},
+  {"word": "lebenslang", "translation_ru": "пожизненный", "translation_tr": "ömür boyu", "translation_fa": "مادام العمر"},
+  {"word": "deutlich", "translation_ru": "ясно", "translation_tr": "açıkça", "translation_fa": "واضح"},
+  {"word": "hektisch", "translation_ru": "суетливый", "translation_tr": "telaşlı", "translation_fa": "شلوغ"},
+  {"word": "außer Haus sein", "translation_ru": "быть вне дома", "translation_tr": "evde olmamak", "translation_fa": "خارج از خانه بودن"},
+  {"word": "hinterlassen", "translation_ru": "оставлять", "translation_tr": "bırakmak", "translation_fa": "جا گذاشتن"},
+  {"word": "ausrichten", "translation_ru": "передавать", "translation_tr": "iletmek", "translation_fa": "رساندن"},
+  {"word": "zurückrufen", "translation_ru": "перезванивать", "translation_tr": "geri aramak", "translation_fa": "تماس مجدد"},
+  {"word": "in Ordnung", "translation_ru": "в порядке", "translation_tr": "tamam", "translation_fa": "قبول"},
+  {"word": "also gut", "translation_ru": "итак, хорошо", "translation_tr": "peki o zaman", "translation_fa": "خیلی خوب"},
+  {"word": "auf keinen Fall", "translation_ru": "ни в коем случае", "translation_tr": "kesinlikle hayır", "translation_fa": "به هیچ وجه"},
+  {"word": "nun", "translation_ru": "теперь", "translation_tr": "şimdi", "translation_fa": "اکنون"},
+  {"word": "möglich", "translation_ru": "возможный", "translation_tr": "mümkün", "translation_fa": "ممکن"},
+  {"word": "häufig", "translation_ru": "часто", "translation_tr": "sık", "translation_fa": "مکرر"},
+  {"word": "komisch", "translation_ru": "странный", "translation_tr": "garip", "translation_fa": "عجیب"},
+  {"word": "unhöflich", "translation_ru": "невежливый", "translation_tr": "kaba", "translation_fa": "بی ادب"},
+  {"word": "unter", "translation_ru": "под", "translation_tr": "altında", "translation_fa": "زیر"},
+  {"word": "einige", "translation_ru": "несколько", "translation_tr": "bazı", "translation_fa": "بعضی"},
+  {"word": "sein", "translation_ru": "быть", "translation_tr": "olmak", "translation_fa": "بودن"},
+  {"word": "haben", "translation_ru": "иметь", "translation_tr": "sahip olmak", "translation_fa": "داشتن"},
+  {"word": "werden", "translation_ru": "становиться", "translation_tr": "olmak", "translation_fa": "شدن"},
+  {"word": "können", "translation_ru": "мочь, уметь", "translation_tr": "yapabilmek", "translation_fa": "توانستن"},
+  {"word": "müssen", "translation_ru": "быть должным", "translation_tr": "zorunda olmak", "translation_fa": "باید"},
+  {"word": "sollen", "translation_ru": "должен (по правилам, совету)", "translation_tr": "gerekmek", "translation_fa": "باید"},
+  {"word": "wollen", "translation_ru": "хотеть", "translation_tr": "istemek", "translation_fa": "خواستن"},
+  {"word": "mögen", "translation_ru": "нравиться", "translation_tr": "sevmek", "translation_fa": "دوست داشتن"},
+  {"word": "möchten", "translation_ru": "хотеть (вежл.)", "translation_tr": "istemek", "translation_fa": "خواستن"},
+  {"word": "dürfen", "translation_ru": "иметь разрешение", "translation_tr": "izinli olmak", "translation_fa": "اجازه داشتن"},
+  {"word": "machen", "translation_ru": "делать", "translation_tr": "yapmak", "translation_fa": "انجام دادن"},
+  {"word": "tun", "translation_ru": "делать, совершать", "translation_tr": "yapmak", "translation_fa": "کردن"},
+  {"word": "gehen", "translation_ru": "идти", "translation_tr": "gitmek", "translation_fa": "رفتن"},
+  {"word": "kommen", "translation_ru": "приходить", "translation_tr": "gelmek", "translation_fa": "آمدن"},
+  {"word": "fahren", "translation_ru": "ехать", "translation_tr": "gitmek", "translation_fa": "رانندگی کردن"},
+  {"word": "fliegen", "translation_ru": "лететь", "translation_tr": "uçmak", "translation_fa": "پرواز کردن"},
+  {"word": "laufen", "translation_ru": "бежать, идти", "translation_tr": "koşmak, yürümek", "translation_fa": "دویدن, راه رفتن"},
+  {"word": "schwimmen", "translation_ru": "плавать", "translation_tr": "yüzmek", "translation_fa": "شنا کردن"},
+  {"word": "springen", "translation_ru": "прыгать", "translation_tr": "atlamak", "translation_fa": "پریدن"},
+  {"word": "fallen", "translation_ru": "падать", "translation_tr": "düşmek", "translation_fa": "افتادن"},
+  {"word": "bleiben", "translation_ru": "оставаться", "translation_tr": "kalmak", "translation_fa": "ماندن"},
+  {"word": "stehen", "translation_ru": "стоять", "translation_tr": "ayakta durmak", "translation_fa": "ایستادن"},
+  {"word": "sitzen", "translation_ru": "сидеть", "translation_tr": "oturmak", "translation_fa": "نشستن"},
+  {"word": "stellen", "translation_ru": "ставить", "translation_tr": "koymak", "translation_fa": "گذاشتن"},
+  {"word": "setzen", "translation_ru": "сажать", "translation_tr": "oturtmak", "translation_fa": "نشاندن"},
+  {"word": "legen", "translation_ru": "класть", "translation_tr": "yatırmak", "translation_fa": "گذاشتن"},
+  {"word": "hängen", "translation_ru": "висеть, вешать", "translation_tr": "asmak", "translation_fa": "آویزان کردن"},
+  {"word": "tragen", "translation_ru": "носить, нести", "translation_tr": "taşımak", "translation_fa": "حمل کردن"},
+  {"word": "bringen", "translation_ru": "приносить", "translation_tr": "getirmek", "translation_fa": "آوردن"},
+  {"word": "holen", "translation_ru": "приносить, брать", "translation_tr": "almak", "translation_fa": "گرفتن"},
+  {"word": "nehmen", "translation_ru": "брать", "translation_tr": "almak", "translation_fa": "گرفتن"},
+  {"word": "geben", "translation_ru": "давать", "translation_tr": "vermek", "translation_fa": "دادن"},
+  {"word": "bekommen", "translation_ru": "получать", "translation_tr": "almak", "translation_fa": "دریافت کردن"},
+  {"word": "kriegen", "translation_ru": "получать (разг.)", "translation_tr": "almak", "translation_fa": "گرفتن"},
+  {"word": "finden", "translation_ru": "находить", "translation_tr": "bulmak", "translation_fa": "پیدا کردن"},
+  {"word": "suchen", "translation_ru": "искать", "translation_tr": "aramak", "translation_fa": "جستجو کردن"},
+  {"word": "sagen", "translation_ru": "говорить", "translation_tr": "söylemek", "translation_fa": "گفتن"},
+  {"word": "sprechen", "translation_ru": "говорить", "translation_tr": "konuşmak", "translation_fa": "صحبت کردن"},
+  {"word": "reden", "translation_ru": "разговаривать", "translation_tr": "konuşmak", "translation_fa": "صحبت کردن"},
+  {"word": "erzählen", "translation_ru": "рассказывать", "translation_tr": "anlatmak", "translation_fa": "تعریف کردن"},
+  {"word": "fragen", "translation_ru": "спрашивать", "translation_tr": "sormak", "translation_fa": "پرسیدن"},
+  {"word": "antworten", "translation_ru": "отвечать", "translation_tr": "cevap vermek", "translation_fa": "پاسخ دادن"},
+  {"word": "erklären", "translation_ru": "объяснять", "translation_tr": "açıklamak", "translation_fa": "توضیح دادن"},
+  {"word": "heißen", "translation_ru": "называться", "translation_tr": "adı olmak", "translation_fa": "نامیدن"},
+  {"word": "meinen", "translation_ru": "полагать, считать", "translation_tr": "düşünmek", "translation_fa": "فکر کردن"},
+  {"word": "denken", "translation_ru": "думать", "translation_tr": "düşünmek", "translation_fa": "فکر کردن"},
+  {"word": "glauben", "translation_ru": "верить, думать", "translation_tr": "inanmak", "translation_fa": "باور کردن"},
+  {"word": "wissen", "translation_ru": "знать (информацию)", "translation_tr": "bilmek", "translation_fa": "دانستن"},
+  {"word": "kennen", "translation_ru": "знать (кого-то)", "translation_tr": "tanımak", "translation_fa": "شناختن"},
+  {"word": "verstehen", "translation_ru": "понимать", "translation_tr": "anlamak", "translation_fa": "فهمیدن"},
+  {"word": "vergessen", "translation_ru": "забывать", "translation_tr": "unutmak", "translation_fa": "فراموش کردن"},
+  {"word": "arbeiten", "translation_ru": "работать", "translation_tr": "çalışmak", "translation_fa": "کار کردن"},
+  {"word": "lernen", "translation_ru": "учить", "translation_tr": "öğrenmek", "translation_fa": "یاد گرفتن"},
+  {"word": "wiederholen", "translation_ru": "повторять", "translation_tr": "tekrarlamak", "translation_fa": "تکرار کردن"},
+  {"word": "beginnen", "translation_ru": "начинать", "translation_tr": "başlamak", "translation_fa": "شروع کردن"},
+  {"word": "anfangen", "translation_ru": "начинать", "translation_tr": "başlamak", "translation_fa": "شروع کردن"},
+  {"word": "enden", "translation_ru": "заканчиваться", "translation_tr": "bitmek", "translation_fa": "پایان یافتن"},
+  {"word": "schreiben", "translation_ru": "писать", "translation_tr": "yazmak", "translation_fa": "نوشتن"},
+  {"word": "lesen", "translation_ru": "читать", "translation_tr": "okumak", "translation_fa": "خواندن"},
+  {"word": "zeichnen", "translation_ru": "рисовать", "translation_tr": "çizmek", "translation_fa": "کشیدن"},
+  {"word": "malen", "translation_ru": "рисовать, красить", "translation_tr": "boyamak", "translation_fa": "رنگ کردن"},
+  {"word": "rechnen", "translation_ru": "считать (математика)", "translation_tr": "hesaplamak", "translation_fa": "محاسبه کردن"},
+  {"word": "wohnen", "translation_ru": "жить", "translation_tr": "yaşamak", "translation_fa": "زندگی کردن"},
+  {"word": "leben", "translation_ru": "жить", "translation_tr": "yaşamak", "translation_fa": "زندگی کردن"},
+  {"word": "schlafen", "translation_ru": "спать", "translation_tr": "uyumak", "translation_fa": "خوابیدن"},
+  {"word": "essen", "translation_ru": "есть", "translation_tr": "yemek", "translation_fa": "خوردن"},
+  {"word": "trinken", "translation_ru": "пить", "translation_tr": "içmek", "translation_fa": "نوشیدن"},
+  {"word": "kochen", "translation_ru": "готовить", "translation_tr": "pişirmek", "translation_fa": "پختن"},
+  {"word": "backen", "translation_ru": "печь", "translation_tr": "pişirmek", "translation_fa": "پختن"},
+  {"word": "kaufen", "translation_ru": "покупать", "translation_tr": "satın almak", "translation_fa": "خریدن"},
+  {"word": "einkaufen", "translation_ru": "делать покупки", "translation_tr": "alışveriş yapmak", "translation_fa": "خرید کردن"},
+  {"word": "verkaufen", "translation_ru": "продавать", "translation_tr": "satmak", "translation_fa": "فروختن"},
+  {"word": "bezahlen", "translation_ru": "платить", "translation_tr": "ödemek", "translation_fa": "پرداخت کردن"},
+  {"word": "kosten", "translation_ru": "стоить", "translation_tr": "mal olmak", "translation_fa": "قیمت داشتن"},
+  {"word": "bestellen", "translation_ru": "заказывать", "translation_tr": "sipariş vermek", "translation_fa": "سفارش دادن"},
+  {"word": "reservieren", "translation_ru": "бронировать", "translation_tr": "rezerve etmek", "translation_fa": "رزرو کردن"},
+  {"word": "waschen", "translation_ru": "мыть", "translation_tr": "yıkamak", "translation_fa": "شستن"},
+  {"word": "sich waschen", "translation_ru": "умываться", "translation_tr": "yıkanmak", "translation_fa": "شستن"},
+  {"word": "putzen", "translation_ru": "чистить", "translation_tr": "temizlemek", "translation_fa": "تمیز کردن"},
+  {"word": "aufräumen", "translation_ru": "прибирать", "translation_tr": "toplamak", "translation_fa": "تمیز کردن"},
+  {"word": "rasieren", "translation_ru": "бриться", "translation_tr": "tıraş olmak", "translation_fa": "اصلاح کردن"},
+  {"word": "sich anziehen", "translation_ru": "одеваться", "translation_tr": "giyinmek", "translation_fa": "پوشیدن"},
+  {"word": "sich ausziehen", "translation_ru": "раздеваться", "translation_tr": "soyunmak", "translation_fa": "درآوردن"},
+  {"word": "sich kämmen", "translation_ru": "причёсываться", "translation_tr": "taramak", "translation_fa": "شانه کردن"},
+  {"word": "feiern", "translation_ru": "праздновать", "translation_tr": "kutlamak", "translation_fa": "جشن گرفتن"},
+  {"word": "singen", "translation_ru": "петь", "translation_tr": "şarkı söylemek", "translation_fa": "خواندن"},
+  {"word": "tanzen", "translation_ru": "танцевать", "translation_tr": "dans etmek", "translation_fa": "رقصیدن"},
+  {"word": "spielen", "translation_ru": "играть", "translation_tr": "oynamak", "translation_fa": "بازی کردن"},
+  {"word": "gewinnen", "translation_ru": "выигрывать", "translation_tr": "kazanmak", "translation_fa": "بردن"},
+  {"word": "verlieren", "translation_ru": "проигрывать", "translation_tr": "kaybetmek", "translation_fa": "باختن"},
+  {"word": "helfen", "translation_ru": "помогать", "translation_tr": "yardım etmek", "translation_fa": "کمک کردن"},
+  {"word": "danken", "translation_ru": "благодарить", "translation_tr": "teşekkür etmek", "translation_fa": "تشکر کردن"},
+  {"word": "gratulieren", "translation_ru": "поздравлять", "translation_tr": "tebrik etmek", "translation_fa": "تبریک گفتن"},
+  {"word": "einladen", "translation_ru": "приглашать", "translation_tr": "davet etmek", "translation_fa": "دعوت کردن"},
+  {"word": "treffen", "translation_ru": "встречать", "translation_tr": "buluşmak", "translation_fa": "ملاقات کردن"},
+  {"word": "sich treffen", "translation_ru": "встречаться", "translation_tr": "buluşmak", "translation_fa": "ملاقات کردن"},
+  {"word": "besuchen", "translation_ru": "посещать, навещать", "translation_tr": "ziyaret etmek", "translation_fa": "بازدید کردن"},
+  {"word": "schenken", "translation_ru": "дарить", "translation_tr": "hediye etmek", "translation_fa": "هدیه دادن"},
+  {"word": "gefallen", "translation_ru": "нравиться", "translation_tr": "beğenmek", "translation_fa": "پسندیدن"},
+  {"word": "sich freuen", "translation_ru": "радоваться", "translation_tr": "sevinmek", "translation_fa": "خوشحال شدن"},
+  {"word": "sich interessieren", "translation_ru": "интересоваться", "translation_tr": "ilgilenmek", "translation_fa": "علاقه داشتن"},
+  {"word": "sich wünschen", "translation_ru": "желать", "translation_tr": "dilemek", "translation_fa": "آرزو کردن"},
+  {"word": "sich vorbereiten", "translation_ru": "готовиться", "translation_tr": "hazırlanmak", "translation_fa": "آماده شدن"},
+  {"word": "passieren", "translation_ru": "происходить", "translation_tr": "olmak", "translation_fa": "اتفاق افتادن"},
+  {"word": "aufhören", "translation_ru": "прекращать", "translation_tr": "durmak", "translation_fa": "متوقف کردن"},
+  {"word": "aufmachen", "translation_ru": "открывать", "translation_tr": "açmak", "translation_fa": "باز کردن"},
+  {"word": "aufpassen", "translation_ru": "быть внимательным", "translation_tr": "dikkat etmek", "translation_fa": "مراقب بودن"},
+  {"word": "aufstehen", "translation_ru": "вставать", "translation_tr": "kalkmak", "translation_fa": "بلند شدن"},
+  {"word": "ausmachen", "translation_ru": "выключать", "translation_tr": "kapatmak", "translation_fa": "خاموش کردن"},
+  {"word": "ausgehen", "translation_ru": "выходить", "translation_tr": "çıkmak", "translation_fa": "بیرون رفتن"},
+  {"word": "ankommen", "translation_ru": "прибывать", "translation_tr": "varmak", "translation_fa": "رسیدن"},
+  {"word": "anrufen", "translation_ru": "звонить", "translation_tr": "aramak", "translation_fa": "تماس گرفتن"},
+  {"word": "abholen", "translation_ru": "забирать", "translation_tr": "almak", "translation_fa": "برداشتن"},
+  {"word": "umziehen", "translation_ru": "переезжать", "translation_tr": "taşınmak", "translation_fa": "جابجا شدن"},
+  {"word": "mitkommen", "translation_ru": "пойти с кем-то", "translation_tr": "gelmek", "translation_fa": "همراه آمدن"},
+  {"word": "mitbringen", "translation_ru": "приносить с собой", "translation_tr": "getirmek", "translation_fa": "همراه آوردن"},
+  {"word": "zuhören", "translation_ru": "слушать внимательно", "translation_tr": "dinlemek", "translation_fa": "گوش دادن"},
+  {"word": "fernsehen", "translation_ru": "смотреть телевизор", "translation_tr": "televizyon izlemek", "translation_fa": "تلویزیون دیدن"},
+  {"word": "zurückkommen", "translation_ru": "возвращаться", "translation_tr": "geri gelmek", "translation_fa": "بازگشتن"},
+  {"word": "vorbeikommen", "translation_ru": "заходить", "translation_tr": "uğramak", "translation_fa": "سر زدن"},
+  {"word": "entschuldigen", "translation_ru": "извинять(ся)", "translation_tr": "özür dilemek", "translation_fa": "عذرخواهی کردن"},
+  {"word": "gehören", "translation_ru": "принадлежать", "translation_tr": "ait olmak", "translation_fa": "متعلق بودن"},
+  {"word": "versuchen", "translation_ru": "пытаться", "translation_tr": "denemek", "translation_fa": "سعی کردن"},
+  {"word": "empfehlen", "translation_ru": "рекомендовать", "translation_tr": "tavsiye etmek", "translation_fa": "توصیه کردن"},
+  {"word": "gut", "translation_ru": "хороший", "translation_tr": "iyi", "translation_fa": "خوب"},
+  {"word": "schlecht", "translation_ru": "плохой", "translation_tr": "kötü", "translation_fa": "بد"},
+  {"word": "schön", "translation_ru": "красивый", "translation_tr": "güzel", "translation_fa": "زیبا"},
+  {"word": "hässlich", "translation_ru": "некрасивый", "translation_tr": "çirkin", "translation_fa": "زشت"},
+  {"word": "groß", "translation_ru": "большой", "translation_tr": "büyük", "translation_fa": "بزرگ"},
+  {"word": "klein", "translation_ru": "маленький", "translation_tr": "küçük", "translation_fa": "کوچک"},
+  {"word": "lang", "translation_ru": "длинный", "translation_tr": "uzun", "translation_fa": "بلند"},
+  {"word": "kurz", "translation_ru": "короткий", "translation_tr": "kısa", "translation_fa": "کوتاه"},
+  {"word": "hoch", "translation_ru": "высокий", "translation_tr": "yüksek", "translation_fa": "بلند"},
+  {"word": "niedrig", "translation_ru": "низкий", "translation_tr": "alçak", "translation_fa": "پایین"},
+  {"word": "breit", "translation_ru": "широкий", "translation_tr": "geniş", "translation_fa": "پهن"},
+  {"word": "schmal", "translation_ru": "узкий", "translation_tr": "dar", "translation_fa": "باریک"},
+  {"word": "neu", "translation_ru": "новый", "translation_tr": "yeni", "translation_fa": "جدید"},
+  {"word": "alt", "translation_ru": "старый", "translation_tr": "eski", "translation_fa": "قدیمی"},
+  {"word": "jung", "translation_ru": "молодой", "translation_tr": "genç", "translation_fa": "جوان"},
+  {"word": "stark", "translation_ru": "сильный", "translation_tr": "güçlü", "translation_fa": "قوی"},
+  {"word": "schwach", "translation_ru": "слабый", "translation_tr": "zayıf", "translation_fa": "ضعیف"},
+  {"word": "schnell", "translation_ru": "быстрый", "translation_tr": "hızlı", "translation_fa": "سریع"},
+  {"word": "langsam", "translation_ru": "медленный", "translation_tr": "yavaş", "translation_fa": "آهسته"},
+  {"word": "teuer", "translation_ru": "дорогой", "translation_tr": "pahalı", "translation_fa": "گران"},
+  {"word": "billig", "translation_ru": "дешёвый", "translation_tr": "ucuz", "translation_fa": "ارزان"},
+  {"word": "günstig", "translation_ru": "выгодный", "translation_tr": "uygun", "translation_fa": "مناسب"},
+  {"word": "leicht", "translation_ru": "лёгкий", "translation_tr": "hafif", "translation_fa": "سبک"},
+  {"word": "schwer", "translation_ru": "тяжёлый", "translation_tr": "ağır", "translation_fa": "سنگین"},
+  {"word": "richtig", "translation_ru": "правильный", "translation_tr": "doğru", "translation_fa": "درست"},
+  {"word": "falsch", "translation_ru": "неправильный", "translation_tr": "yanlış", "translation_fa": "غلط"},
+  {"word": "warm", "translation_ru": "тёплый", "translation_tr": "sıcak", "translation_fa": "گرم"},
+  {"word": "kalt", "translation_ru": "холодный", "translation_tr": "soğuk", "translation_fa": "سرد"},
+  {"word": "heiß", "translation_ru": "горячий", "translation_tr": "sıcak", "translation_fa": "داغ"},
+  {"word": "kühl", "translation_ru": "прохладный", "translation_tr": "serin", "translation_fa": "خنک"},
+  {"word": "hell", "translation_ru": "светлый", "translation_tr": "aydınlık", "translation_fa": "روشن"},
+  {"word": "dunkel", "translation_ru": "тёмный", "translation_tr": "karanlık", "translation_fa": "تاریک"},
+  {"word": "sauber", "translation_ru": "чистый", "translation_tr": "temiz", "translation_fa": "تمیز"},
+  {"word": "schmutzig", "translation_ru": "грязный", "translation_tr": "kirli", "translation_fa": "کثیف"},
+  {"word": "voll", "translation_ru": "полный", "translation_tr": "dolu", "translation_fa": "پر"},
+  {"word": "leer", "translation_ru": "пустой", "translation_tr": "boş", "translation_fa": "خالی"},
+  {"word": "frei", "translation_ru": "свободный", "translation_tr": "serbest", "translation_fa": "آزاد"},
+  {"word": "besetzt", "translation_ru": "занятый", "translation_tr": "dolu", "translation_fa": "اشغال شده"},
+  {"word": "einfach", "translation_ru": "простой", "translation_tr": "basit", "translation_fa": "ساده"},
+  {"word": "interessant", "translation_ru": "интересный", "translation_tr": "ilginç", "translation_fa": "جالب"},
+  {"word": "langweilig", "translation_ru": "скучный", "translation_tr": "sıkıcı", "translation_fa": "حوصله سر بر"},
+  {"word": "wichtig", "translation_ru": "важный", "translation_tr": "önemli", "translation_fa": "مهم"},
+  {"word": "nett", "translation_ru": "милый", "translation_tr": "nazik", "translation_fa": "خوش اخلاق"},
+  {"word": "freundlich", "translation_ru": "дружелюбный", "translation_tr": "dostane", "translation_fa": "دوستانه"},
+  {"word": "unfreundlich", "translation_ru": "недружелюбный", "translation_tr": "dostane olmayan", "translation_fa": "غیر دوستانه"},
+  {"word": "traurig", "translation_ru": "грустный", "translation_tr": "üzgün", "translation_fa": "غمگین"},
+  {"word": "müde", "translation_ru": "уставший", "translation_tr": "yorgun", "translation_fa": "خسته"},
+  {"word": "wach", "translation_ru": "бодрый", "translation_tr": "uyanık", "translation_fa": "بیدار"},
+  {"word": "gesund", "translation_ru": "здоровый", "translation_tr": "sağlıklı", "translation_fa": "سالم"},
+  {"word": "krank", "translation_ru": "больной", "translation_tr": "hasta", "translation_fa": "مریض"},
+  {"word": "hungrig", "translation_ru": "голодный", "translation_tr": "aç", "translation_fa": "گرسنه"},
+  {"word": "durstig", "translation_ru": "жаждущий", "translation_tr": "susamış", "translation_fa": "تشنه"},
+  {"word": "satt", "translation_ru": "сытый", "translation_tr": "tok", "translation_fa": "سیر"},
+  {"word": "nervös", "translation_ru": "нервный", "translation_tr": "gergin", "translation_fa": "عصبی"},
+  {"word": "ruhig", "translation_ru": "спокойный", "translation_tr": "sakin", "translation_fa": "آرام"},
+  {"word": "laut", "translation_ru": "громкий", "translation_tr": "yüksek sesli", "translation_fa": "بلند"},
+  {"word": "leise", "translation_ru": "тихий", "translation_tr": "sessiz", "translation_fa": "آرام"},
+  {"word": "bequem", "translation_ru": "удобный", "translation_tr": "rahat", "translation_fa": "راحت"},
+  {"word": "unbequem", "translation_ru": "неудобный", "translation_tr": "rahatsız", "translation_fa": "ناراحت"},
+  {"word": "weich", "translation_ru": "мягкий", "translation_tr": "yumuşak", "translation_fa": "نرم"},
+  {"word": "hart", "translation_ru": "твёрдый", "translation_tr": "sert", "translation_fa": "سخت"},
+  {"word": "bunt", "translation_ru": "разноцветный", "translation_tr": "renkli", "translation_fa": "رنگی"},
+  {"word": "rot", "translation_ru": "красный", "translation_tr": "kırmızı", "translation_fa": "قرمز"},
+  {"word": "blau", "translation_ru": "синий", "translation_tr": "mavi", "translation_fa": "آبی"},
+  {"word": "grün", "translation_ru": "зелёный", "translation_tr": "yeşil", "translation_fa": "سبز"},
+  {"word": "gelb", "translation_ru": "жёлтый", "translation_tr": "sarı", "translation_fa": "زرد"},
+  {"word": "schwarz", "translation_ru": "чёрный", "translation_tr": "siyah", "translation_fa": "سیاه"},
+  {"word": "weiß", "translation_ru": "белый", "translation_tr": "beyaz", "translation_fa": "سفید"},
+  {"word": "grau", "translation_ru": "серый", "translation_tr": "gri", "translation_fa": "خاکستری"},
+  {"word": "braun", "translation_ru": "коричневый", "translation_tr": "kahverengi", "translation_fa": "قهوه ای"},
+  {"word": "orange", "translation_ru": "оранжевый", "translation_tr": "turuncu", "translation_fa": "نارنجی"},
+  {"word": "lila", "translation_ru": "фиолетовый", "translation_tr": "mor", "translation_fa": "بنفش"},
+  {"word": "rosa", "translation_ru": "розовый", "translation_tr": "pembe", "translation_fa": "صورتی"},
+  {"word": "heute", "translation_ru": "сегодня", "translation_tr": "bugün", "translation_fa": "امروز"},
+  {"word": "gestern", "translation_ru": "вчера", "translation_tr": "dün", "translation_fa": "دیروز"},
+  {"word": "morgen", "translation_ru": "завтра", "translation_tr": "yarın", "translation_fa": "فردا"},
+  {"word": "jetzt", "translation_ru": "сейчас", "translation_tr": "şimdi", "translation_fa": "اکنون"},
+  {"word": "gleich", "translation_ru": "сейчас, сразу", "translation_tr": "hemen", "translation_fa": "همین حالا"},
+  {"word": "sofort", "translation_ru": "немедленно", "translation_tr": "derhal", "translation_fa": "فورا"},
+  {"word": "später", "translation_ru": "позже", "translation_tr": "sonra", "translation_fa": "بعدا"},
+  {"word": "früh", "translation_ru": "рано", "translation_tr": "erken", "translation_fa": "زود"},
+  {"word": "spät", "translation_ru": "поздно", "translation_tr": "geç", "translation_fa": "دیر"},
+  {"word": "oft", "translation_ru": "часто", "translation_tr": "sık", "translation_fa": "مکرر"},
+  {"word": "manchmal", "translation_ru": "иногда", "translation_tr": "bazen", "translation_fa": "گاهی"},
+  {"word": "selten", "translation_ru": "редко", "translation_tr": "nadiren", "translation_fa": "به ندرت"},
+  {"word": "immer", "translation_ru": "всегда", "translation_tr": "her zaman", "translation_fa": "همیشه"},
+  {"word": "nie", "translation_ru": "никогда", "translation_tr": "asla", "translation_fa": "هرگز"},
+  {"word": "noch", "translation_ru": "ещё", "translation_tr": "henüz", "translation_fa": "هنوز"},
+  {"word": "schon", "translation_ru": "уже", "translation_tr": "zaten", "translation_fa": "قبلا"},
+  {"word": "nicht mehr", "translation_ru": "больше не", "translation_tr": "artık", "translation_fa": "دیگر نه"},
+  {"word": "zuerst", "translation_ru": "сначала", "translation_tr": "önce", "translation_fa": "اول"},
+  {"word": "dann", "translation_ru": "потом", "translation_tr": "sonra", "translation_fa": "بعد"},
+  {"word": "danach", "translation_ru": "после этого", "translation_tr": "ondan sonra", "translation_fa": "بعد از آن"},
+  {"word": "vorher", "translation_ru": "до этого", "translation_tr": "önceden", "translation_fa": "قبل از آن"},
+  {"word": "damals", "translation_ru": "тогда (в прошлом)", "translation_tr": "o zaman", "translation_fa": "آن زمان"},
+  {"word": "früher", "translation_ru": "раньше", "translation_tr": "eskiden", "translation_fa": "قبلا"},
+  {"word": "bald", "translation_ru": "скоро", "translation_tr": "yakında", "translation_fa": "به زودی"},
+  {"word": "plötzlich", "translation_ru": "внезапно", "translation_tr": "aniden", "translation_fa": "ناگهان"},
+  {"word": "endlich", "translation_ru": "наконец", "translation_tr": "sonunda", "translation_fa": "بالاخره"},
+  {"word": "hier", "translation_ru": "здесь", "translation_tr": "burada", "translation_fa": "اینجا"},
+  {"word": "da", "translation_ru": "там", "translation_tr": "orada", "translation_fa": "آنجا"},
+  {"word": "dort", "translation_ru": "там", "translation_tr": "orada", "translation_fa": "آنجا"},
+  {"word": "oben", "translation_ru": "наверху", "translation_tr": "yukarı", "translation_fa": "بالا"},
+  {"word": "unten", "translation_ru": "внизу", "translation_tr": "aşağı", "translation_fa": "پایین"},
+  {"word": "rechts", "translation_ru": "справа", "translation_tr": "sağ", "translation_fa": "راست"},
+  {"word": "links", "translation_ru": "слева", "translation_tr": "sol", "translation_fa": "چپ"},
+  {"word": "vorne", "translation_ru": "спереди", "translation_tr": "ön", "translation_fa": "جلو"},
+  {"word": "hinten", "translation_ru": "сзади", "translation_tr": "arka", "translation_fa": "عقب"},
+  {"word": "innen", "translation_ru": "внутри", "translation_tr": "içinde", "translation_fa": "داخل"},
+  {"word": "außen", "translation_ru": "снаружи", "translation_tr": "dışında", "translation_fa": "خارج"},
+  {"word": "überall", "translation_ru": "везде", "translation_tr": "her yerde", "translation_fa": "همه جا"},
+  {"word": "irgendwo", "translation_ru": "где-то", "translation_tr": "bir yerde", "translation_fa": "جایی"},
+  {"word": "nirgendwo", "translation_ru": "нигде", "translation_tr": "hiçbir yerde", "translation_fa": "هیچجا"},
+  {"word": "draußen", "translation_ru": "снаружи", "translation_tr": "dışarıda", "translation_fa": "بیرون"},
+  {"word": "drinnen", "translation_ru": "внутри", "translation_tr": "içeride", "translation_fa": "داخل"},
+  {"word": "weg", "translation_ru": "прочь", "translation_tr": "uzak", "translation_fa": "دور"},
+  {"word": "zusammen", "translation_ru": "вместе", "translation_tr": "birlikte", "translation_fa": "با هم"},
+  {"word": "allein", "translation_ru": "один", "translation_tr": "yalnız", "translation_fa": "تنها"},
+  {"word": "sehr", "translation_ru": "очень", "translation_tr": "çok", "translation_fa": "خیلی"},
+  {"word": "viel", "translation_ru": "много", "translation_tr": "çok", "translation_fa": "زیاد"},
+  {"word": "wenig", "translation_ru": "мало", "translation_tr": "az", "translation_fa": "کم"},
+  {"word": "zu", "translation_ru": "слишком", "translation_tr": "fazla", "translation_fa": "خیلی"},
+  {"word": "genug", "translation_ru": "достаточно", "translation_tr": "yeterli", "translation_fa": "کافی"},
+  {"word": "fast", "translation_ru": "почти", "translation_tr": "neredeyse", "translation_fa": "تقریبا"},
+  {"word": "ganz", "translation_ru": "совсем, полностью", "translation_tr": "tamamen", "translation_fa": "کاملا"},
+  {"word": "wirklich", "translation_ru": "действительно", "translation_tr": "gerçekten", "translation_fa": "واقعا"},
+  {"word": "bestimmt", "translation_ru": "наверняка", "translation_tr": "kesinlikle", "translation_fa": "حتما"},
+  {"word": "vielleicht", "translation_ru": "возможно", "translation_tr": "belki", "translation_fa": "شاید"},
+  {"word": "sicher", "translation_ru": "конечно, наверняка", "translation_tr": "kesin", "translation_fa": "مطمئن"},
+  {"word": "hoffentlich", "translation_ru": "надеюсь", "translation_tr": "umarım", "translation_fa": "امیدوارم"},
+  {"word": "leider", "translation_ru": "к сожалению", "translation_tr": "maalesef", "translation_fa": "متاسفانه"},
+  {"word": "natürlich", "translation_ru": "конечно", "translation_tr": "tabii ki", "translation_fa": "البته"},
+  {"word": "gern", "translation_ru": "охотно", "translation_tr": "severek", "translation_fa": "با علاقه"},
+  {"word": "lieber", "translation_ru": "охотнее", "translation_tr": "tercihen", "translation_fa": "ترجیحا"},
+  {"word": "auch", "translation_ru": "тоже", "translation_tr": "de", "translation_fa": "هم"},
+  {"word": "nur", "translation_ru": "только", "translation_tr": "sadece", "translation_fa": "فقط"},
+  {"word": "sogar", "translation_ru": "даже", "translation_tr": "hatta", "translation_fa": "حتی"},
+  {"word": "besonders", "translation_ru": "особенно", "translation_tr": "özellikle", "translation_fa": "مخصوصا"},
+  {"word": "ungefähr", "translation_ru": "примерно", "translation_tr": "yaklaşık", "translation_fa": "تقریبا"},
+  {"word": "genau", "translation_ru": "точно", "translation_tr": "tam", "translation_fa": "دقیقا"},
+  {"word": "was", "translation_ru": "что", "translation_tr": "ne", "translation_fa": "چه"},
+  {"word": "wer", "translation_ru": "кто", "translation_tr": "kim", "translation_fa": "کی"},
+  {"word": "wo", "translation_ru": "где", "translation_tr": "nerede", "translation_fa": "کجا"},
+  {"word": "wohin", "translation_ru": "куда", "translation_tr": "nereye", "translation_fa": "به کجا"},
+  {"word": "woher", "translation_ru": "откуда", "translation_tr": "nereden", "translation_fa": "از کجا"},
+  {"word": "wann", "translation_ru": "когда", "translation_tr": "ne zaman", "translation_fa": "کی"},
+  {"word": "warum", "translation_ru": "почему", "translation_tr": "niçin", "translation_fa": "چرا"},
+  {"word": "wie", "translation_ru": "как", "translation_tr": "nasıl", "translation_fa": "چگونه"},
+  {"word": "wie viel", "translation_ru": "сколько", "translation_tr": "ne kadar", "translation_fa": "چقدر"},
+  {"word": "in", "translation_ru": "в", "translation_tr": "içinde", "translation_fa": "در"},
+  {"word": "an", "translation_ru": "на, у", "translation_tr": "üzerinde", "translation_fa": "بر"},
+  {"word": "auf", "translation_ru": "на", "translation_tr": "üstünde", "translation_fa": "روی"},
+  {"word": "über", "translation_ru": "над, о", "translation_tr": "üzerinde", "translation_fa": "بالا"},
+  {"word": "unter", "translation_ru": "под", "translation_tr": "altında", "translation_fa": "زیر"},
+  {"word": "vor", "translation_ru": "перед", "translation_tr": "önünde", "translation_fa": "جلوی"},
+  {"word": "hinter", "translation_ru": "за", "translation_tr": "arkasında", "translation_fa": "پشت"},
+  {"word": "neben", "translation_ru": "рядом", "translation_tr": "yanında", "translation_fa": "کنار"},
+  {"word": "zwischen", "translation_ru": "между", "translation_tr": "arasında", "translation_fa": "بین"},
+  {"word": "mit", "translation_ru": "с", "translation_tr": "ile", "translation_fa": "با"},
+  {"word": "ohne", "translation_ru": "без", "translation_tr": "olmadan", "translation_fa": "بدون"},
+  {"word": "für", "translation_ru": "для", "translation_tr": "için", "translation_fa": "برای"},
+  {"word": "gegen", "translation_ru": "против", "translation_tr": "karşı", "translation_fa": "علیه"},
+  {"word": "um", "translation_ru": "вокруг, в (время)", "translation_tr": "etrafında", "translation_fa": "دور"},
+  {"word": "durch", "translation_ru": "через", "translation_tr": "içinden", "translation_fa": "از طریق"},
+  {"word": "bis", "translation_ru": "до", "translation_tr": "kadar", "translation_fa": "تا"},
+  {"word": "seit", "translation_ru": "с (времени)", "translation_tr": "beri", "translation_fa": "از"},
+  {"word": "von", "translation_ru": "от, из", "translation_tr": "tarafından", "translation_fa": "از"},
+  {"word": "zu", "translation_ru": "к", "translation_tr": "e", "translation_fa": "به"},
+  {"word": "nach", "translation_ru": "после, в (направление)", "translation_tr": "sonra", "translation_fa": "بعد"},
+  {"word": "bei", "translation_ru": "у, при", "translation_tr": "yanında", "translation_fa": "نزد"},
+  {"word": "aus", "translation_ru": "из", "translation_tr": "dışarı", "translation_fa": "از"},
+  {"word": "ab", "translation_ru": "с (времени)", "translation_tr": "itibaren", "translation_fa": "از"},
+  {"word": "und", "translation_ru": "и", "translation_tr": "ve", "translation_fa": "و"},
+  {"word": "oder", "translation_ru": "или", "translation_tr": "veya", "translation_fa": "یا"},
+  {"word": "aber", "translation_ru": "но", "translation_tr": "ama", "translation_fa": "اما"},
+  {"word": "denn", "translation_ru": "потому что", "translation_tr": "çünkü", "translation_fa": "زیرا"},
+  {"word": "weil", "translation_ru": "потому что", "translation_tr": "çünkü", "translation_fa": "چون"},
+  {"word": "dass", "translation_ru": "что", "translation_tr": "ki", "translation_fa": "که"},
+  {"word": "wenn", "translation_ru": "когда, если", "translation_tr": "eğer", "translation_fa": "اگر"},
+  {"word": "als", "translation_ru": "когда (в прошлом)", "translation_tr": "iken", "translation_fa": "وقتی"},
+  {"word": "nachdem", "translation_ru": "после того как", "translation_tr": "sonra", "translation_fa": "بعد از اینکه"},
+  {"word": "bevor", "translation_ru": "прежде чем", "translation_tr": "önce", "translation_fa": "قبل از اینکه"},
+  {"word": "deshalb", "translation_ru": "поэтому", "translation_tr": "bu yüzden", "translation_fa": "بنابراین"},
+  {"word": "deswegen", "translation_ru": "поэтому", "translation_tr": "bu nedenle", "translation_fa": "به همین دلیل"},
+  {"word": "trotzdem", "translation_ru": "тем не менее", "translation_tr": "yine de", "translation_fa": "با این حال"},
+  {"word": "obwohl", "translation_ru": "хотя", "translation_tr": "rağmen", "translation_fa": "اگرچه"},
+  {"word": "nicht", "translation_ru": "не", "translation_tr": "değil", "translation_fa": "نه"},
+  {"word": "kein", "translation_ru": "никакой", "translation_tr": "hiç", "translation_fa": "هیچ"},
+  {"word": "Es tut mir leid", "translation_ru": "Мне жаль", "translation_tr": "Üzgünüm", "translation_fa": "متاسفم"},
+  {"word": "Entschuldigung", "translation_ru": "Извините", "translation_tr": "Özür dilerim", "translation_fa": "عذر میخواهم"},
+  {"word": "Vielen Dank", "translation_ru": "Большое спасибо", "translation_tr": "Çok teşekkürler", "translation_fa": "خیلی ممنون"},
+  {"word": "Bitte schön", "translation_ru": "Пожалуйста", "translation_tr": "Rica ederim", "translation_fa": "خواهش میکنم"},
+  {"word": "Gern geschehen", "translation_ru": "Пожалуйста", "translation_tr": "Bir şey değil", "translation_fa": "قابلی ندارد"},
+  {"word": "Kein Problem", "translation_ru": "Нет проблем", "translation_tr": "Sorun değil", "translation_fa": "مشکلی نیست"},
+  {"word": "Das stimmt", "translation_ru": "Это правда", "translation_tr": "Doğru", "translation_fa": "درست است"},
+  {"word": "Das ist falsch", "translation_ru": "Это неправильно", "translation_tr": "Yanlış", "translation_fa": "غلط است"},
+  {"word": "Wie bitte", "translation_ru": "Простите", "translation_tr": "Efendim", "translation_fa": "ببخشید"},
+  {"word": "Noch einmal bitte", "translation_ru": "Ещё раз пожалуйста", "translation_tr": "Tekrar eder misiniz", "translation_fa": "لطفا دوباره"},
+  {"word": "Was bedeutet das", "translation_ru": "Что это значит", "translation_tr": "Bu ne demek", "translation_fa": "این چه معنی میدهد"},
+  {"word": "Ich verstehe nicht", "translation_ru": "Я не понимаю", "translation_tr": "Anlamıyorum", "translation_fa": "نمیفهمم"},
+  {"word": "Sprechen Sie langsamer bitte", "translation_ru": "Говорите медленнее пожалуйста", "translation_tr": "Daha yavaş konuşur musunuz", "translation_fa": "لطفا آهسته تر صحبت کنید"},
+  {"word": "Wie sagt man das auf Deutsch", "translation_ru": "Как это сказать по-немецки", "translation_tr": "Bu Almanca'da nasıl denir", "translation_fa": "این به آلمانی چه میشود"},
+  {"word": "Es geht", "translation_ru": "Нормально", "translation_tr": "İdare eder", "translation_fa": "قابل قبول است"},
+  {"word": "Mir geht es gut", "translation_ru": "У меня всё хорошо", "translation_tr": "İyiyim", "translation_fa": "حالم خوب است"},
+  {"word": "Mir geht es nicht so gut", "translation_ru": "У меня не очень хорошо", "translation_tr": "Pek iyi değilim", "translation_fa": "حالم خوب نیست"},
+  {"word": "Herzlichen Glückwunsch", "translation_ru": "Поздравляю", "translation_tr": "Tebrikler", "translation_fa": "تبریک میگویم"},
+  {"word": "Alles Gute", "translation_ru": "Всего наилучшего", "translation_tr": "Her şey gönlünce olsun", "translation_fa": "آرزوی بهترینها"},
+  {"word": "Viel Glück", "translation_ru": "Удачи", "translation_tr": "İyi şanslar", "translation_fa": "موفق باشید"},
+  {"word": "Gute Besserung", "translation_ru": "Поправляйся", "translation_tr": "Geçmiş olsun", "translation_fa": "بهبودی سریع"},
+  {"word": "Prost", "translation_ru": "За ваше здоровье", "translation_tr": "Şerefe", "translation_fa": "به سلامتی"},
+  {"word": "Guten Appetit", "translation_ru": "Приятного аппетита", "translation_tr": "Afiyet olsun", "translation_fa": "نوش جان"},
+  {"word": "Bis bald", "translation_ru": "До скорого", "translation_tr": "Görüşürüz", "translation_fa": "به امید دیدار"},
+  {"word": "Bis später", "translation_ru": "До позже", "translation_tr": "Sonra görüşürüz", "translation_fa": "بعدا میبینمت"},
+  {"word": "Bis morgen", "translation_ru": "До завтра", "translation_tr": "Yarın görüşürüz", "translation_fa": "فردا میبینمت"},
+  {"word": "Tschüss", "translation_ru": "Пока", "translation_tr": "Hoşçakal", "translation_fa": "خداحافظ"},
+  {"word": "Auf Wiedersehen", "translation_ru": "До свидания", "translation_tr": "Güle güle", "translation_fa": "خداحافظ"}
+];
+
+// Проверка версии и сброс кеша
+function checkVersion() {
+    const savedVersion = localStorage.getItem('app_version');
+    if (savedVersion !== APP_VERSION) {
+        localStorage.clear();
+        localStorage.setItem('app_version', APP_VERSION);
+        console.log('App updated to version', APP_VERSION);
+    }
+}
+
+// Генерация ID пользователя
+function generateUserId() {
+    return 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+}
+
+// Обновление счетчика посещений
+function updateVisitCounter() {
+    const today = new Date().toDateString();
+    const lastVisit = globalStats.visits.lastVisit;
+    
+    if (lastVisit !== today) {
+        globalStats.visits.daily = 1;
+        globalStats.visits.lastVisit = today;
+    } else {
+        globalStats.visits.daily++;
+    }
+    
+    globalStats.visits.total++;
+    saveGlobalStats();
+    
+    document.getElementById('dailyVisits').textContent = globalStats.visits.daily;
+    document.getElementById('totalVisits').textContent = globalStats.visits.total;
+}
+
+// Загрузка данных пользователя
+function loadPlayerData() {
+    playerName = localStorage.getItem('playerName') || '';
+    playerId = localStorage.getItem('playerId') || generateUserId();
+    
+    if (!localStorage.getItem('playerId')) {
+        localStorage.setItem('playerId', playerId);
+    }
+    
+    if (playerName) {
+        document.getElementById('playerName').value = playerName;
+        document.getElementById('nameBox').style.display = 'none';
+        document.getElementById('menu').style.display = 'block';
+        loadWords();
+        updateVisitCounter();
+        updateMenuButtons();
+    }
+    
+    const learnedWordsData = localStorage.getItem(`learnedWords_${playerId}`);
+    const learnedArticlesData = localStorage.getItem(`learnedArticles_${playerId}`);
+    
+    learnedWords = learnedWordsData ? JSON.parse(learnedWordsData) : [];
+    learnedArticles = learnedArticlesData ? JSON.parse(learnedArticlesData) : [];
+    
+    updateOnlineStatus();
+}
+
+// Обновление подсветки кнопок в меню
+function updateMenuButtons() {
+    document.getElementById('langRu').classList.toggle('active', lang === 'ru');
+    document.getElementById('langTr').classList.toggle('active', lang === 'tr');
+    document.getElementById('langFa').classList.toggle('active', lang === 'fa');
+    
+    document.getElementById('modeArticle').classList.toggle('active', mode === 'article');
+    document.getElementById('modeDeToL1').classList.toggle('active', mode === 'de_to_l1');
+    document.getElementById('modeL1ToDe').classList.toggle('active', mode === 'l1_to_de');
+    
+    document.getElementById('filterAll').classList.toggle('active', wordFilter === 'all');
+    document.getElementById('filterUnlearned').classList.toggle('active', wordFilter === 'unlearned');
+    document.getElementById('filterNoArticle').classList.toggle('active', wordFilter === 'no_article');
+    document.getElementById('filterNoWord').classList.toggle('active', wordFilter === 'no_word');
+    
+    document.getElementById('dictWithArticles').classList.toggle('active', currentDictionary === 'with_articles');
+    document.getElementById('dictWithoutArticles').classList.toggle('active', currentDictionary === 'without_articles');
+    document.getElementById('dictAll').classList.toggle('active', currentDictionary === 'all');
+}
+
+// Сохранение имени
+function saveName() {
+    const nameInput = document.getElementById('playerName');
+    playerName = nameInput.value.trim();
+    
+    if (!playerName) {
+        alert('Bitte geben Sie Ihren Namen ein.');
+        return;
+    }
+    
+    localStorage.setItem('playerName', playerName);
+    document.getElementById('nameBox').style.display = 'none';
+    document.getElementById('menu').style.display = 'block';
+    
+    loadPlayerData();
+    updateVisitCounter();
+    updateMenuButtons();
+}
+
+// Обновление онлайн статуса
+function updateOnlineStatus() {
+    if (playerId && playerName) {
+        onlineUsers[playerId] = {
+            name: playerName,
+            lastSeen: Date.now(),
+            sessionStart: startTime
+        };
+        saveGlobalStats();
+    }
+}
+
+// Сохранение глобальной статистики
+function saveGlobalStats() {
+    const now = Date.now();
+    Object.keys(onlineUsers).forEach(id => {
+        if (now - onlineUsers[id].lastSeen > 5 * 60 * 1000) {
+            delete onlineUsers[id];
+        }
+    });
+    
+    globalStats.onlineUsers = onlineUsers;
+    localStorage.setItem('globalStats', JSON.stringify(globalStats));
+}
+
+// Выбор словаря
+function setDictionary(dictType) {
+    currentDictionary = dictType;
+    loadWords();
+    updateMenuButtons();
+}
+
+// Загрузка слов - ИСПРАВЛЕННАЯ ВЕРСИЯ
+function loadWords() {
+    try {
+        // Пытаемся загрузить слова из localStorage
+        const customWordsWithArticles = JSON.parse(localStorage.getItem('customWordsWithArticles') || '[]');
+        const customWordsWithoutArticles = JSON.parse(localStorage.getItem('customWordsWithoutArticles') || '[]');
+        
+        let selectedDictionary;
+        
+        if (currentDictionary === 'with_articles') {
+            // Используем кастомные слова если они есть, иначе стандартные
+            selectedDictionary = customWordsWithArticles.length > 0 ? customWordsWithArticles : wordDictionaryWithArticles;
+            console.log('Loading dictionary with articles:', selectedDictionary.length, 'words');
+        } else if (currentDictionary === 'without_articles') {
+            selectedDictionary = customWordsWithoutArticles.length > 0 ? customWordsWithoutArticles : wordDictionaryWithoutArticles;
+            console.log('Loading dictionary without articles:', selectedDictionary.length, 'words');
+        } else {
+            // ВСЕ СЛОВА - объединяем оба словаря
+            const allWithArticles = customWordsWithArticles.length > 0 ? customWordsWithArticles : wordDictionaryWithArticles;
+            const allWithoutArticles = customWordsWithoutArticles.length > 0 ? customWordsWithoutArticles : wordDictionaryWithoutArticles;
+            selectedDictionary = [...allWithArticles, ...allWithoutArticles];
+            console.log('Loading ALL dictionaries:', selectedDictionary.length, 'words');
+        }
+        
+        words = selectedDictionary.map(w => ({
+            article: (w.article || 'das').toLowerCase(),
+            word: w.word || '',
+            german: w.article ? `${(w.article || 'das').toLowerCase()} ${w.word || ''}`.trim() : w.word || '',
+            translation_ru: w.translation_ru || '',
+            translation_tr: w.translation_tr || '',
+            translation_fa: w.translation_fa || '',
+            id: generateWordId(w),
+            hasArticle: !!w.article // Есть артикль или нет
+        }));
+        
+        applyWordFilter();
+        updateLearnedWordsDisplay();
+        
+    } catch(err) {
+        console.error('Error loading words:', err);
+        alert('Ошибка загрузки слов');
+    }
+}
+
+function generateWordId(word) {
+    if (word.article) {
+        return `${word.article || 'das'}_${word.word}`.toLowerCase().replace(/\s+/g, '_');
+    } else {
+        return `no_article_${word.word}`.toLowerCase().replace(/\s+/g, '_');
+    }
+}
+
+// Фильтры
+function setWordFilter(filter) {
+    wordFilter = filter;
+    applyWordFilter();
+    updateMenuButtons();
+}
+
+function applyWordFilter() {
+    if (!words.length) return;
+    
+    console.log('Applying filter:', wordFilter, 'to', words.length, 'words');
+    
+    switch(wordFilter) {
+        case 'learned':
+            filteredWords = words.filter(word => 
+                learnedWords.includes(word.id) || learnedArticles.includes(word.id)
+            );
+            break;
+        case 'unlearned':
+            filteredWords = words.filter(word => 
+                !learnedWords.includes(word.id) && !learnedArticles.includes(word.id)
+            );
+            break;
+        case 'no_article':
+            // Для фильтра "не выученные артикли" показываем только слова С артиклями
+            filteredWords = words.filter(word => 
+                word.hasArticle && !learnedArticles.includes(word.id)
+            );
+            break;
+        case 'no_word':
+            filteredWords = words.filter(word => 
+                !learnedWords.includes(word.id)
+            );
+            break;
+        case 'all':
+        default:
+            filteredWords = [...words];
+            break;
+    }
+    
+    console.log('Filtered words count:', filteredWords.length);
+    updateWordCountDisplay();
+}
+
+function updateWordCountDisplay() {
+    const availableCount = filteredWords.length;
+    const totalCount = words.length;
+    const learnedWordsCount = learnedWords.length;
+    const learnedArticlesCount = learnedArticles.length;
+    
+    const wordCountInfo = document.getElementById('wordCountInfo');
+    if (wordCountInfo) {
+        wordCountInfo.innerHTML = `
+            Verfügbare Wörter: <b>${availableCount}</b> / ${totalCount}<br>
+            Wörter gelernt: ${learnedWordsCount} | Artikel gelernt: ${learnedArticlesCount}
+        `;
+    }
+}
+
+function updateLearnedWordsDisplay() {
+    const learnedWordsCount = learnedWords.length;
+    const learnedArticlesCount = learnedArticles.length;
+    const learnedInfo = document.getElementById('learnedWordsInfo');
+    const learnedCountSpan = document.getElementById('learnedCount');
+    const learnedArticlesSpan = document.getElementById('learnedArticlesCount');
+    
+    if (learnedInfo && learnedCountSpan && learnedArticlesSpan) {
+        learnedCountSpan.textContent = learnedWordsCount;
+        learnedArticlesSpan.textContent = learnedArticlesCount;
+        if (learnedWordsCount > 0 || learnedArticlesCount > 0) {
+            learnedInfo.style.display = 'block';
+        } else {
+            learnedInfo.style.display = 'none';
+        }
+    }
+}
+
+// СБРОС СТАТУСА КНОПОК ДЛЯ НОВОГО СЛОВА
+function resetLearningStatusButtons() {
+    const currentWord = quizWords[index];
+    if (!currentWord) return;
+    
+    const wordId = currentWord.id;
+    
+    const wordBtn = document.getElementById('wordLearnedBtn');
+    const wordIcon = document.getElementById('wordLearnedIcon');
+    const articleBtn = document.getElementById('articleLearnedBtn');
+    const articleIcon = document.getElementById('articleLearnedIcon');
+    
+    // Скрываем кнопку артикля для слов без артиклей
+    if (!currentWord.hasArticle) {
+        articleBtn.style.display = 'none';
+    } else {
+        articleBtn.style.display = 'flex';
+    }
+    
+    // Обновляем статус кнопок
+    if (learnedWords.includes(wordId)) {
+        wordBtn.classList.add('word-learned');
+        wordIcon.textContent = '✅';
+    } else {
+        wordBtn.classList.remove('word-learned');
+        wordIcon.textContent = '□';
+    }
+    
+    if (learnedArticles.includes(wordId)) {
+        articleBtn.classList.add('article-learned');
+        articleIcon.textContent = '✅';
+    } else {
+        articleBtn.classList.remove('article-learned');
+        articleIcon.textContent = '□';
+    }
+}
+
+// Управление изученными словами и артиклями
+function toggleWordLearned() {
+    const currentWord = quizWords[index];
+    if (!currentWord) return;
+    
+    const wordId = currentWord.id;
+    const btn = document.getElementById('wordLearnedBtn');
+    const icon = document.getElementById('wordLearnedIcon');
+    
+    if (learnedWords.includes(wordId)) {
+        learnedWords = learnedWords.filter(id => id !== wordId);
+        currentSessionLearnedWords = currentSessionLearnedWords.filter(id => id !== wordId);
+        btn.classList.remove('word-learned');
+        icon.textContent = '□';
+    } else {
+        learnedWords.push(wordId);
+        currentSessionLearnedWords.push(wordId);
+        btn.classList.add('word-learned');
+        icon.textContent = '✅';
+    }
+    
+    saveLearnedData();
+}
+
+function toggleArticleLearned() {
+    const currentWord = quizWords[index];
+    if (!currentWord) return;
+    
+    const wordId = currentWord.id;
+    const btn = document.getElementById('articleLearnedBtn');
+    const icon = document.getElementById('articleLearnedIcon');
+    
+    if (learnedArticles.includes(wordId)) {
+        learnedArticles = learnedArticles.filter(id => id !== wordId);
+        currentSessionLearnedArticles = currentSessionLearnedArticles.filter(id => id !== wordId);
+        btn.classList.remove('article-learned');
+        icon.textContent = '□';
+    } else {
+        learnedArticles.push(wordId);
+        currentSessionLearnedArticles.push(wordId);
+        btn.classList.add('article-learned');
+        icon.textContent = '✅';
+    }
+    
+    saveLearnedData();
+}
+
+function saveLearnedData() {
+    localStorage.setItem(`learnedWords_${playerId}`, JSON.stringify(learnedWords));
+    localStorage.setItem(`learnedArticles_${playerId}`, JSON.stringify(learnedArticles));
+    updateLearnedWordsDisplay();
+}
+
+// Функция показа 25-го кадра
+function showSubliminalFrame(word) {
+    const checkbox = document.getElementById('subliminalToggle');
+    const isCurrentlyEnabled = checkbox ? checkbox.checked : subliminalEnabled;
+    
+    if (!subliminalEnabled || !isCurrentlyEnabled) {
+        return;
+    }
+    
+    const frame = document.getElementById('subliminalFrame');
+    const combinedEl = document.getElementById('subliminalCombined');
+    const translationEl = document.getElementById('subliminalTranslation');
+    
+    if (word.hasArticle) {
+        combinedEl.textContent = `${word.article} ${word.word}`;
+    } else {
+        combinedEl.textContent = word.word;
+    }
+    translationEl.textContent = pickTranslation(word);
+    
+    frame.classList.add('visible');
+    
+    setTimeout(() => {
+        frame.classList.remove('visible');
+    }, subliminalDuration);
+}
+
+// Повторение с теми же словами
+function repeatSameQuiz() {
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('quiz').style.display = 'block';
+    
+    index = 0;
+    score = 0;
+    
+    nextQuestion();
+}
+
+// Повторение только невыученных слов
+function repeatUnlearned() {
+    const unlearnedFromCurrentGame = currentQuizWords.filter(word => {
+        return !learnedWords.includes(word.id) && !learnedArticles.includes(word.id);
+    });
+    
+    if (unlearnedFromCurrentGame.length === 0) {
+        alert('Alle Wörter aus diesem Spiel sind bereits gelernt! 🎉');
+        return;
+    }
+    
+    quizWords = shuffle([...unlearnedFromCurrentGame]);
+    
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('quiz').style.display = 'block';
+    
+    index = 0;
+    score = 0;
+    
+    nextQuestion();
+}
+
+// Обновление статистики
+function updateStats() {
+    const stats = JSON.parse(localStorage.getItem(`stats_${playerId}`) || '{"games": 0, "bestScore": 0, "totalQuestions": 0, "totalCorrect": 0}');
+    stats.games++;
+    stats.totalQuestions += quizWords.length;
+    stats.totalCorrect += score;
+    if (score > stats.bestScore) {
+        stats.bestScore = score;
+    }
+    localStorage.setItem(`stats_${playerId}`, JSON.stringify(stats));
+    
+    if (playerId && playerName) {
+        if (!globalStats.users) globalStats.users = {};
+        globalStats.users[playerId] = {
+            name: playerName,
+            games: stats.games,
+            bestScore: stats.bestScore,
+            totalQuestions: stats.totalQuestions,
+            totalCorrect: stats.totalCorrect,
+            accuracy: stats.totalQuestions > 0 ? (stats.totalCorrect / stats.totalQuestions * 100).toFixed(1) : 0,
+            learnedWords: learnedWords.length,
+            learnedArticles: learnedArticles.length,
+            lastActive: new Date().toLocaleDateString()
+        };
+        saveGlobalStats();
+    }
+    
+    updateStatsDisplay();
+}
+
+function updateStatsDisplay() {
+    const stats = JSON.parse(localStorage.getItem(`stats_${playerId}`) || '{"games": 0, "bestScore": 0, "totalQuestions": 0, "totalCorrect": 0}');
+    const accuracy = stats.totalQuestions > 0 ? (stats.totalCorrect / stats.totalQuestions * 100).toFixed(1) : 0;
+    
+    document.getElementById('statsBox').innerHTML = `
+        <b>Statistik für Sie:</b><br>
+        Spiele: ${stats.games}<br>
+        Bestes Ergebnis: ${stats.bestScore}<br>
+        Genauigkeit: ${accuracy}%<br>
+        Gelernte Wörter: ${learnedWords.length}<br>
+        Gelernte Artikel: ${learnedArticles.length}
+    `;
+}
+
+// Основная логика викторины
+function nextQuestion() {
+    if (index >= quizWords.length) {
+        finishQuiz();
+        return;
+    }
+    
+    const q = quizWords[index];
+    
+    resetLearningStatusButtons();
+    
+    document.getElementById('currentQuestion').textContent = index + 1;
+    document.getElementById('totalQuestions').textContent = quizWords.length;
+    
+    const progressPercent = ((index) / quizWords.length) * 100;
+    document.getElementById('progressFill').style.width = `${progressPercent}%`;
+    
+    document.getElementById('articleDisplay').textContent = '';
+    document.getElementById('correctAnswerDisplay').textContent = '';
+    document.getElementById('translationBox').textContent = '';
+    
+    let qText = '';
+    let opts = [];
+    let correct;
+    
+    const hasArticle = q.hasArticle;
+    
+    if (mode === 'article' && hasArticle) {
+        qText = `Welcher Artikel passt zu:`;
+        document.getElementById('word').innerText = q.word;
+        document.getElementById('translationBox').textContent = pickTranslation(q);
+        opts = ['der', 'die', 'das'];
+        correct = q.article;
+    } else if (mode === 'article' && !hasArticle) {
+        // Если режим артиклей, но слово без артикля - пропускаем
+        index++;
+        nextQuestion();
+        return;
+    } else if (mode === 'de_to_l1') {
+        const g = q.german;
+        qText = `Was bedeutet:`;
+        document.getElementById('word').innerText = g;
+        const correctT = pickTranslation(q);
+        const pool = shuffle(words.map(w => pickTranslation(w)).filter(t => t && t !== correctT));
+        opts = pool.slice(0, 3);
+        opts.push(correctT);
+        correct = correctT;
+    } else {
+        const trans = pickTranslation(q);
+        qText = `Wie heißt auf Deutsch:`;
+        document.getElementById('word').innerText = trans;
+        const correctG = q.german;
+        const pool = shuffle(words.map(w => w.german).filter(g => g !== correctG));
+        opts = pool.slice(0, 3);
+        opts.push(correctG);
+        correct = correctG;
+    }
+    
+    opts = shuffle(opts);
+    document.getElementById('question').innerText = qText;
+    const ans = document.getElementById('answers');
+    ans.innerHTML = '';
+    
+    opts.forEach(opt => {
+        const b = document.createElement('button');
+        b.textContent = opt;
+        b.onclick = () => checkAnswer(b, opt, correct, q);
+        ans.appendChild(b);
+    });
+}
+
+function checkAnswer(button, selected, correct, q) {
+    const allButtons = document.querySelectorAll('#answers button');
+    allButtons.forEach(btn => {
+        btn.onclick = null;
+    });
+
+    // Сбрасываем статусы изучения, если ответ неправильный
+    if (selected !== correct) {
+        const wordId = q.id;
+        
+        if (currentSessionLearnedWords.includes(wordId)) {
+            learnedWords = learnedWords.filter(id => id !== wordId);
+            currentSessionLearnedWords = currentSessionLearnedWords.filter(id => id !== wordId);
+        }
+        
+        if (currentSessionLearnedArticles.includes(wordId)) {
+            learnedArticles = learnedArticles.filter(id => id !== wordId);
+            currentSessionLearnedArticles = currentSessionLearnedArticles.filter(id => id !== wordId);
+        }
+        
+        saveLearnedData();
+    }
+
+    if (selected === correct) {
+        button.style.background = 'green';
+        score++;
+        
+        showSubliminalFrame(q);
+        
+        if (mode === 'article' && q.hasArticle) {
+            document.getElementById('articleDisplay').textContent = q.article;
+            document.getElementById('articleDisplay').style.color = '#22c55e';
+        } else {
+            showCorrectAnswer(correct);
+        }
+    } else {
+        button.style.background = 'red';
+        allButtons.forEach(btn => {
+            if (btn.textContent === correct) {
+                btn.style.background = 'green';
+            }
+        });
+        
+        showSubliminalFrame(q);
+        
+        if (mode === 'article' && q.hasArticle) {
+            document.getElementById('articleDisplay').textContent = q.article;
+            document.getElementById('articleDisplay').style.color = '#22c55e';
+        } else {
+            showCorrectAnswer(correct);
+        }
+    }
+    
+    setTimeout(() => {
+        index++;
+        nextQuestion();
+    }, 1500);
+}
+
+function showCorrectAnswer(answer) {
+    const el = document.getElementById('correctAnswerDisplay');
+    el.textContent = answer;
+    el.style.color = '#22c55e';
+}
+
+function pickTranslation(item) {
+    if (lang === 'tr') return item.translation_tr || item.translation_ru || '';
+    if (lang === 'fa') return item.translation_fa || item.translation_ru || '';
+    return item.translation_ru || item.translation_tr || item.translation_fa || '';
+}
+
+function finishQuiz() {
+    document.getElementById('quiz').style.display = 'none';
+    document.getElementById('result').style.display = 'block';
+    const accuracy = (score / quizWords.length * 100).toFixed(1);
+    document.getElementById('score').innerText = `${score} / ${quizWords.length} (${accuracy}%)`;
+    
+    currentQuizWords = [...quizWords];
+    
+    const unlearnedCount = currentQuizWords.filter(word => {
+        return !learnedWords.includes(word.id) && !learnedArticles.includes(word.id);
+    }).length;
+    
+    const resultStats = document.getElementById('resultStats');
+    resultStats.innerHTML = `
+        <div style="margin: 15px 0;">
+            <strong>In dieser Sitzung gelernt:</strong><br>
+            - Wörter: ${currentSessionLearnedWords.length}<br>
+            - Artikel: ${currentSessionLearnedArticles.length}<br>
+            <strong>Noch nicht gelernte Wörter in diesem Spiel:</strong> ${unlearnedCount}
+        </div>
+    `;
+    
+    const repeatUnlearnedBtn = document.getElementById('repeatUnlearnedBtn');
+    if (unlearnedCount > 0) {
+        repeatUnlearnedBtn.style.display = 'block';
+        repeatUnlearnedBtn.innerHTML = `📚 Nochmal mit ${unlearnedCount} ungelernter Wörtern`;
+    } else {
+        repeatUnlearnedBtn.style.display = 'none';
+    }
+    
+    updateStats();
+}
+
+function showStats() {
+    const stats = JSON.parse(localStorage.getItem(`stats_${playerId}`) || '{"games": 0, "bestScore": 0, "totalQuestions": 0, "totalCorrect": 0}');
+    const accuracy = stats.totalQuestions > 0 ? (stats.totalCorrect / stats.totalQuestions * 100).toFixed(1) : 0;
+    
+    document.getElementById('detailedStats').innerHTML = `
+        <div style="text-align: left; line-height: 1.6;">
+            <h3>📈 Detaillierte Statistik</h3>
+            <p><strong>Gesamtspiele:</strong> ${stats.games}</p>
+            <p><strong>Beste Punktzahl:</strong> ${stats.bestScore}</p>
+            <p><strong>Gesamtfragen:</strong> ${stats.totalQuestions}</p>
+            <p><strong>Richtige Antworten:</strong> ${stats.totalCorrect}</p>
+            <p><strong>Genauigkeit:</strong> ${accuracy}%</p>
+            <p><strong>Gelernte Wörter:</strong> ${learnedWords.length}</p>
+            <p><strong>Gelernte Artikel:</strong> ${learnedArticles.length}</p>
+            <p><strong>Verfügbare Wörter:</strong> ${words.length}</p>
+            <p><strong>Aktuelles Wörterbuch:</strong> ${currentDictionary === 'with_articles' ? 'Wörter mit Artikeln' : currentDictionary === 'without_articles' ? 'Wörter ohne Artikel' : 'ALLE WÖRTER'}</p>
+        </div>
+    `;
+    
+    document.getElementById('menu').style.display = 'none';
+    document.getElementById('stats').style.display = 'block';
+}
+
+function backToMenu() {
+    document.getElementById('quiz').style.display = 'none';
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('stats').style.display = 'none';
+    document.getElementById('menu').style.display = 'block';
+    currentSessionLearnedWords = [];
+    currentSessionLearnedArticles = [];
+}
+
+function restart() {
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('menu').style.display = 'block';
+    currentSessionLearnedWords = [];
+    currentSessionLearnedArticles = [];
+    applyWordFilter();
+}
+
+function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function startSessionTimer() {
+    setInterval(() => {
+        document.getElementById('info').innerHTML = `<span>Sprache: ${getLanguageName(lang)}</span> • <span>Modus: ${getModeName(mode)}</span> • <span>Wörterbuch: ${currentDictionary === 'with_articles' ? 'Mit Artikeln' : currentDictionary === 'without_articles' ? 'Ohne Artikel' : 'ALLE WÖRTER'}</span>`;
+    }, 1000);
+}
+
+function getLanguageName(lang) {
+    const names = {
+        'ru': 'Русский',
+        'tr': 'Türkçe',
+        'fa': 'فارسی'
+    };
+    return names[lang] || 'Русский';
+}
+
+function getModeName(mode) {
+    const names = {
+        'article': 'Artikel wählen',
+        'de_to_l1': 'Deutsch → Übersetzung',
+        'l1_to_de': 'Übersetzung → Deutsch'
+    };
+    return names[mode] || 'Artikel wählen';
+}
+
+function setLang(language) {
+    lang = language;
+    updateStatsDisplay();
+    updateMenuButtons();
+}
+
+function setMode(gameMode) {
+    mode = gameMode;
+    updateStatsDisplay();
+    updateMenuButtons();
+}
+
+function startQuiz() {
+    if (!filteredWords.length) {
+        alert(`Keine Wörter verfügbar für den ausgewählten Filter (${wordFilter}). Bitte wählen Sie einen anderen Filter.`);
+        return;
+    }
+    
+    let qCount = parseInt(document.getElementById('qCount').value) || 10;
+    qCount = Math.max(5, Math.min(100, qCount));
+    
+    let availableWords = [...filteredWords];
+    
+    // Если режим артиклей, показываем только слова с артиклями
+    if (mode === 'article') {
+        availableWords = availableWords.filter(word => word.hasArticle);
+        if (!availableWords.length) {
+            alert('Im Modus "Artikel wählen" sind nur Wörter mit Artikeln verfügbar. Bitte wählen Sie Wörter mit Artikeln oder ändern Sie den Modus.');
+            return;
+        }
+    }
+    
+    const pool = shuffle(availableWords);
+    quizWords = pool.slice(0, Math.min(qCount, pool.length));
+    
+    currentSessionLearnedWords = [];
+    currentSessionLearnedArticles = [];
+    
+    document.getElementById('menu').style.display = 'none';
+    document.getElementById('quiz').style.display = 'block';
+    
+    index = 0;
+    score = 0;
+    
+    nextQuestion();
+}
+
+// Загружаем настройки 25-го кадра
+function loadSubliminalSettings() {
+    const saved = localStorage.getItem('subliminalEnabled');
+    if (saved !== null) {
+        subliminalEnabled = JSON.parse(saved);
+    } else {
+        subliminalEnabled = true;
+        localStorage.setItem('subliminalEnabled', 'true');
+    }
+    
+    const checkbox = document.getElementById('subliminalToggle');
+    if (checkbox) {
+        checkbox.checked = subliminalEnabled;
+    }
+}
+
+// Инициализация
+function init() {
+    checkVersion();
+    loadPlayerData();
+    updateStatsDisplay();
+    startSessionTimer();
+    loadSubliminalSettings();
+    
+    document.getElementById('subliminalToggle').addEventListener('change', function(e) {
+        subliminalEnabled = e.target.checked;
+        localStorage.setItem('subliminalEnabled', JSON.stringify(subliminalEnabled));
+    });
+    
+    document.getElementById('playerName').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            saveName();
+        }
+    });
+    
+    setInterval(updateOnlineStatus, 60000);
+}
+
+window.onload = init;
+    </script>
+
+    <div style="text-align: center; padding: 15px; color: #666; font-size: 12px;">
+        powered by Aleksandr Gadzera • @ale11111
+    </div>
+
+</body>
+</html>

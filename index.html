@@ -558,7 +558,7 @@
 
     <script>
 // Версия приложения для сброса кеша
-const APP_VERSION = '2.4';
+const APP_VERSION = '2.5';
 
 // Game state
 let lang = 'ru';
@@ -574,7 +574,7 @@ let wordFilter = 'all';
 let learnedWords = [];
 let learnedArticles = [];
 let startTime = Date.now();
-let currentDictionary = 'all'; // Теперь по умолчанию ВСЕ слова
+let currentDictionary = 'all';
 let currentQuizWords = [];
 let currentSessionLearnedWords = [];
 let currentSessionLearnedArticles = [];
@@ -1821,7 +1821,7 @@ function generateWordId(word) {
     }
 }
 
-// Фильтры
+// Фильтры - ИСПРАВЛЕННАЯ ВЕРСИЯ
 function setWordFilter(filter) {
     wordFilter = filter;
     applyWordFilter();
@@ -1840,12 +1840,19 @@ function applyWordFilter() {
             );
             break;
         case 'unlearned':
-            filteredWords = words.filter(word => 
-                !learnedWords.includes(word.id) && !learnedArticles.includes(word.id)
-            );
+            // ИСПРАВЛЕНИЕ: правильно фильтруем невыученные слова
+            filteredWords = words.filter(word => {
+                // Для слов с артиклями - проверяем оба статуса
+                if (word.hasArticle) {
+                    return !learnedWords.includes(word.id) && !learnedArticles.includes(word.id);
+                } else {
+                    // Для слов без артиклей - проверяем только статус слова
+                    return !learnedWords.includes(word.id);
+                }
+            });
             break;
         case 'no_article':
-            // Для фильтра "не выученные артикли" показываем только слова С артиклями
+            // ИСПРАВЛЕНИЕ: показываем только слова С артиклями, которые не выучены
             filteredWords = words.filter(word => 
                 word.hasArticle && !learnedArticles.includes(word.id)
             );
@@ -2026,10 +2033,16 @@ function repeatSameQuiz() {
     nextQuestion();
 }
 
-// Повторение только невыученных слов
+// Повторение только невыученных слов - ИСПРАВЛЕННАЯ ВЕРСИЯ
 function repeatUnlearned() {
     const unlearnedFromCurrentGame = currentQuizWords.filter(word => {
-        return !learnedWords.includes(word.id) && !learnedArticles.includes(word.id);
+        // Для слов с артиклями - проверяем оба статуса
+        if (word.hasArticle) {
+            return !learnedWords.includes(word.id) && !learnedArticles.includes(word.id);
+        } else {
+            // Для слов без артиклей - проверяем только статус слова
+            return !learnedWords.includes(word.id);
+        }
     });
     
     if (unlearnedFromCurrentGame.length === 0) {
@@ -2242,8 +2255,13 @@ function finishQuiz() {
     
     currentQuizWords = [...quizWords];
     
+    // ИСПРАВЛЕНИЕ: правильно считаем невыученные слова
     const unlearnedCount = currentQuizWords.filter(word => {
-        return !learnedWords.includes(word.id) && !learnedArticles.includes(word.id);
+        if (word.hasArticle) {
+            return !learnedWords.includes(word.id) && !learnedArticles.includes(word.id);
+        } else {
+            return !learnedWords.includes(word.id);
+        }
     }).length;
     
     const resultStats = document.getElementById('resultStats');
@@ -2351,6 +2369,7 @@ function setMode(gameMode) {
     updateMenuButtons();
 }
 
+// Старт викторины - ИСПРАВЛЕННАЯ ВЕРСИЯ
 function startQuiz() {
     if (!filteredWords.length) {
         alert(`Keine Wörter verfügbar für den ausgewählten Filter (${wordFilter}). Bitte wählen Sie einen anderen Filter.`);

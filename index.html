@@ -408,59 +408,52 @@
     </div>
 
     <script>
-        // Compact German words database - ONLY WORDS FROM OUR STORIES
+        // Только артикли и предлоги
         const germanWords = [
-            // Empty option for gaps that don't need a word
             "(leer)",
             
-            // Definite Articles
-            "der", "die", "das", "den", "dem",
-            "Der", "Die", "Das", "Den",
+            // Артикли определенные
+            "der", "die", "das", "den", "dem", "des",
+            "Der", "Die", "Das", "Den", "Dem", "Des",
             
-            // Indefinite Articles
-            "ein", "eine", "einen",
-            "Ein", "Eine", "Einen",
-            "mein", "meine", "meiner",
-            "Mein", "Meine", "Meiner",
-            "ihr", "Ihr", "sein", "Sein",
+            // Артикли неопределенные
+            "ein", "eine", "einen", "einem", "einer",
+            "Ein", "Eine", "Einen", "Einem", "Einer",
             
-            // Pronouns
-            "ich", "mir", "mich", "du", "dich", "dir",
-            "sie", "Sie", "er", "ihn", "ihm",
-            "es", "wir", "uns",
+            // Притяжательные местоимения
+            "mein", "meine", "meinen", "meinem", "meiner",
+            "dein", "deine", "deinen", "deinem", "deiner",
+            "sein", "seine", "seinen", "seinem", "seiner",
+            "ihr", "ihre", "ihren", "ihrem", "ihrer",
+            "unser", "unsere", "unseren", "unserem", "unserer",
             
-            // Prepositions
-            "in", "an", "auf", "zu", "nach", "bei", "mit", "von", "für",
-            "In", "An", "Auf", "Zu", "Nach", "Bei", "Mit", "Von", "Für",
-            "zum", "zur", "am", "im", "ins",
-            "Zum", "Zur", "Am", "Im",
+            // Предлоги
+            "in", "an", "auf", "zu", "nach", "bei", "mit", "von", "für", "aus", "durch", "gegen", "um", "ohne", "bis",
+            "In", "An", "Auf", "Zu", "Nach", "Bei", "Mit", "Von", "Für", "Aus", "Durch", "Gegen", "Um", "Ohne", "Bis",
+            "zum", "zur", "am", "im", "ins", "ans", "beim", "vom",
+            "Zum", "Zur", "Am", "Im", "Ins", "Ans", "Beim", "Vom",
             
-            // Other words from stories
-            "viele", "Viele", "sehr", "Sehr", "und", "oder",
-            "aber", "nicht", "auch", "immer", "oft", "manchmal",
-            
-            // Additional words needed for stories
-            "Es", "An der", "In der", "Im", "Am", "Zur", "Zum", "In diesem", "Auf der", "Bei der", "Ins"
+            // Слитные формы
+            "im", "am", "zum", "zur", "beim", "vom", "ins", "ans",
+            "Im", "Am", "Zum", "Zur", "Beim", "Vom", "Ins", "Ans"
         ];
 
-        // Database of stories with gaps - 50 STORIES
+        // 50 историй только с артиклями и предлогами
         const stories = [
             {
                 id: 1,
-                text: "Gestern bin ich ___ Supermarkt gegangen. Ich brauchte ___ Brot und ___ Milch. ___ Verkäuferin war sehr freundlich. Sie hat ___ geholfen, ___ richtigen Käse zu finden.",
+                text: "Heute mache ich zusammen ______ Freund ein Abendessen. Wir treffen uns ______ Wohnung von Mario in der Nähe ______ Rathaus. Das Essen beginnt um 20 Uhr. Um 19:30 Uhr kommt Maria, um uns zu helfen. Sie bringt frische Tomaten ______ Garten mit.",
                 gaps: [
-                    { id: 1, correct: "zum" },
-                    { id: 2, correct: "ein" },
-                    { id: 3, correct: "eine" },
-                    { id: 4, correct: "Die" },
-                    { id: 5, correct: "mir" },
-                    { id: 6, correct: "den" }
+                    { id: 1, correct: "meinem" },
+                    { id: 2, correct: "in der" },
+                    { id: 3, correct: "des" },
+                    { id: 4, correct: "aus dem" }
                 ],
-                translation: "Вчера я пошел в супермаркет. Мне нужны были хлеб и молоко. Продавщица была очень дружелюбна. Она помогла мне найти правильный сыр."
+                translation: "Сегодня я готовлю ужин вместе с моим другом. Мы встречаемся в квартире Марио около ратуши. Еда начинается в 20:00. В 19:30 приходит Мария, чтобы помочь нам. Она приносит свежие помидоры из сада."
             },
             {
                 id: 2,
-                text: "___ Wochenende fahre ich immer ___ meinen Eltern. ___ Haus liegt ___ einem kleinen Dorf. Ich verbringe dort ___ Zeit mit ___ Familie.",
+                text: "______ Wochenende fahre ich immer ______ meinen Eltern. ______ Haus liegt ______ einem kleinen Dorf. Ich verbringe dort ______ Zeit mit ______ Familie.",
                 gaps: [
                     { id: 1, correct: "Am" },
                     { id: 2, correct: "zu" },
@@ -469,11 +462,11 @@
                     { id: 5, correct: "die" },
                     { id: 6, correct: "meiner" }
                 ],
-                translation: "На выходных я всегда еду к своим родителям. Их дом находится в маленькой деревне. Я провожу там время с семьей."
+                translation: "На выходных я всегда еду к моим родителям. Их дом находится в маленькой деревне. Я провожу там время с моей семьей."
             },
             {
                 id: 3,
-                text: "___ Studentin aus Spanien lernt ___ Deutsch. Sie hat ___ Freundin, ___ auch Deutsch spricht. Zusammen üben ___ Vokabeln und ___ Grammatik.",
+                text: "______ Studentin aus Spanien lernt ______ Deutsch. Sie hat ______ Freundin, ______ auch Deutsch spricht. Zusammen üben ______ Vokabeln und ______ Grammatik.",
                 gaps: [
                     { id: 1, correct: "Eine" },
                     { id: 2, correct: "(leer)" },
@@ -486,7 +479,7 @@
             },
             {
                 id: 4,
-                text: "___ Berlin gibt es viele Museen. Ich war gestern ___ dem Naturkundemuseum. ___ Ausstellung war sehr interessant. Besonders ___ Dinosaurier-Skelette haben ___ beeindruckt.",
+                text: "______ Berlin gibt es viele Museen. Ich war gestern ______ dem Naturkundemuseum. ______ Ausstellung war sehr interessant. Besonders ______ Dinosaurier-Skelette haben ______ beeindruckt.",
                 gaps: [
                     { id: 1, correct: "In" },
                     { id: 2, correct: "in" },
@@ -498,7 +491,7 @@
             },
             {
                 id: 5,
-                text: "___ Sommer mache ich immer Urlaub ___ Meer. Ich fahre dann ___ Italien oder Spanien. Dort kann ich ___ Sonne genießen und ___ Bücher lesen.",
+                text: "______ Sommer mache ich immer Urlaub ______ Meer. Ich fahre dann ______ Italien oder Spanien. Dort kann ich ______ Sonne genießen und ______ Bücher lesen.",
                 gaps: [
                     { id: 1, correct: "Im" },
                     { id: 2, correct: "am" },
@@ -510,7 +503,7 @@
             },
             {
                 id: 6,
-                text: "___ Morgen trinke ich immer ___ Kaffee. Ohne ___ kann ich nicht richtig aufwachen. ___ Freundin trinkt lieber ___ Tee.",
+                text: "______ Morgen trinke ich immer ______ Kaffee. Ohne ______ kann ich nicht richtig aufwachen. ______ Freundin trinkt lieber ______ Tee.",
                 gaps: [
                     { id: 1, correct: "Am" },
                     { id: 2, correct: "einen" },
@@ -522,7 +515,7 @@
             },
             {
                 id: 7,
-                text: "___ Deutschland muss man pünktlich sein. ___ ist sehr wichtig. Ich komme immer ___ Zeit, aber ___ Freund ist oft zu spät.",
+                text: "______ Deutschland muss man pünktlich sein. ______ ist sehr wichtig. Ich komme immer ______ Zeit, aber ______ Freund ist oft zu spät.",
                 gaps: [
                     { id: 1, correct: "In" },
                     { id: 2, correct: "Das" },
@@ -533,7 +526,7 @@
             },
             {
                 id: 8,
-                text: "___ Abend sehe ich oft ___ Film. Heute will ich ___ neuen Actionfilm sehen. ___ soll sehr spannend sein.",
+                text: "______ Abend sehe ich oft ______ Film. Heute will ich ______ neuen Actionfilm sehen. ______ soll sehr spannend sein.",
                 gaps: [
                     { id: 1, correct: "Am" },
                     { id: 2, correct: "einen" },
@@ -544,7 +537,7 @@
             },
             {
                 id: 9,
-                text: "___ Universität lerne ich ___ Mathematik. ___ ist nicht einfach, aber ___ macht Spaß. ___ Professor erklärt sehr gut.",
+                text: "______ Universität lerne ich ______ Mathematik. ______ ist nicht einfach, aber ______ macht Spaß. ______ Professor erklärt sehr gut.",
                 gaps: [
                     { id: 1, correct: "An der" },
                     { id: 2, correct: "(leer)" },
@@ -556,7 +549,7 @@
             },
             {
                 id: 10,
-                text: "___ Winter fahre ich gerne Ski. ___ Alpen sind perfekt dafür. Letztes Jahr war ich ___ Österreich. ___ war wunderschön.",
+                text: "______ Winter fahre ich gerne Ski. ______ Alpen sind perfekt dafür. Letztes Jahr war ich ______ Österreich. ______ war wunderschön.",
                 gaps: [
                     { id: 1, correct: "Im" },
                     { id: 2, correct: "Die" },
@@ -564,6 +557,464 @@
                     { id: 4, correct: "Es" }
                 ],
                 translation: "Зимой я люблю кататься на лыжах. Альпы идеально подходят для этого. В прошлом году я был в Австрии. Это было прекрасно."
+            },
+            {
+                id: 11,
+                text: "______ Restaurant esse ich gerne ______ Pizza. ______ schmeckt immer lecker. Heute bestelle ich ______ große Pizza mit ______ Extra Käse.",
+                gaps: [
+                    { id: 1, correct: "Im" },
+                    { id: 2, correct: "(leer)" },
+                    { id: 3, correct: "Sie" },
+                    { id: 4, correct: "eine" },
+                    { id: 5, correct: "(leer)" }
+                ],
+                translation: "В ресторане я люблю есть пиццу. Она всегда вкусная. Сегодня я закажу большую пиццу с дополнительным сыром."
+            },
+            {
+                id: 12,
+                text: "______ Auto ist kaputt. Ich muss ___ zur Werkstatt bringen. ______ Mechaniker sagt, ______ Reparatur dauert drei Tage.",
+                gaps: [
+                    { id: 1, correct: "Mein" },
+                    { id: 2, correct: "es" },
+                    { id: 3, correct: "Der" },
+                    { id: 4, correct: "die" }
+                ],
+                translation: "Моя машина сломалась. Мне нужно отвезти ее в мастерскую. Механик говорит, что ремонт займет три дня."
+            },
+            {
+                id: 13,
+                text: "______ Kinder spielen ______ Garten. Sie haben ______ neuen Ball. ______ Mutter sieht ______ vom Fenster aus zu.",
+                gaps: [
+                    { id: 1, correct: "Die" },
+                    { id: 2, correct: "im" },
+                    { id: 3, correct: "einen" },
+                    { id: 4, correct: "Ihre" },
+                    { id: 5, correct: "ihnen" }
+                ],
+                translation: "Дети играют в саду. У них есть новый мяч. Их мать наблюдает за ними из окна."
+            },
+            {
+                id: 14,
+                text: "______ Buch, das ich lese, ist sehr interessant. ______ handelt von ______ Reise um ______ Welt. ______ Autor ist berühmt.",
+                gaps: [
+                    { id: 1, correct: "Das" },
+                    { id: 2, correct: "Es" },
+                    { id: 3, correct: "einer" },
+                    { id: 4, correct: "die" },
+                    { id: 5, correct: "Der" }
+                ],
+                translation: "Книга, которую я читаю, очень интересная. Она рассказывает о путешествии вокруг света. Автор известный."
+            },
+            {
+                id: 15,
+                text: "______ Montag habe ich immer ______ Meeting. ______ beginnt um neun Uhr. Ich bereite ___ immer gut vor.",
+                gaps: [
+                    { id: 1, correct: "Am" },
+                    { id: 2, correct: "ein" },
+                    { id: 3, correct: "Es" },
+                    { id: 4, correct: "mich" }
+                ],
+                translation: "В понедельник у меня всегда совещание. Оно начинается в девять часов. Я всегда хорошо к нему готовлюсь."
+            },
+            {
+                id: 16,
+                text: "______ Freundin kommt aus ______ Frankreich. Sie spricht ______ sehr gutes Deutsch. Wir unterhalten ___ oft auf Deutsch.",
+                gaps: [
+                    { id: 1, correct: "Meine" },
+                    { id: 2, correct: "(leer)" },
+                    { id: 3, correct: "sehr" },
+                    { id: 4, correct: "uns" }
+                ],
+                translation: "Моя подруга из Франции. Она говорит по-немецки очень хорошо. Мы часто общаемся на немецком."
+            },
+            {
+                id: 17,
+                text: "______ Park gibt es ______ schönen See. ______ Wasser ist klar. ______ Kinder füttern ______ Enten.",
+                gaps: [
+                    { id: 1, correct: "Im" },
+                    { id: 2, correct: "einen" },
+                    { id: 3, correct: "Das" },
+                    { id: 4, correct: "Die" },
+                    { id: 5, correct: "die" }
+                ],
+                translation: "В парке есть красивое озеро. Вода чистая. Дети кормят уток."
+            },
+            {
+                id: 18,
+                text: "______ Computer ist neu. Ich habe ___ gestern gekauft. ______ funktioniert sehr schnell. Ich bin zufrieden mit ___.",
+                gaps: [
+                    { id: 1, correct: "Der" },
+                    { id: 2, correct: "ihn" },
+                    { id: 3, correct: "Er" },
+                    { id: 4, correct: "ihm" }
+                ],
+                translation: "Компьютер новый. Я купил его вчера. Он работает очень быстро. Я доволен им."
+            },
+            {
+                id: 19,
+                text: "______ Wochenende besuche ich ______ meine Großeltern. ______ wohnen auf ______ Land. Ich helfe ___ im Garten.",
+                gaps: [
+                    { id: 1, correct: "Am" },
+                    { id: 2, correct: "meine" },
+                    { id: 3, correct: "Sie" },
+                    { id: 4, correct: "dem" },
+                    { id: 5, correct: "ihnen" }
+                ],
+                translation: "На выходных я навещаю своих бабушку и дедушку. Они живут в деревне. Я помогаю им в саду."
+            },
+            {
+                id: 20,
+                text: "______ Supermarkt finde ich nicht ______ Milch. ______ Regal ist leer. Ich frage ______ Verkäuferin.",
+                gaps: [
+                    { id: 1, correct: "Im" },
+                    { id: 2, correct: "die" },
+                    { id: 3, correct: "Das" },
+                    { id: 4, correct: "die" }
+                ],
+                translation: "В супермаркете я не могу найти молоко. Полка пустая. Я спрашиваю продавщицу."
+            },
+            {
+                id: 21,
+                text: "______ Musik höre ich gerne ______ Klassik. ______ beruhigt ___ sehr. Besonders mag ich ______ Beethoven.",
+                gaps: [
+                    { id: 1, correct: "(leer)" },
+                    { id: 2, correct: "(leer)" },
+                    { id: 3, correct: "Sie" },
+                    { id: 4, correct: "mich" },
+                    { id: 5, correct: "(leer)" }
+                ],
+                translation: "Музыку я люблю слушать классическую. Она меня очень успокаивает. Особенно мне нравится Бетховен."
+            },
+            {
+                id: 22,
+                text: "______ Stadt gibt es ______ altes Schloss. ______ wurde im 16. Jahrhundert gebaut. ______ Touristen besuchen ___ jeden Tag.",
+                gaps: [
+                    { id: 1, correct: "In der" },
+                    { id: 2, correct: "ein" },
+                    { id: 3, correct: "Es" },
+                    { id: 4, correct: "Viele" },
+                    { id: 5, correct: "es" }
+                ],
+                translation: "В городе есть старый замок. Он был построен в 16 веке. Многие туристы посещают его каждый день."
+            },
+            {
+                id: 23,
+                text: "______ Frühling blühen ______ Blumen. ______ Wetter wird wärmer. ______ Vögel singen ______ Bäumen.",
+                gaps: [
+                    { id: 1, correct: "Im" },
+                    { id: 2, correct: "die" },
+                    { id: 3, correct: "Das" },
+                    { id: 4, correct: "Die" },
+                    { id: 5, correct: "in den" }
+                ],
+                translation: "Весной цветут цветы. Погода становится теплее. Птицы поют на деревьях."
+            },
+            {
+                id: 24,
+                text: "______ Arbeit beginnt um acht Uhr. Ich fahre ______ Bus. ______ Fahrt dauert zwanzig Minuten.",
+                gaps: [
+                    { id: 1, correct: "Die" },
+                    { id: 2, correct: "mit dem" },
+                    { id: 3, correct: "Die" }
+                ],
+                translation: "Работа начинается в восемь часов. Я еду автобусом. Поездка длится двадцать минут."
+            },
+            {
+                id: 25,
+                text: "______ Geburtstag bekomme ich immer ______ Geschenke. ______ Eltern schenken ___ meistens Bücher.",
+                gaps: [
+                    { id: 1, correct: "Zum" },
+                    { id: 2, correct: "viele" },
+                    { id: 3, correct: "Meine" },
+                    { id: 4, correct: "mir" }
+                ],
+                translation: "На день рождения я всегда получаю много подарков. Мои родители обычно дарят мне книги."
+            },
+            {
+                id: 26,
+                text: "______ Hotelzimmer hat ______ schönen Blick. ______ kann man ______ Meer sehen. ______ ist wirklich fantastisch.",
+                gaps: [
+                    { id: 1, correct: "Das" },
+                    { id: 2, correct: "einen" },
+                    { id: 3, correct: "Von hier" },
+                    { id: 4, correct: "das" },
+                    { id: 5, correct: "Es" }
+                ],
+                translation: "В номере отеля красивый вид. Отсюда видно море. Это действительно фантастически."
+            },
+            {
+                id: 27,
+                text: "______ Deutschunterricht lernen wir ______ neue Vokabeln. ______ Lehrerin erklärt ___ sehr gut.",
+                gaps: [
+                    { id: 1, correct: "Im" },
+                    { id: 2, correct: "neue" },
+                    { id: 3, correct: "Die" },
+                    { id: 4, correct: "sie" }
+                ],
+                translation: "На уроке немецкого мы учим новые слова. Учительница очень хорошо их объясняет."
+            },
+            {
+                id: 28,
+                text: "______ Freund hat ______ Hund. ______ heißt Bello. ______ ist sehr verspielt und lieb.",
+                gaps: [
+                    { id: 1, correct: "Mein" },
+                    { id: 2, correct: "einen" },
+                    { id: 3, correct: "Er" },
+                    { id: 4, correct: "Er" }
+                ],
+                translation: "У моего друга есть собака. Его зовут Белло. Он очень игривый и ласковый."
+            },
+            {
+                id: 29,
+                text: "______ Konzert war gestern Abend. ______ war ausverkauft. ______ Musik hat ___ begeistert.",
+                gaps: [
+                    { id: 1, correct: "Das" },
+                    { id: 2, correct: "Es" },
+                    { id: 3, correct: "Die" },
+                    { id: 4, correct: "mich" }
+                ],
+                translation: "Концерт был вчера вечером. Он был распродан. Музыка меня восхитила."
+            },
+            {
+                id: 30,
+                text: "______ Winter trage ich ______ warmen Mantel. ______ schützt ___ vor der Kälte.",
+                gaps: [
+                    { id: 1, correct: "Im" },
+                    { id: 2, correct: "einen" },
+                    { id: 3, correct: "Er" },
+                    { id: 4, correct: "mich" }
+                ],
+                translation: "Зимой я ношу теплое пальто. Оно защищает меня от холода."
+            },
+            {
+                id: 31,
+                text: "______ Kino laufen ______ interessante Filme. Heute sehe ich ______ Komödie. ______ soll sehr lustig sein.",
+                gaps: [
+                    { id: 1, correct: "Im" },
+                    { id: 2, correct: "interessante" },
+                    { id: 3, correct: "eine" },
+                    { id: 4, correct: "Sie" }
+                ],
+                translation: "В кинотеатре идут интересные фильмы. Сегодня я смотрю комедию. Говорят, она очень смешная."
+            },
+            {
+                id: 32,
+                text: "______ Universität studiert ______ Bruder Medizin. ______ möchte Arzt werden. ______ Eltern sind stolz auf ___.",
+                gaps: [
+                    { id: 1, correct: "An der" },
+                    { id: 2, correct: "mein" },
+                    { id: 3, correct: "Er" },
+                    { id: 4, correct: "Seine" },
+                    { id: 5, correct: "ihn" }
+                ],
+                translation: "В университете мой брат изучает медицину. Он хочет стать врачом. Его родители гордятся им."
+            },
+            {
+                id: 33,
+                text: "______ Restaurant servieren ______ gutes Essen. ______ Service ist ausgezeichnet. Ich gebe ______ gern Trinkgeld.",
+                gaps: [
+                    { id: 1, correct: "In diesem" },
+                    { id: 2, correct: "gutes" },
+                    { id: 3, correct: "Der" },
+                    { id: 4, correct: "gern" }
+                ],
+                translation: "В этом ресторане подают хорошую еду. Обслуживание отличное. Я с удовольствием даю чаевые."
+            },
+            {
+                id: 34,
+                text: "______ Garten wachsen ______ schöne Blumen. ______ pflege ___ jeden Tag. ______ duftet wunderbar.",
+                gaps: [
+                    { id: 1, correct: "Im" },
+                    { id: 2, correct: "schöne" },
+                    { id: 3, correct: "Ich" },
+                    { id: 4, correct: "sie" },
+                    { id: 5, correct: "Es" }
+                ],
+                translation: "В саду растут красивые цветы. Я ухаживаю за ними каждый день. Они чудесно пахнут."
+            },
+            {
+                id: 35,
+                text: "______ Buchhandlung kaufe ich ______ neues Buch. ______ handelt von ______ Abenteuer in Afrika.",
+                gaps: [
+                    { id: 1, correct: "In der" },
+                    { id: 2, correct: "ein" },
+                    { id: 3, correct: "Es" },
+                    { id: 4, correct: "einem" }
+                ],
+                translation: "В книжном магазине я покупаю новую книгу. Она рассказывает о приключении в Африке."
+            },
+            {
+                id: 36,
+                text: "______ Schule lernen ______ Kinder Englisch. ______ Lehrerin kommt aus London. ______ spricht perfektes Englisch.",
+                gaps: [
+                    { id: 1, correct: "In der" },
+                    { id: 2, correct: "die" },
+                    { id: 3, correct: "Die" },
+                    { id: 4, correct: "Sie" }
+                ],
+                translation: "В школе дети учат английский. Учительница приехала из Лондона. Она говорит на идеальном английском."
+            },
+            {
+                id: 37,
+                text: "______ Park spielen ______ Kinder Fußball. ______ haben viel Spaß. ______ Eltern beobachten ___.",
+                gaps: [
+                    { id: 1, correct: "Im" },
+                    { id: 2, correct: "die" },
+                    { id: 3, correct: "Sie" },
+                    { id: 4, correct: "Die" },
+                    { id: 5, correct: "sie" }
+                ],
+                translation: "В парке дети играют в футбол. Им очень весело. Родители наблюдают за ними."
+            },
+            {
+                id: 38,
+                text: "______ Sommer trinke ich viel Wasser. ______ ist wichtig bei ______ Hitze. Ich habe immer ______ Flasche dabei.",
+                gaps: [
+                    { id: 1, correct: "Im" },
+                    { id: 2, correct: "Das" },
+                    { id: 3, correct: "der" },
+                    { id: 4, correct: "eine" }
+                ],
+                translation: "Летом я пью много воды. Это важно в жару. У меня всегда есть с собой бутылка."
+            },
+            {
+                id: 39,
+                text: "______ Konferenz treffe ich ______ Kollegen. ______ arbeiten in verschiedenen Städten. Wir tauschen ______ Erfahrungen aus.",
+                gaps: [
+                    { id: 1, correct: "Auf der" },
+                    { id: 2, correct: "meine" },
+                    { id: 3, correct: "Sie" },
+                    { id: 4, correct: "unsere" }
+                ],
+                translation: "На конференции я встречаюсь с коллегами. Они работают в разных городах. Мы обмениваемся опытом."
+            },
+            {
+                id: 40,
+                text: "______ Museum gibt es ______ alte Gemälde. ______ sind sehr wertvoll. ______ Bewacher passt gut auf ___ auf.",
+                gaps: [
+                    { id: 1, correct: "Im" },
+                    { id: 2, correct: "alte" },
+                    { id: 3, correct: "Sie" },
+                    { id: 4, correct: "Der" },
+                    { id: 5, correct: "sie" }
+                ],
+                translation: "В музее есть старые картины. Они очень ценные. Охранник хорошо за ними следит."
+            },
+            {
+                id: 41,
+                text: "______ Bahnhof warte ich auf ______ Zug. ______ kommt in zehn Minuten. Ich lese ______ Buch während ______ Wartezeit.",
+                gaps: [
+                    { id: 1, correct: "Am" },
+                    { id: 2, correct: "den" },
+                    { id: 3, correct: "Er" },
+                    { id: 4, correct: "ein" },
+                    { id: 5, correct: "der" }
+                ],
+                translation: "На вокзале я жду поезд. Он придет через десять минут. Я читаю книгу во время ожидания."
+            },
+            {
+                id: 42,
+                text: "______ Supermarkt kaufe ich ______ Obst und Gemüse. ______ ist immer frisch. Ich bezahle ___ an der Kasse.",
+                gaps: [
+                    { id: 1, correct: "Im" },
+                    { id: 2, correct: "(leer)" },
+                    { id: 3, correct: "Es" },
+                    { id: 4, correct: "es" }
+                ],
+                translation: "В супермаркете я покупаю фрукты и овощи. Они всегда свежие. Я оплачиваю их на кассе."
+            },
+            {
+                id: 43,
+                text: "______ Arzt verschreibt ___ Medikamente. ______ muss ich dreimal täglich nehmen. ______ helfen gegen ______ Schmerzen.",
+                gaps: [
+                    { id: 1, correct: "Der" },
+                    { id: 2, correct: "mir" },
+                    { id: 3, correct: "Sie" },
+                    { id: 4, correct: "Sie" },
+                    { id: 5, correct: "die" }
+                ],
+                translation: "Врач прописывает мне лекарства. Я должен принимать их три раза в день. Они помогают от боли."
+            },
+            {
+                id: 44,
+                text: "______ Schwimmbad gehe ich oft schwimmen. ______ ist gut für ______ Gesundheit. Ich treffe dort ______ Freunde.",
+                gaps: [
+                    { id: 1, correct: "Ins" },
+                    { id: 2, correct: "Das" },
+                    { id: 3, correct: "die" },
+                    { id: 4, correct: "meine" }
+                ],
+                translation: "В бассейн я часто хожу плавать. Это полезно для здоровья. Я встречаю там своих друзей."
+            },
+            {
+                id: 45,
+                text: "______ Bibliothek leihe ich ___ Bücher aus. ______ habe ich zwei Wochen Zeit zum Lesen. Dann bringe ich ___ zurück.",
+                gaps: [
+                    { id: 1, correct: "In der" },
+                    { id: 2, correct: "mir" },
+                    { id: 3, correct: "Dafür" },
+                    { id: 4, correct: "sie" }
+                ],
+                translation: "В библиотеке я беру книги на прокат. У меня есть две недели на чтение. Потом я возвращаю их."
+            },
+            {
+                id: 46,
+                text: "______ Konzert spielt ______ berühmte Band. ______ Musik ist laut aber gut. ______ Publikum klatscht begeistert.",
+                gaps: [
+                    { id: 1, correct: "Auf dem" },
+                    { id: 2, correct: "eine" },
+                    { id: 3, correct: "Die" },
+                    { id: 4, correct: "Das" }
+                ],
+                translation: "На концерте играет известная группа. Музыка громкая, но хорошая. Публика аплодирует с восторгом."
+            },
+            {
+                id: 47,
+                text: "______ Arbeit benutze ich ______ Computer. ______ ist sehr modern. Ich erledige ______ Aufgaben schnell.",
+                gaps: [
+                    { id: 1, correct: "Bei der" },
+                    { id: 2, correct: "einen" },
+                    { id: 3, correct: "Er" },
+                    { id: 4, correct: "meine" }
+                ],
+                translation: "На работе я использую компьютер. Он очень современный. Я быстро выполняю свои задачи."
+            },
+            {
+                id: 48,
+                text: "______ Restaurant bestelle ich ______ Fleisch mit ______ Kartoffeln. ______ schmeckt ausgezeichnet. Ich bin zufrieden mit ______ Essen.",
+                gaps: [
+                    { id: 1, correct: "Im" },
+                    { id: 2, correct: "(leer)" },
+                    { id: 3, correct: "(leer)" },
+                    { id: 4, correct: "Es" },
+                    { id: 5, correct: "dem" }
+                ],
+                translation: "В ресторане я заказываю мясо с картошкой. Это очень вкусно. Я доволен едой."
+            },
+            {
+                id: 49,
+                text: "______ Stadtzentrum gibt es ______ viele Geschäfte. ______ kaufe ich oft ______ Kleidung. ______ Auswahl ist groß.",
+                gaps: [
+                    { id: 1, correct: "Im" },
+                    { id: 2, correct: "viele" },
+                    { id: 3, correct: "Dort" },
+                    { id: 4, correct: "(leer)" },
+                    { id: 5, correct: "Die" }
+                ],
+                translation: "В центре города много магазинов. Там я часто покупаю одежду. Выбор большой."
+            },
+            {
+                id: 50,
+                text: "______ Geburtstagsfeier schenke ich ______ Freundin ______ Blumen. ______ freut ___ sehr über ______ Geschenk.",
+                gaps: [
+                    { id: 1, correct: "Zur" },
+                    { id: 2, correct: "meiner" },
+                    { id: 3, correct: "(leer)" },
+                    { id: 4, correct: "Sie" },
+                    { id: 5, correct: "sich" },
+                    { id: 6, correct: "das" }
+                ],
+                translation: "На день рождения я дарю своей подруге цветы. Она очень рада подарку."
             }
         ];
 

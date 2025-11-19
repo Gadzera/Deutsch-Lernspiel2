@@ -301,6 +301,12 @@
             margin: 0 3px;
         }
 
+        .empty-option {
+            background: #f8f9fa;
+            border: 1px dashed #a0aec0;
+            color: #718096;
+        }
+
         @media (max-width: 600px) {
             .container {
                 margin: 5px;
@@ -343,7 +349,7 @@
         </header>
         
         <div class="stats">
-            <div>Frage: <span id="current-question">1</span>/<span id="total-questions">10</span></div>
+            <div>Frage: <span id="current-question">1</span>/<span id="total-questions">50</span></div>
             <div>Punkte: <span id="score">0</span></div>
             <div>Richtig: <span id="correct">0</span></div>
         </div>
@@ -394,29 +400,39 @@
         // German words database - SEPARATE prepositions and articles
         const prepositions = [
             "in", "an", "auf", "zu", "nach", "bei", "mit", "von", "für", "durch", "gegen",
-            "In", "An", "Auf", "Zu", "Nach", "Bei", "Mit", "Von", "Für", "Durch", "Gegen"
+            "aus", "durch", "ohne", "um", "bis", "entlang", "gegenüber", "hinter", "neben",
+            "über", "unter", "vor", "zwischen", "während", "trotz", "wegen", "ab", "seit"
         ];
 
         const articles = [
-            "der", "die", "das", "den", "dem",
-            "Der", "Die", "Das", "Den", "Dem",
-            "ein", "eine", "einen", "einem", "einer",
-            "Ein", "Eine", "Einen", "Einem", "Einer",
-            "mein", "meine", "meinen", "meinem", "meiner",
-            "Mein", "Meine", "Meinen", "Meinem", "Meiner"
+            "der", "die", "das", "den", "dem", "des",
+            "Der", "Die", "Das", "Den", "Dem", "Des",
+            "ein", "eine", "einen", "einem", "einer", "eines",
+            "Ein", "Eine", "Einen", "Einem", "Einer", "Eines",
+            "mein", "meine", "meinen", "meinem", "meiner", "meines",
+            "Mein", "Meine", "Meinen", "Meinem", "Meiner", "Meines",
+            "dein", "deine", "deinen", "deinem", "deiner",
+            "Dein", "Deine", "Deinen", "Deinem", "Deiner",
+            "sein", "seine", "seinen", "seinem", "seiner",
+            "Sein", "Seine", "Seinen", "Seinem", "Seiner",
+            "ihr", "ihre", "ihren", "ihrem", "ihrer",
+            "Ihr", "Ihre", "Ihren", "Ihrem", "Ihrer",
+            "unser", "unsere", "unseren", "unserem", "unserer",
+            "Unser", "Unsere", "Unseren", "Unserem", "Unserer",
+            "vom", "zum", "zur", "am", "im", "beim", "ins", "ans", "durchs", "ums", "fürs"
         ];
 
-        // Database of stories with gaps - SEPARATE gaps for prepositions and articles
+        // Database of 50 stories with gaps
         const stories = [
             {
                 id: 1,
                 text: "Heute mache ich zusammen <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Freund ein Abendessen. Wir treffen uns <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Wohnung von Mario in der Nähe <span class='gap-pair'><span class='gap' data-id='5' data-type='preposition'>___</span> <span class='gap' data-id='6' data-type='article'>___</span></span> Rathaus. Das Essen beginnt um 20 Uhr. Um 19:30 Uhr kommt Maria, um uns zu helfen. Sie bringt frische Tomaten <span class='gap-pair'><span class='gap' data-id='7' data-type='preposition'>___</span> <span class='gap' data-id='8' data-type='article'>___</span></span> Garten mit.",
                 gaps: [
                     { id: 1, correct: "mit", type: "preposition" },
-                    { id: 2, correct: "einem", type: "article" },
+                    { id: 2, correct: "meinem", type: "article" },
                     { id: 3, correct: "in", type: "preposition" },
                     { id: 4, correct: "der", type: "article" },
-                    { id: 5, correct: "des", type: "article" },
+                    { id: 5, correct: "vom", type: "article" },
                     { id: 6, correct: "(leer)", type: "article" },
                     { id: 7, correct: "aus", type: "preposition" },
                     { id: 8, correct: "dem", type: "article" }
@@ -427,7 +443,7 @@
                 id: 2,
                 text: "Gestern bin ich <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Supermarkt gegangen. Ich brauchte <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Brot und <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Milch. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Verkäuferin war sehr freundlich. Sie hat <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> geholfen, <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> richtigen Käse zu finden.",
                 gaps: [
-                    { id: 1, correct: "zum", type: "preposition" },
+                    { id: 1, correct: "zum", type: "article" },
                     { id: 2, correct: "(leer)", type: "article" },
                     { id: 3, correct: "ein", type: "article" },
                     { id: 4, correct: "eine", type: "article" },
@@ -441,7 +457,7 @@
                 id: 3,
                 text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Wochenende fahre ich immer <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span></span> meinen Eltern. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Haus liegt <span class='gap-pair'><span class='gap' data-id='5' data-type='preposition'>___</span> <span class='gap' data-id='6' data-type='article'>___</span></span> einem kleinen Dorf. Ich verbringe dort <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Zeit mit <span class='gap-pair'><span class='gap' data-id='8' data-type='article'>___</span></span> Familie.",
                 gaps: [
-                    { id: 1, correct: "Am", type: "preposition" },
+                    { id: 1, correct: "Am", type: "article" },
                     { id: 2, correct: "(leer)", type: "article" },
                     { id: 3, correct: "zu", type: "preposition" },
                     { id: 4, correct: "Ihr", type: "article" },
@@ -470,13 +486,613 @@
                 text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span></span> Berlin gibt es viele Museen. Ich war gestern <span class='gap-pair'><span class='gap' data-id='2' data-type='preposition'>___</span> <span class='gap' data-id='3' data-type='article'>___</span></span> Naturkundemuseum. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Ausstellung war sehr interessant. Besonders <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Dinosaurier-Skelette haben <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> beeindruckt.",
                 gaps: [
                     { id: 1, correct: "In", type: "preposition" },
-                    { id: 2, correct: "in", type: "preposition" },
-                    { id: 3, correct: "dem", type: "article" },
+                    { id: 2, correct: "im", type: "article" },
+                    { id: 3, correct: "(leer)", type: "article" },
                     { id: 4, correct: "Die", type: "article" },
                     { id: 5, correct: "die", type: "article" },
                     { id: 6, correct: "mich", type: "article" }
                 ],
                 translation: "В Берлине много музеев. Вчера я был в музее естествознания. Выставка была очень интересной. Особенно меня впечатлили скелеты динозавров."
+            },
+            {
+                id: 6,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Sommer mache ich immer Urlaub <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Meer. Ich fahre dann <span class='gap-pair'><span class='gap' data-id='5' data-type='preposition'>___</span></span> Italien oder Spanien. Dort kann ich <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Sonne genießen und <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Bücher lesen.",
+                gaps: [
+                    { id: 1, correct: "Im", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "am", type: "article" },
+                    { id: 4, correct: "(leer)", type: "article" },
+                    { id: 5, correct: "nach", type: "preposition" },
+                    { id: 6, correct: "die", type: "article" },
+                    { id: 7, correct: "viele", type: "article" }
+                ],
+                translation: "Летом я всегда отдыхаю на море. Тогда я еду в Италию или Испанию. Там я могу наслаждаться солнцем и читать много книг."
+            },
+            {
+                id: 7,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Morgen trinke ich immer <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Kaffee. Ohne <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> kann ich nicht richtig aufwachen. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Freundin trinkt lieber <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Tee.",
+                gaps: [
+                    { id: 1, correct: "Am", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "einen", type: "article" },
+                    { id: 4, correct: "ihn", type: "article" },
+                    { id: 5, correct: "Meine", type: "article" },
+                    { id: 6, correct: "(leer)", type: "article" }
+                ],
+                translation: "Утром я всегда пью кофе. Без него я не могу нормально проснуться. Моя подруга предпочитает чай."
+            },
+            {
+                id: 8,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span></span> Deutschland muss man pünktlich sein. <span class='gap-pair'><span class='gap' data-id='2' data-type='article'>___</span></span> ist sehr wichtig. Ich komme immer <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Zeit, aber <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Freund ist oft zu spät.",
+                gaps: [
+                    { id: 1, correct: "In", type: "preposition" },
+                    { id: 2, correct: "Das", type: "article" },
+                    { id: 3, correct: "zur", type: "article" },
+                    { id: 4, correct: "(leer)", type: "article" },
+                    { id: 5, correct: "mein", type: "article" }
+                ],
+                translation: "В Германии нужно быть пунктуальным. Это очень важно. Я всегда прихожу вовремя, но мой друг часто опаздывает."
+            },
+            {
+                id: 9,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Abend sehe ich oft <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Film. Heute will ich <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> neuen Actionfilm sehen. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> soll sehr spannend sein.",
+                gaps: [
+                    { id: 1, correct: "Am", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "einen", type: "article" },
+                    { id: 4, correct: "den", type: "article" },
+                    { id: 5, correct: "Er", type: "article" }
+                ],
+                translation: "Вечером я часто смотрю фильм. Сегодня я хочу посмотреть новый боевик. Говорят, он очень захватывающий."
+            },
+            {
+                id: 10,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Universität lerne ich <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Mathematik. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> ist nicht einfach, aber <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> macht Spaß. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Professor erklärt sehr gut.",
+                gaps: [
+                    { id: 1, correct: "An", type: "preposition" },
+                    { id: 2, correct: "der", type: "article" },
+                    { id: 3, correct: "(leer)", type: "article" },
+                    { id: 4, correct: "Das", type: "article" },
+                    { id: 5, correct: "es", type: "article" },
+                    { id: 6, correct: "Der", type: "article" }
+                ],
+                translation: "В университете я изучаю математику. Это не легко, но мне нравится. Профессор очень хорошо объясняет."
+            },
+            {
+                id: 11,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Winter fahre ich gerne Ski. <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Alpen sind perfekt dafür. Letztes Jahr war ich <span class='gap-pair'><span class='gap' data-id='4' data-type='preposition'>___</span></span> Österreich. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> war wunderschön.",
+                gaps: [
+                    { id: 1, correct: "Im", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "Die", type: "article" },
+                    { id: 4, correct: "in", type: "preposition" },
+                    { id: 5, correct: "Es", type: "article" }
+                ],
+                translation: "Зимой я люблю кататься на лыжах. Альпы идеально подходят для этого. В прошлом году я был в Австрии. Это было прекрасно."
+            },
+            {
+                id: 12,
+                text: "Ich gehe <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Arzt, weil ich <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Kopfschmerzen habe. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Praxis ist <span class='gap-pair'><span class='gap' data-id='5' data-type='preposition'>___</span> <span class='gap' data-id='6' data-type='article'>___</span></span> nächsten Straße. <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Termin ist um 10 Uhr.",
+                gaps: [
+                    { id: 1, correct: "zum", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "(leer)", type: "article" },
+                    { id: 4, correct: "Die", type: "article" },
+                    { id: 5, correct: "in", type: "preposition" },
+                    { id: 6, correct: "der", type: "article" },
+                    { id: 7, correct: "Der", type: "article" }
+                ],
+                translation: "Я иду к врачу, потому что у меня болит голова. Практика находится на следующей улице. Прием в 10 часов."
+            },
+            {
+                id: 13,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Bahnhof habe ich <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Freund getroffen. Wir sind dann <span class='gap-pair'><span class='gap' data-id='4' data-type='preposition'>___</span> <span class='gap' data-id='5' data-type='article'>___</span></span> Zug <span class='gap-pair'><span class='gap' data-id='6' data-type='preposition'>___</span></span> Hamburg gefahren. <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Fahrt dauerte zwei Stunden.",
+                gaps: [
+                    { id: 1, correct: "Am", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "einen", type: "article" },
+                    { id: 4, correct: "mit", type: "preposition" },
+                    { id: 5, correct: "dem", type: "article" },
+                    { id: 6, correct: "nach", type: "preposition" },
+                    { id: 7, correct: "Die", type: "article" }
+                ],
+                translation: "На вокзале я встретил друга. Затем мы поехали на поезде в Гамбург. Поездка длилась два часа."
+            },
+            {
+                id: 14,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Park spielen viele Kinder. Sie laufen <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Bäumen und <span class='gap-pair'><span class='gap' data-id='5' data-type='preposition'>___</span> <span class='gap' data-id='6' data-type='article'>___</span></span> Wiese. <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Eltern sitzen <span class='gap-pair'><span class='gap' data-id='8' data-type='preposition'>___</span> <span class='gap' data-id='9' data-type='article'>___</span></span> Bänken.",
+                gaps: [
+                    { id: 1, correct: "Im", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "zwischen", type: "preposition" },
+                    { id: 4, correct: "den", type: "article" },
+                    { id: 5, correct: "auf", type: "preposition" },
+                    { id: 6, correct: "der", type: "article" },
+                    { id: 7, correct: "Die", type: "article" },
+                    { id: 8, correct: "auf", type: "preposition" },
+                    { id: 9, correct: "den", type: "article" }
+                ],
+                translation: "В парке играет много детей. Они бегают между деревьями и по лужайке. Родители сидят на скамейках."
+            },
+            {
+                id: 15,
+                text: "Ich lese gerne <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Bett. <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Buch liegt immer <span class='gap-pair'><span class='gap' data-id='4' data-type='preposition'>___</span> <span class='gap' data-id='5' data-type='article'>___</span></span> Nachttisch. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> letzte Seite fehlt <span class='gap-pair'><span class='gap' data-id='7' data-type='preposition'>___</span> <span class='gap' data-id='8' data-type='article'>___</span></span> meinem Exemplar.",
+                gaps: [
+                    { id: 1, correct: "im", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "Das", type: "article" },
+                    { id: 4, correct: "auf", type: "preposition" },
+                    { id: 5, correct: "dem", type: "article" },
+                    { id: 6, correct: "Die", type: "article" },
+                    { id: 7, correct: "in", type: "preposition" },
+                    { id: 8, correct: "(leer)", type: "article" }
+                ],
+                translation: "Я люблю читать в постели. Книга всегда лежит на прикроватной тумбочке. В моем экземпляре не хватает последней страницы."
+            },
+            {
+                id: 16,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Restaurant bestellen wir <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Pizza und <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Salat. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Kellner bringt <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Getränke zuerst.",
+                gaps: [
+                    { id: 1, correct: "Im", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "eine", type: "article" },
+                    { id: 4, correct: "einen", type: "article" },
+                    { id: 5, correct: "Der", type: "article" },
+                    { id: 6, correct: "die", type: "article" }
+                ],
+                translation: "В ресторане мы заказываем пиццу и салат. Официант сначала приносит напитки."
+            },
+            {
+                id: 17,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Geburtstag schenke ich <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Schwester <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Buch. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Thema ist Geschichte. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> freut sich immer <span class='gap-pair'><span class='gap' data-id='7' data-type='preposition'>___</span></span> Geschenke.",
+                gaps: [
+                    { id: 1, correct: "Zum", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "meiner", type: "article" },
+                    { id: 4, correct: "ein", type: "article" },
+                    { id: 5, correct: "Das", type: "article" },
+                    { id: 6, correct: "Sie", type: "article" },
+                    { id: 7, correct: "über", type: "preposition" }
+                ],
+                translation: "На день рождения я дарю сестре книгу. Тема - история. Она всегда радуется подаркам."
+            },
+            {
+                id: 18,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span></span> Regen bleiben wir <span class='gap-pair'><span class='gap' data-id='2' data-type='preposition'>___</span> <span class='gap' data-id='3' data-type='article'>___</span></span> Haus. Wir spielen <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Karten oder sehen <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Fernsehen. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Wetter ist wirklich schlecht.",
+                gaps: [
+                    { id: 1, correct: "Bei", type: "preposition" },
+                    { id: 2, correct: "im", type: "article" },
+                    { id: 3, correct: "(leer)", type: "article" },
+                    { id: 4, correct: "(leer)", type: "article" },
+                    { id: 5, correct: "(leer)", type: "article" },
+                    { id: 6, correct: "Das", type: "article" }
+                ],
+                translation: "В дождь мы остаемся дома. Мы играем в карты или смотрим телевизор. Погода действительно плохая."
+            },
+            {
+                id: 19,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='article'>___</span></span> Arbeit beginnt um 8 Uhr. Ich fahre <span class='gap-pair'><span class='gap' data-id='2' data-type='preposition'>___</span> <span class='gap' data-id='3' data-type='article'>___</span></span> Auto <span class='gap-pair'><span class='gap' data-id='4' data-type='preposition'>___</span> <span class='gap' data-id='5' data-type='article'>___</span></span> Büro. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Straßen sind morgens sehr voll.",
+                gaps: [
+                    { id: 1, correct: "Die", type: "article" },
+                    { id: 2, correct: "mit", type: "preposition" },
+                    { id: 3, correct: "dem", type: "article" },
+                    { id: 4, correct: "ins", type: "article" },
+                    { id: 5, correct: "(leer)", type: "article" },
+                    { id: 6, correct: "Die", type: "article" }
+                ],
+                translation: "Работа начинается в 8 часов. Я еду в офис на машине. Улицы утром очень загружены."
+            },
+            {
+                id: 20,
+                text: "Ich treffe mich <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span></span> Freunden <span class='gap-pair'><span class='gap' data-id='2' data-type='preposition'>___</span> <span class='gap' data-id='3' data-type='article'>___</span></span> Café. Wir trinken <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Kaffee und unterhalten <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span>. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Thema ist oft Politik.",
+                gaps: [
+                    { id: 1, correct: "mit", type: "preposition" },
+                    { id: 2, correct: "im", type: "article" },
+                    { id: 3, correct: "(leer)", type: "article" },
+                    { id: 4, correct: "(leer)", type: "article" },
+                    { id: 5, correct: "uns", type: "article" },
+                    { id: 6, correct: "Das", type: "article" }
+                ],
+                translation: "Я встречаюсь с друзьями в кафе. Мы пьем кофе и разговариваем. Темы часто о политике."
+            },
+            {
+                id: 21,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Schule lernen wir <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Fremdsprachen. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Lehrerin kommt <span class='gap-pair'><span class='gap' data-id='5' data-type='preposition'>___</span></span> England. Sie spricht <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> perfektes Englisch.",
+                gaps: [
+                    { id: 1, correct: "In", type: "preposition" },
+                    { id: 2, correct: "der", type: "article" },
+                    { id: 3, correct: "(leer)", type: "article" },
+                    { id: 4, correct: "Die", type: "article" },
+                    { id: 5, correct: "aus", type: "preposition" },
+                    { id: 6, correct: "(leer)", type: "article" }
+                ],
+                translation: "В школе мы изучаем иностранные языки. Учительница приехала из Англии. Она говорит на идеальном английском."
+            },
+            {
+                id: 22,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Wochenende besuche ich <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Oma. Sie wohnt <span class='gap-pair'><span class='gap' data-id='4' data-type='preposition'>___</span> <span class='gap' data-id='5' data-type='article'>___</span></span> anderen Stadt. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Zugfahrt dauert drei Stunden.",
+                gaps: [
+                    { id: 1, correct: "Am", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "meine", type: "article" },
+                    { id: 4, correct: "in", type: "preposition" },
+                    { id: 5, correct: "einer", type: "article" },
+                    { id: 6, correct: "Die", type: "article" }
+                ],
+                translation: "На выходных я навещаю бабушку. Она живет в другом городе. Поездка на поезде занимает три часа."
+            },
+            {
+                id: 23,
+                text: "Ich kaufe <span class='gap-pair'><span class='gap' data-id='1' data-type='article'>___</span></span> Geschenk <span class='gap-pair'><span class='gap' data-id='2' data-type='preposition'>___</span></span> meinen Vater. <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Geburtstag ist nächste Woche. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> werde <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Uhr schenken.",
+                gaps: [
+                    { id: 1, correct: "ein", type: "article" },
+                    { id: 2, correct: "für", type: "preposition" },
+                    { id: 3, correct: "Sein", type: "article" },
+                    { id: 4, correct: "Ich", type: "article" },
+                    { id: 5, correct: "eine", type: "article" }
+                ],
+                translation: "Я покупаю подарок для моего отца. Его день рождения на следующей неделе. Я подарю ему часы."
+            },
+            {
+                id: 24,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Konzert waren viele Menschen. <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Musik war laut. Wir standen <span class='gap-pair'><span class='gap' data-id='4' data-type='preposition'>___</span> <span class='gap' data-id='5' data-type='article'>___</span></span> Bühne. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Sänger war fantastisch.",
+                gaps: [
+                    { id: 1, correct: "Auf", type: "preposition" },
+                    { id: 2, correct: "dem", type: "article" },
+                    { id: 3, correct: "Die", type: "article" },
+                    { id: 4, correct: "vor", type: "preposition" },
+                    { id: 5, correct: "der", type: "article" },
+                    { id: 6, correct: "Der", type: "article" }
+                ],
+                translation: "На концерте было много людей. Музыка была громкой. Мы стояли перед сценой. Певец был фантастическим."
+            },
+            {
+                id: 25,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Urlaub fahren wir <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Berge. Wir wandern <span class='gap-pair'><span class='gap' data-id='5' data-type='preposition'>___</span></span> Tälern und <span class='gap-pair'><span class='gap' data-id='6' data-type='preposition'>___</span></span> Gipfeln. <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Natur ist atemberaubend.",
+                gaps: [
+                    { id: 1, correct: "Im", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "in", type: "preposition" },
+                    { id: 4, correct: "die", type: "article" },
+                    { id: 5, correct: "durch", type: "preposition" },
+                    { id: 6, correct: "auf", type: "preposition" },
+                    { id: 7, correct: "Die", type: "article" }
+                ],
+                translation: "В отпуске мы едем в горы. Мы путешествуем по долинам и вершинам. Природа захватывает дух."
+            },
+            {
+                id: 26,
+                text: "Ich schreibe <span class='gap-pair'><span class='gap' data-id='1' data-type='article'>___</span></span> Brief <span class='gap-pair'><span class='gap' data-id='2' data-type='preposition'>___</span></span> meiner Tante. Sie wohnt <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span></span> Amerika. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Briefmarke kostet 85 Cent.",
+                gaps: [
+                    { id: 1, correct: "einen", type: "article" },
+                    { id: 2, correct: "an", type: "preposition" },
+                    { id: 3, correct: "in", type: "preposition" },
+                    { id: 4, correct: "Die", type: "article" }
+                ],
+                translation: "Я пишу письмо моей тете. Она живет в Америке. Марка стоит 85 центов."
+            },
+            {
+                id: 27,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Flughafen müssen wir <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Passkontrolle. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Officer prüft <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Pässe. <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Flug geht <span class='gap-pair'><span class='gap' data-id='8' data-type='preposition'>___</span> <span class='gap' data-id='9' data-type='article'>___</span></span> Gate B5.",
+                gaps: [
+                    { id: 1, correct: "Am", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "durch", type: "preposition" },
+                    { id: 4, correct: "die", type: "article" },
+                    { id: 5, correct: "Der", type: "article" },
+                    { id: 6, correct: "die", type: "article" },
+                    { id: 7, correct: "Unser", type: "article" },
+                    { id: 8, correct: "vom", type: "article" },
+                    { id: 9, correct: "(leer)", type: "article" }
+                ],
+                translation: "В аэропорту мы должны пройти паспортный контроль. Офицер проверяет паспорта. Наш рейс отправляется от выхода B5."
+            },
+            {
+                id: 28,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Fitnessstudio trainiere ich <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span></span> Gewichten. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Trainer hilft <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span>. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Training ist anstrengend.",
+                gaps: [
+                    { id: 1, correct: "Im", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "mit", type: "preposition" },
+                    { id: 4, correct: "Der", type: "article" },
+                    { id: 5, correct: "mir", type: "article" },
+                    { id: 6, correct: "Das", type: "article" }
+                ],
+                translation: "В тренажерном зале я тренируюсь с весами. Тренер помогает мне. Тренировка утомительна."
+            },
+            {
+                id: 29,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Party gestern waren viele Gäste. <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Musik war gut. Wir tanzten <span class='gap-pair'><span class='gap' data-id='4' data-type='preposition'>___</span></span> Mitternacht. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Stimmung war super.",
+                gaps: [
+                    { id: 1, correct: "Auf", type: "preposition" },
+                    { id: 2, correct: "der", type: "article" },
+                    { id: 3, correct: "Die", type: "article" },
+                    { id: 4, correct: "bis", type: "preposition" },
+                    { id: 5, correct: "Die", type: "article" }
+                ],
+                translation: "На вчерашней вечеринке было много гостей. Музыка была хорошей. Мы танцевали до полуночи. Настроение было отличным."
+            },
+            {
+                id: 30,
+                text: "Ich helfe <span class='gap-pair'><span class='gap' data-id='1' data-type='article'>___</span></span> Mutter <span class='gap-pair'><span class='gap' data-id='2' data-type='preposition'>___</span> <span class='gap' data-id='3' data-type='article'>___</span></span> Haushalt. Wir putzen <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Wohnung. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Fenster sind sehr schmutzig.",
+                gaps: [
+                    { id: 1, correct: "meiner", type: "article" },
+                    { id: 2, correct: "im", type: "article" },
+                    { id: 3, correct: "(leer)", type: "article" },
+                    { id: 4, correct: "die", type: "article" },
+                    { id: 5, correct: "Die", type: "article" }
+                ],
+                translation: "Я помогаю маме по хозяйству. Мы убираем квартиру. Окна очень грязные."
+            },
+            {
+                id: 31,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Zoo sehen wir <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Tiere. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Elefanten sind <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> größten. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Kinder füttern <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Ziegen.",
+                gaps: [
+                    { id: 1, correct: "Im", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "viele", type: "article" },
+                    { id: 4, correct: "Die", type: "article" },
+                    { id: 5, correct: "die", type: "article" },
+                    { id: 6, correct: "Die", type: "article" },
+                    { id: 7, correct: "die", type: "article" }
+                ],
+                translation: "В зоопарке мы видим много животных. Слоны самые большие. Дети кормят коз."
+            },
+            {
+                id: 32,
+                text: "Ich warte <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Bus <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Haltestelle. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> kommt immer zu spät. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Regen macht <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> nass.",
+                gaps: [
+                    { id: 1, correct: "auf", type: "preposition" },
+                    { id: 2, correct: "den", type: "article" },
+                    { id: 3, correct: "an", type: "preposition" },
+                    { id: 4, correct: "der", type: "article" },
+                    { id: 5, correct: "Er", type: "article" },
+                    { id: 6, correct: "Der", type: "article" },
+                    { id: 7, correct: "mich", type: "article" }
+                ],
+                translation: "Я жду автобус на остановке. Он всегда приходит поздно. Дождь мочит меня."
+            },
+            {
+                id: 33,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Buchhandlung kaufe ich <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Roman. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> handelt <span class='gap-pair'><span class='gap' data-id='5' data-type='preposition'>___</span></span> Liebe. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Autor ist sehr bekannt.",
+                gaps: [
+                    { id: 1, correct: "In", type: "preposition" },
+                    { id: 2, correct: "der", type: "article" },
+                    { id: 3, correct: "einen", type: "article" },
+                    { id: 4, correct: "Es", type: "article" },
+                    { id: 5, correct: "von", type: "preposition" },
+                    { id: 6, correct: "Der", type: "article" }
+                ],
+                translation: "В книжном магазине я покупаю роман. Он о любви. Автор очень известен."
+            },
+            {
+                id: 34,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Schwimmbad springen wir <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Wasser. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> ist kalt. Wir schwimmen <span class='gap-pair'><span class='gap' data-id='6' data-type='preposition'>___</span> <span class='gap' data-id='7' data-type='article'>___</span></span> Becken. <span class='gap-pair'><span class='gap' data-id='8' data-type='article'>___</span></span> Bademeister passt auf.",
+                gaps: [
+                    { id: 1, correct: "Im", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "ins", type: "article" },
+                    { id: 4, correct: "(leer)", type: "article" },
+                    { id: 5, correct: "Es", type: "article" },
+                    { id: 6, correct: "im", type: "article" },
+                    { id: 7, correct: "(leer)", type: "article" },
+                    { id: 8, correct: "Der", type: "article" }
+                ],
+                translation: "В бассейне мы прыгаем в воду. Она холодная. Мы плаваем в бассейне. Спасатель следит."
+            },
+            {
+                id: 35,
+                text: "Ich reise <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Zug <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span></span> Frankfurt. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Fahrt ist angenehm. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> lese <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Buch.",
+                gaps: [
+                    { id: 1, correct: "mit", type: "preposition" },
+                    { id: 2, correct: "dem", type: "article" },
+                    { id: 3, correct: "nach", type: "preposition" },
+                    { id: 4, correct: "Die", type: "article" },
+                    { id: 5, correct: "Ich", type: "article" },
+                    { id: 6, correct: "ein", type: "article" }
+                ],
+                translation: "Я путешествую поездом во Франкфурт. Поездка приятная. Я читаю книгу."
+            },
+            {
+                id: 36,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Museum gibt es <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> alte Gemälde. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Besucher bewundern <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Kunstwerke. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Eintritt ist frei.",
+                gaps: [
+                    { id: 1, correct: "Im", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "viele", type: "article" },
+                    { id: 4, correct: "Die", type: "article" },
+                    { id: 5, correct: "die", type: "article" },
+                    { id: 6, correct: "Der", type: "article" }
+                ],
+                translation: "В музее есть много старых картин. Посетители восхищаются произведениями искусства. Вход бесплатный."
+            },
+            {
+                id: 37,
+                text: "Ich spreche <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Lehrer <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span></span> meinen Noten. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> ist sehr verständnisvoll. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> gibt <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Tipps.",
+                gaps: [
+                    { id: 1, correct: "mit", type: "preposition" },
+                    { id: 2, correct: "dem", type: "article" },
+                    { id: 3, correct: "über", type: "preposition" },
+                    { id: 4, correct: "Er", type: "article" },
+                    { id: 5, correct: "Er", type: "article" },
+                    { id: 6, correct: "mir", type: "article" }
+                ],
+                translation: "Я разговариваю с учителем о моих оценках. Он очень понимающий. Он дает мне советы."
+            },
+            {
+                id: 38,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Theater spielen sie <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> klassisches Stück. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Schauspieler sind talentiert. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Zuschauer applaudieren.",
+                gaps: [
+                    { id: 1, correct: "Im", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "ein", type: "article" },
+                    { id: 4, correct: "Die", type: "article" },
+                    { id: 5, correct: "Die", type: "article" }
+                ],
+                translation: "В театре они играют классическую пьесу. Актеры талантливы. Зрители аплодируют."
+            },
+            {
+                id: 39,
+                text: "Ich fahre <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Fahrrad <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Arbeit. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Strecke ist zehn Kilometer lang. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> morgens ist <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Verkehr stark.",
+                gaps: [
+                    { id: 1, correct: "mit", type: "preposition" },
+                    { id: 2, correct: "dem", type: "article" },
+                    { id: 3, correct: "zur", type: "article" },
+                    { id: 4, correct: "(leer)", type: "article" },
+                    { id: 5, correct: "Die", type: "article" },
+                    { id: 6, correct: "Morgens", type: "article" },
+                    { id: 7, correct: "der", type: "article" }
+                ],
+                translation: "Я езжу на велосипеде на работу. Маршрут длиной десять километров. Утром движение интенсивное."
+            },
+            {
+                id: 40,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Apotheke kaufe ich <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Medikamente. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Apotheker berät <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span>. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Packung kostet 15 Euro.",
+                gaps: [
+                    { id: 1, correct: "In", type: "preposition" },
+                    { id: 2, correct: "der", type: "article" },
+                    { id: 3, correct: "(leer)", type: "article" },
+                    { id: 4, correct: "Der", type: "article" },
+                    { id: 5, correct: "mich", type: "article" },
+                    { id: 6, correct: "Die", type: "article" }
+                ],
+                translation: "В аптеке я покупаю лекарства. Фармацевт консультирует меня. Упаковка стоит 15 евро."
+            },
+            {
+                id: 41,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Strand liegen wir <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Sonne. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Wasser ist blau. Wir schwimmen <span class='gap-pair'><span class='gap' data-id='6' data-type='preposition'>___</span> <span class='gap' data-id='7' data-type='article'>___</span></span> Meer. <span class='gap-pair'><span class='gap' data-id='8' data-type='article'>___</span></span> Wellen sind hoch.",
+                gaps: [
+                    { id: 1, correct: "Am", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "in", type: "preposition" },
+                    { id: 4, correct: "der", type: "article" },
+                    { id: 5, correct: "Das", type: "article" },
+                    { id: 6, correct: "im", type: "article" },
+                    { id: 7, correct: "(leer)", type: "article" },
+                    { id: 8, correct: "Die", type: "article" }
+                ],
+                translation: "На пляже мы лежим на солнце. Вода голубая. Мы плаваем в море. Волны высокие."
+            },
+            {
+                id: 42,
+                text: "Ich koche <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span></span> meiner Freundin. <span class='gap-pair'><span class='gap' data-id='2' data-type='article'>___</span></span> macht <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Salat. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> arbeiten zusammen <span class='gap-pair'><span class='gap' data-id='5' data-type='preposition'>___</span> <span class='gap' data-id='6' data-type='article'>___</span></span> Küche.",
+                gaps: [
+                    { id: 1, correct: "für", type: "preposition" },
+                    { id: 2, correct: "Sie", type: "article" },
+                    { id: 3, correct: "einen", type: "article" },
+                    { id: 4, correct: "Wir", type: "article" },
+                    { id: 5, correct: "in", type: "preposition" },
+                    { id: 6, correct: "der", type: "article" }
+                ],
+                translation: "Я готовлю для моей подруги. Она делает салат. Мы работаем вместе на кухне."
+            },
+            {
+                id: 43,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Konferenz sprechen wir <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span></span> neuen Projekten. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Chef präsentiert <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Pläne. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Kollegen stellen Fragen.",
+                gaps: [
+                    { id: 1, correct: "Auf", type: "preposition" },
+                    { id: 2, correct: "der", type: "article" },
+                    { id: 3, correct: "über", type: "preposition" },
+                    { id: 4, correct: "Der", type: "article" },
+                    { id: 5, correct: "die", type: "article" },
+                    { id: 6, correct: "Die", type: "article" }
+                ],
+                translation: "На конференции мы говорим о новых проектах. Начальник представляет планы. Коллеги задают вопросы."
+            },
+            {
+                id: 44,
+                text: "Ich laufe <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Park <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span></span> Jogging. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Luft ist frisch. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Vögel singen <span class='gap-pair'><span class='gap' data-id='6' data-type='preposition'>___</span> <span class='gap' data-id='7' data-type='article'>___</span></span> Bäumen.",
+                gaps: [
+                    { id: 1, correct: "im", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "zum", type: "article" },
+                    { id: 4, correct: "Die", type: "article" },
+                    { id: 5, correct: "Die", type: "article" },
+                    { id: 6, correct: "in", type: "preposition" },
+                    { id: 7, correct: "den", type: "article" }
+                ],
+                translation: "Я бегаю в парке для пробежки. Воздух свежий. Птицы поют на деревьях."
+            },
+            {
+                id: 45,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Hotelzimmer gibt es <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Bett und <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Schreibtisch. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Fenster zeigt <span class='gap-pair'><span class='gap' data-id='6' data-type='preposition'>___</span> <span class='gap' data-id='7' data-type='article'>___</span></span> Garten.",
+                gaps: [
+                    { id: 1, correct: "Im", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "ein", type: "article" },
+                    { id: 4, correct: "einen", type: "article" },
+                    { id: 5, correct: "Das", type: "article" },
+                    { id: 6, correct: "auf", type: "preposition" },
+                    { id: 7, correct: "den", type: "article" }
+                ],
+                translation: "В гостиничном номере есть кровать и письменный стол. Окно выходит в сад."
+            },
+            {
+                id: 46,
+                text: "Ich studiere <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Universität <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Medizin. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Vorlesungen sind interessant. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Professor ist sehr kompetent.",
+                gaps: [
+                    { id: 1, correct: "an", type: "preposition" },
+                    { id: 2, correct: "der", type: "article" },
+                    { id: 3, correct: "(leer)", type: "article" },
+                    { id: 4, correct: "Die", type: "article" },
+                    { id: 5, correct: "Der", type: "article" }
+                ],
+                translation: "Я изучаю медицину в университете. Лекции интересные. Профессор очень компетентен."
+            },
+            {
+                id: 47,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Geburtstagsfeier singen wir <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Lieder. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Gäste bringen <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Geschenke. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Kuchen schmeckt lecker.",
+                gaps: [
+                    { id: 1, correct: "Auf", type: "preposition" },
+                    { id: 2, correct: "der", type: "article" },
+                    { id: 3, correct: "(leer)", type: "article" },
+                    { id: 4, correct: "Die", type: "article" },
+                    { id: 5, correct: "(leer)", type: "article" },
+                    { id: 6, correct: "Der", type: "article" }
+                ],
+                translation: "На дне рождения мы поем песни. Гости приносят подарки. Торт вкусный."
+            },
+            {
+                id: 48,
+                text: "Ich fahre <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Taxi <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Flughafen. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Fahrer kennt <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Weg. <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Stau verzögert <span class='gap-pair'><span class='gap' data-id='8' data-type='article'>___</span></span> Fahrt.",
+                gaps: [
+                    { id: 1, correct: "mit", type: "preposition" },
+                    { id: 2, correct: "dem", type: "article" },
+                    { id: 3, correct: "zum", type: "article" },
+                    { id: 4, correct: "(leer)", type: "article" },
+                    { id: 5, correct: "Der", type: "article" },
+                    { id: 6, correct: "den", type: "article" },
+                    { id: 7, correct: "Ein", type: "article" },
+                    { id: 8, correct: "die", type: "article" }
+                ],
+                translation: "Я еду в аэропорт на такси. Водитель знает дорогу. Пробка задерживает поездку."
+            },
+            {
+                id: 49,
+                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Schloss besichtigen wir <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> alte Räume. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Führer erklärt <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Geschichte. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Gemälde sind wertvoll.",
+                gaps: [
+                    { id: 1, correct: "Im", type: "article" },
+                    { id: 2, correct: "(leer)", type: "article" },
+                    { id: 3, correct: "die", type: "article" },
+                    { id: 4, correct: "Der", type: "article" },
+                    { id: 5, correct: "die", type: "article" },
+                    { id: 6, correct: "Die", type: "article" }
+                ],
+                translation: "В замке мы осматриваем старые комнаты. Гид объясняет историю. Картины ценны."
+            },
+            {
+                id: 50,
+                text: "Ich arbeite <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Firma <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span></span> München. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Büro ist modern. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Kollegen sind nett. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> arbeite dort <span class='gap-pair'><span class='gap' data-id='7' data-type='preposition'>___</span></span> fünf Jahren.",
+                gaps: [
+                    { id: 1, correct: "in", type: "preposition" },
+                    { id: 2, correct: "einer", type: "article" },
+                    { id: 3, correct: "in", type: "preposition" },
+                    { id: 4, correct: "Das", type: "article" },
+                    { id: 5, correct: "Die", type: "article" },
+                    { id: 6, correct: "Ich", type: "article" },
+                    { id: 7, correct: "seit", type: "preposition" }
+                ],
+                translation: "Я работаю в компании в Мюнхене. Офис современный. Коллеги милые. Я работаю там пять лет."
             }
         ];
 

@@ -3,1440 +3,658 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deutsch Geschichten Quiz</title>
+    <title>Deutsche Verben Lernspiel</title>
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
-
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
             line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 15px;
         }
-
+        
         .container {
-            max-width: 900px;
+            max-width: 600px;
             margin: 0 auto;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-
-        header {
-            background: #4a5568;
-            color: white;
-            padding: 15px;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            background: #2d3748;
-            padding: 8px;
-            color: white;
-            font-size: 14px;
-        }
-
-        .quiz-container {
+            border-radius: 10px;
             padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
-        .story-container {
-            background: #f7fafc;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-left: 4px solid #4299e1;
-            font-size: 16px;
-            line-height: 1.6;
-        }
-
-        .gap {
-            display: inline-block;
-            min-width: 50px;
-            border-bottom: 2px dashed #cbd5e0;
-            margin: 0 2px;
+        
+        h1 {
             text-align: center;
-            font-weight: bold;
-            color: #2d3748;
-            position: relative;
-            cursor: pointer;
-            padding: 2px 4px;
-            transition: all 0.2s;
-            vertical-align: top;
+            color: #333;
+            margin-bottom: 20px;
         }
-
-        .gap:hover {
-            background: #ebf8ff;
+        
+        .screen {
+            display: none;
         }
-
-        .gap.selected {
-            background: #bee3f8;
-            border-bottom: 2px solid #3182ce;
+        
+        .active {
+            display: block;
         }
-
-        .gap.filled {
-            background: #e6fffa;
-            border-bottom: 2px solid #38a169;
-        }
-
-        .gap.correct {
-            background: #c6f6d5;
-            border-bottom: 2px solid #38a169;
-        }
-
-        .gap.correct::after {
-            content: " ✓";
-            color: #38a169;
-            font-weight: bold;
-        }
-
-        .gap.incorrect {
-            background: #fed7d7;
-            border-bottom: 2px solid #e53e3e;
-        }
-
-        .gap.incorrect::after {
-            content: " ✗";
-            color: #e53e3e;
-            font-weight: bold;
-        }
-
-        .correct-answer-hint {
-            position: absolute;
-            top: -22px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #48bb78;
+        
+        .btn {
+            background: #4CAF50;
             color: white;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 11px;
-            font-weight: bold;
-            white-space: nowrap;
-            z-index: 10;
-        }
-
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-            gap: 5px;
-            margin: 15px 0;
-            padding: 12px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .option {
-            background: white;
-            border: 1px solid #dee2e6;
+            border: none;
+            padding: 15px 20px;
             border-radius: 5px;
-            padding: 6px 3px;
-            text-align: center;
+            font-size: 16px;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-            font-size: 13px;
+            width: 100%;
+            margin: 10px 0;
         }
-
+        
+        .btn:hover {
+            background: #45a049;
+        }
+        
+        .btn-reset {
+            background: #ff5252;
+        }
+        
+        .btn-reset:hover {
+            background: #ff0000;
+        }
+        
+        .btn-learned {
+            background: #2196F3;
+        }
+        
+        .btn-learned.learned {
+            background: #4CAF50;
+        }
+        
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            padding: 15px;
+            margin: 8px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
         .option:hover {
             background: #e9ecef;
         }
-
-        .option.selected {
-            background: #bee3f8;
-            border-color: #3182ce;
+        
+        .correct {
+            background: #d4edda;
+            border-color: #c3e6cb;
         }
-
-        .button-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 15px;
+        
+        .wrong {
+            background: #f8d7da;
+            border-color: #f5c6cb;
         }
-
-        button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 14px;
-        }
-
-        #uber-proof-btn {
-            background: #9C27B0;
-            color: white;
-            grid-column: 1 / -1;
-        }
-
-        #uber-proof-btn:hover {
-            background: #7B1FA2;
-        }
-
-        #check-btn {
-            background: #4299e1;
-            color: white;
-        }
-
-        #check-btn:hover {
-            background: #3182ce;
-        }
-
-        #check-btn:disabled {
-            background: #a0aec0;
-            cursor: not-allowed;
-        }
-
-        #next-btn {
-            background: #48bb78;
-            color: white;
-        }
-
-        #next-btn:hover {
-            background: #38a169;
-        }
-
-        #next-btn:disabled {
-            background: #a0aec0;
-            cursor: not-allowed;
-        }
-
-        #restart-btn {
-            background: #ed8936;
-            color: white;
-            grid-column: 1 / -1;
-        }
-
-        #restart-btn:hover {
-            background: #dd6b20;
-        }
-
-        .result-container {
-            text-align: center;
-            padding: 20px;
-            display: none;
-        }
-
-        .score {
-            font-size: 60px;
-            font-weight: bold;
-            color: #4299e1;
-            margin: 15px 0;
-        }
-
-        .progress-bar {
-            height: 8px;
-            background: #e2e8f0;
-            border-radius: 4px;
-            margin: 15px 0;
-            overflow: hidden;
-        }
-
+        
         .progress {
+            width: 100%;
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
             height: 100%;
-            background: #4299e1;
+            background: #4CAF50;
+            border-radius: 5px;
             width: 0%;
             transition: width 0.3s;
         }
-
-        .translation {
-            background: #fff5f5;
-            border-radius: 6px;
-            padding: 10px;
-            margin-top: 12px;
-            font-style: italic;
-            color: #744210;
-            border-left: 3px solid #ed8936;
-            font-size: 14px;
-        }
-
-        .instructions {
-            background: #e8f5e8;
-            border-radius: 6px;
-            padding: 10px;
-            margin-bottom: 12px;
-            border-left: 3px solid #48bb78;
-            font-size: 13px;
-        }
-
-        .current-selection {
-            background: #fff3cd;
-            border-radius: 6px;
-            padding: 8px 12px;
-            margin: 8px 0;
-            border-left: 3px solid #ffc107;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .proof-results {
-            background: #e3f2fd;
-            border-radius: 6px;
-            padding: 10px;
-            margin: 10px 0;
-            border-left: 3px solid #2196F3;
-            font-size: 14px;
-        }
-
-        .gap-pair {
-            display: inline-block;
-            margin: 0 3px;
-        }
-
-        .empty-option {
+        
+        .stats {
             background: #f8f9fa;
-            border: 1px dashed #a0aec0;
-            color: #718096;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
         }
-
-        @media (max-width: 600px) {
-            .container {
-                margin: 5px;
-            }
-            
-            .options-grid {
-                grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
-                gap: 4px;
-                padding: 8px;
-                max-height: 150px;
-            }
-            
-            .option {
-                padding: 5px 2px;
-                font-size: 12px;
-            }
-            
-            .button-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .story-container {
-                font-size: 15px;
-                padding: 12px;
-            }
-            
-            .gap {
-                min-width: 40px;
-                margin: 0 1px;
-                font-size: 14px;
-            }
+        
+        .subliminal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .subliminal-content {
+            color: white;
+            text-align: center;
+            font-size: 24px;
+        }
+        
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .mode-btn.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+        
+        .word-display {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .filter-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .filter-btn.active {
+            background: #2196F3;
+            color: white;
+            border-color: #2196F3;
+        }
+        
+        .learned-count {
+            text-align: center;
+            margin: 10px 0;
+            color: #666;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Deutsch Geschichten Quiz</h1>
-            <p>Klicke auf eine Lücke und wähle dann das richtige Wort</p>
-        </header>
-        
-        <div class="stats">
-            <div>Frage: <span id="current-question">1</span>/<span id="total-questions">50</span></div>
-            <div>Punkte: <span id="score">0</span></div>
-            <div>Richtig: <span id="correct">0</span></div>
+        <!-- Главное меню -->
+        <div id="menu" class="screen active">
+            <h1>🇩🇪 Deutsche Verben Lernspiel</h1>
+            
+            <div class="stats">
+                <p><strong>Verfügbare Verben:</strong> <span id="totalWords">50</span></p>
+                <p><strong>Gelernte Verben:</strong> <span id="learnedWords">0</span></p>
+                <p><strong>Noch zu lernen:</strong> <span id="unlearnedWords">50</span></p>
+            </div>
+            
+            <div class="mode-selector">
+                <button class="mode-btn active" onclick="setMode('de_ru')">DE → RU</button>
+                <button class="mode-btn" onclick="setMode('ru_de')">RU → DE</button>
+                <button class="mode-btn" onclick="setMode('mixed')">Gemischt</button>
+            </div>
+            
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="setFilter('all')">Alle</button>
+                <button class="filter-btn" onclick="setFilter('unlearned')">Ungelernt</button>
+                <button class="filter-btn" onclick="setFilter('learned')">Gelernt</button>
+            </div>
+            
+            <div class="learned-count" id="filterInfo"></div>
+            
+            <div>
+                <label for="wordCount">Anzahl Fragen:</label>
+                <input type="number" id="wordCount" value="20" min="5" max="50" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;">
+            </div>
+            
+            <button class="btn" onclick="startQuiz()">Quiz starten 🚀</button>
+            <button class="btn btn-reset" onclick="resetAll()">Alles zurücksetzen</button>
         </div>
         
-        <div class="progress-bar">
-            <div class="progress" id="progress"></div>
+        <!-- Экран викторины -->
+        <div id="quiz" class="screen">
+            <h2>Quiz</h2>
+            
+            <div class="progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            
+            <div id="question" style="text-align: center; margin: 15px 0; font-size: 18px;"></div>
+            
+            <div class="word-display" id="wordDisplay"></div>
+            
+            <div id="options"></div>
+            
+            <button class="btn btn-learned" id="learnedBtn" onclick="toggleLearned()">
+                <span id="learnedIcon">□</span> Als gelernt markieren
+            </button>
+            
+            <div style="text-align: center; margin: 15px 0;">
+                <span id="progressText">Frage 1 von 20</span>
+            </div>
+            
+            <button class="btn" onclick="backToMenu()" style="background: #6c757d;">Zurück zum Menü</button>
         </div>
         
-        <div class="quiz-container" id="quiz-container">
-            <div class="instructions">
-                <strong>Anleitung:</strong> Klicke auf eine Lücke im Text, dann wähle das richtige Wort. 
-                <strong>UberProofer</strong> zeigt sofort die richtigen Antworten!
+        <!-- Результаты -->
+        <div id="result" class="screen">
+            <h2>Ergebnis 🎉</h2>
+            
+            <div class="word-display" id="scoreDisplay"></div>
+            
+            <div class="stats">
+                <p id="resultDetails"></p>
+                <p id="learnedInSession"></p>
+                <p id="remainingWords"></p>
             </div>
             
-            <div class="current-selection" id="current-selection">
-                Aktuelle Auswahl: Keine Lücke ausgewählt
-            </div>
-            
-            <div class="story-container" id="story-container">
-                <!-- Story will be inserted here -->
-            </div>
-            
-            <div class="options-grid" id="options-container">
-                <!-- Options will be inserted here -->
-            </div>
-
-            <div class="proof-results" id="proof-results" style="display: none;">
-                <!-- UberProofer results will be shown here -->
-            </div>
-            
-            <div class="button-container">
-                <button id="uber-proof-btn">🚀 UberProofer</button>
-                <button id="check-btn">Überprüfen</button>
-                <button id="next-btn">Weiter</button>
-                <button id="restart-btn">Neustart</button>
-            </div>
+            <button class="btn" onclick="backToMenu()">Neues Quiz</button>
+            <button class="btn" onclick="repeatUnlearned()" style="background: #ff9800;" id="repeatBtn">Ungelernte wiederholen</button>
         </div>
-        
-        <div class="result-container" id="result-container">
-            <h2>Quiz abgeschlossen!</h2>
-            <div class="score" id="final-score">0%</div>
-            <div class="message" id="result-message"></div>
-            <button id="restart-result-btn">Nochmal spielen</button>
+    </div>
+    
+    <!-- 25-й кадр -->
+    <div class="subliminal" id="subliminal">
+        <div class="subliminal-content">
+            <div id="subliminalGerman"></div>
+            <div id="subliminalRussian" style="margin-top: 20px; font-size: 20px;"></div>
         </div>
     </div>
 
     <script>
-        // German words database - SEPARATE prepositions and articles
-        const prepositions = [
-            "in", "an", "auf", "zu", "nach", "bei", "mit", "von", "für", "durch", "gegen",
-            "aus", "durch", "ohne", "um", "bis", "entlang", "gegenüber", "hinter", "neben",
-            "über", "unter", "vor", "zwischen", "während", "trotz", "wegen", "ab", "seit"
+        // База глаголов - обновленная
+        const verbs = [
+            // Исходные глаголы
+            {german: "sich konzentrieren auf", russian: "концентрироваться на", id: "konzentrieren"},
+            {german: "sich erinnern an", russian: "вспоминать о", id: "erinnern"},
+            {german: "sich vorbereiten auf", russian: "готовиться к", id: "vorbereiten"},
+            {german: "sich entscheiden für", russian: "решаться на", id: "entscheiden"},
+            {german: "sich kümmern um", russian: "заботиться о", id: "kuemmern"},
+            {german: "sich anmelden für", russian: "записываться на", id: "anmelden"},
+            {german: "sich ärgern über", russian: "злиться из-за", id: "aergern"},
+            {german: "sich aufregen über", russian: "волноваться из-за", id: "aufregen"},
+            {german: "sich beschweren über", russian: "жаловаться на", id: "beschweren"},
+            {german: "sich entschuldigen für", russian: "извиняться за", id: "entschuldigen"},
+            {german: "sich freuen auf", russian: "радоваться будущему", id: "freuen_auf"},
+            {german: "sich freuen über", russian: "радоваться тому, что есть", id: "freuen_ueber"},
+            {german: "sich wundern über", russian: "удивляться чему-то", id: "wundern"},
+            {german: "sich gewöhnen an", russian: "привыкать к", id: "gewoehnen"},
+            {german: "lachen über", russian: "смеяться над", id: "lachen"},
+            {german: "nachdenken über", russian: "размышлять о", id: "nachdenken"},
+            {german: "reden über", russian: "говорить о", id: "reden"},
+            {german: "streiten über", russian: "спорить о", id: "streiten"},
+            {german: "sich streiten über", russian: "ссориться из-за", id: "sich_streiten"},
+            {german: "sich verlassen auf", russian: "полагаться на", id: "verlassen"},
+            {german: "sich verlieben in", russian: "влюбиться в", id: "verlieben"},
+            {german: "sich treffen mit", russian: "встречаться с", id: "treffen"},
+            {german: "sich verstehen mit", russian: "ладить с", id: "verstehen"},
+            {german: "sich unterhalten mit", russian: "беседовать с", id: "unterhalten"},
+            {german: "sich verabreden mit", russian: "договариваться с", id: "verabreden"},
+            {german: "reden mit", russian: "говорить с", id: "reden_mit"},
+            {german: "gratulieren zu", russian: "поздравлять с", id: "gratulieren"},
+            {german: "einladen zu", russian: "приглашать на", id: "einladen"},
+            {german: "teilnehmen an", russian: "участвовать в", id: "teilnehmen"},
+            {german: "telefonieren mit", russian: "звонить кому-то", id: "telefonieren"},
+            {german: "fragen nach", russian: "спрашивать о", id: "fragen"},
+            {german: "sich bedanken bei", russian: "благодарить кого-то", id: "bedanken"},
+            {german: "sich beschweren bei", russian: "жаловаться кому-то", id: "beschweren_bei"},
+            {german: "sich entschuldigen bei", russian: "извиняться перед", id: "entschuldigen_bei"},
+            {german: "sich verabschieden von", russian: "прощаться с", id: "verabschieden"},
+            {german: "bestehen aus", russian: "состоять из", id: "bestehen"},
+            {german: "erzählen von", russian: "рассказывать о", id: "erzaehlen"},
+            {german: "träumen von", russian: "мечтать о", id: "traeumen"},
+            {german: "sich trennen von", russian: "расставаться с", id: "trennen"},
+            {german: "sich beeilen", russian: "торопиться", id: "beeilen"},
+            {german: "sich setzen", russian: "садиться", id: "setzen"},
+            {german: "sich anziehen", russian: "одеваться", id: "anziehen"},
+            {german: "sich umziehen", russian: "переодеваться", id: "umziehen"},
+            {german: "sich verletzen", russian: "пораниться", id: "verletzen"},
+            {german: "sich entspannen", russian: "расслабляться", id: "entspannen"},
+            {german: "sich vorstellen", russian: "представляться", id: "vorstellen"},
+            {german: "sich rasieren", russian: "бриться", id: "rasieren"},
+            {german: "sich waschen", russian: "мыться", id: "waschen"},
+            
+            // Добавленные глаголы
+            {german: "achten auf", russian: "обращать внимание на", id: "achten"},
+            {german: "ankommen auf", russian: "зависеть от", id: "ankommen"},
+            {german: "antworten auf", russian: "отвечать на", id: "antworten"},
+            {german: "sich bewerben um", russian: "подавать заявление на (работу/позицию)", id: "bewerben_um"},
+            {german: "sich bewerben auf", russian: "откликаться на (вакансию)", id: "bewerben_auf"},
+            {german: "sich beziehen auf", russian: "ссылаться на", id: "beziehen"},
+            {german: "bitten um", russian: "просить о", id: "bitten"},
+            {german: "denken an", russian: "думать о", id: "denken"},
+            {german: "diskutieren über", russian: "обсуждать что-то", id: "diskutieren_ueber"},
+            {german: "sich entscheiden gegen", russian: "решиться против", id: "entscheiden_gegen"},
+            {german: "kämpfen für", russian: "бороться за", id: "kaempfen_fuer"},
+            {german: "kämpfen gegen", russian: "бороться против", id: "kaempfen_gegen"},
+            {german: "protestieren gegen", russian: "протестовать против", id: "protestieren"},
+            {german: "sich sorgen um", russian: "беспокоиться о", id: "sorgen"},
+            {german: "sich streiten um", russian: "спорить из-за", id: "streiten_um"},
+            {german: "warten auf", russian: "ждать кого-то/что-то", id: "warten"},
+            {german: "sich beschäftigen mit", russian: "заниматься чем-то", id: "beschaeftigen"},
+            {german: "sich bedanken für", russian: "благодарить за что-то", id: "bedanken_fuer"},
+            {german: "diskutieren mit", russian: "обсуждать с", id: "diskutieren_mit"},
+            {german: "sich fürchten vor", russian: "бояться чего-то", id: "fuerchten"},
+            {german: "gehören zu", russian: "принадлежать к", id: "gehoeren"},
+            {german: "sprechen mit", russian: "разговаривать с", id: "sprechen_mit"},
+            {german: "sprechen von", russian: "говорить о", id: "sprechen_von"},
+            {german: "suchen nach", russian: "искать что-то", id: "suchen"}
         ];
 
-        const articles = [
-            "der", "die", "das", "den", "dem", "des",
-            "Der", "Die", "Das", "Den", "Dem", "Des",
-            "ein", "eine", "einen", "einem", "einer", "eines",
-            "Ein", "Eine", "Einen", "Einem", "Einer", "Eines",
-            "mein", "meine", "meinen", "meinem", "meiner", "meines",
-            "Mein", "Meine", "Meinen", "Meinem", "Meiner", "Meines",
-            "dein", "deine", "deinen", "deinem", "deiner",
-            "Dein", "Deine", "Deinen", "Deinem", "Deiner",
-            "sein", "seine", "seinen", "seinem", "seiner",
-            "Sein", "Seine", "Seinen", "Seinem", "Seiner",
-            "ihr", "ihre", "ihren", "ihrem", "ihrer",
-            "Ihr", "Ihre", "Ihren", "Ihrem", "Ihrer",
-            "unser", "unsere", "unseren", "unserem", "unserer",
-            "Unser", "Unsere", "Unseren", "Unserem", "Unserer",
-            "vom", "zum", "zur", "am", "im", "beim", "ins", "ans", "durchs", "ums", "fürs"
-        ];
-
-        // Database of 50 stories with gaps
-        const stories = [
-            {
-                id: 1,
-                text: "Heute mache ich zusammen <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Freund ein Abendessen. Wir treffen uns <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Wohnung von Mario in der Nähe <span class='gap-pair'><span class='gap' data-id='5' data-type='preposition'>___</span> <span class='gap' data-id='6' data-type='article'>___</span></span> Rathaus. Das Essen beginnt um 20 Uhr. Um 19:30 Uhr kommt Maria, um uns zu helfen. Sie bringt frische Tomaten <span class='gap-pair'><span class='gap' data-id='7' data-type='preposition'>___</span> <span class='gap' data-id='8' data-type='article'>___</span></span> Garten mit.",
-                gaps: [
-                    { id: 1, correct: "mit", type: "preposition" },
-                    { id: 2, correct: "meinem", type: "article" },
-                    { id: 3, correct: "in", type: "preposition" },
-                    { id: 4, correct: "der", type: "article" },
-                    { id: 5, correct: "vom", type: "article" },
-                    { id: 6, correct: "(leer)", type: "article" },
-                    { id: 7, correct: "aus", type: "preposition" },
-                    { id: 8, correct: "dem", type: "article" }
-                ],
-                translation: "Сегодня я готовлю ужин вместе с другом. Мы встречаемся в квартире Марио рядом с ратушей. Ужин начинается в 20:00. В 19:30 приходит Мария, чтобы помочь нам. Она приносит свежие помидоры из сада."
-            },
-            {
-                id: 2,
-                text: "Gestern bin ich <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Supermarkt gegangen. Ich brauchte <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Brot und <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Milch. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Verkäuferin war sehr freundlich. Sie hat <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> geholfen, <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> richtigen Käse zu finden.",
-                gaps: [
-                    { id: 1, correct: "zum", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "ein", type: "article" },
-                    { id: 4, correct: "eine", type: "article" },
-                    { id: 5, correct: "Die", type: "article" },
-                    { id: 6, correct: "mir", type: "article" },
-                    { id: 7, correct: "den", type: "article" }
-                ],
-                translation: "Вчера я пошел в супермаркет. Мне нужны были хлеб и молоко. Продавщица была очень дружелюбна. Она помогла мне найти правильный сыр."
-            },
-            {
-                id: 3,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Wochenende fahre ich immer <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span></span> meinen Eltern. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Haus liegt <span class='gap-pair'><span class='gap' data-id='5' data-type='preposition'>___</span> <span class='gap' data-id='6' data-type='article'>___</span></span> einem kleinen Dorf. Ich verbringe dort <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Zeit mit <span class='gap-pair'><span class='gap' data-id='8' data-type='article'>___</span></span> Familie.",
-                gaps: [
-                    { id: 1, correct: "Am", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "zu", type: "preposition" },
-                    { id: 4, correct: "Ihr", type: "article" },
-                    { id: 5, correct: "in", type: "preposition" },
-                    { id: 6, correct: "(leer)", type: "article" },
-                    { id: 7, correct: "die", type: "article" },
-                    { id: 8, correct: "meiner", type: "article" }
-                ],
-                translation: "На выходных я всегда еду к своим родителям. Их дом находится в маленькой деревне. Я провожу там время с семьей."
-            },
-            {
-                id: 4,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='article'>___</span></span> Studentin aus Spanien lernt <span class='gap-pair'><span class='gap' data-id='2' data-type='article'>___</span></span> Deutsch. Sie hat <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Freundin, <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> auch Deutsch spricht. Zusammen üben <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Vokabeln und <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Grammatik.",
-                gaps: [
-                    { id: 1, correct: "Eine", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "eine", type: "article" },
-                    { id: 4, correct: "die", type: "article" },
-                    { id: 5, correct: "sie", type: "article" },
-                    { id: 6, correct: "die", type: "article" }
-                ],
-                translation: "Студентка из Испании учит немецкий. У нее есть подруга, которая тоже говорит по-немецки. Вместе они практикуют словарный запас и грамматику."
-            },
-            {
-                id: 5,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span></span> Berlin gibt es viele Museen. Ich war gestern <span class='gap-pair'><span class='gap' data-id='2' data-type='preposition'>___</span> <span class='gap' data-id='3' data-type='article'>___</span></span> Naturkundemuseum. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Ausstellung war sehr interessant. Besonders <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Dinosaurier-Skelette haben <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> beeindruckt.",
-                gaps: [
-                    { id: 1, correct: "In", type: "preposition" },
-                    { id: 2, correct: "im", type: "article" },
-                    { id: 3, correct: "(leer)", type: "article" },
-                    { id: 4, correct: "Die", type: "article" },
-                    { id: 5, correct: "die", type: "article" },
-                    { id: 6, correct: "mich", type: "article" }
-                ],
-                translation: "В Берлине много музеев. Вчера я был в музее естествознания. Выставка была очень интересной. Особенно меня впечатлили скелеты динозавров."
-            },
-            {
-                id: 6,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Sommer mache ich immer Urlaub <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Meer. Ich fahre dann <span class='gap-pair'><span class='gap' data-id='5' data-type='preposition'>___</span></span> Italien oder Spanien. Dort kann ich <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Sonne genießen und <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Bücher lesen.",
-                gaps: [
-                    { id: 1, correct: "Im", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "am", type: "article" },
-                    { id: 4, correct: "(leer)", type: "article" },
-                    { id: 5, correct: "nach", type: "preposition" },
-                    { id: 6, correct: "die", type: "article" },
-                    { id: 7, correct: "viele", type: "article" }
-                ],
-                translation: "Летом я всегда отдыхаю на море. Тогда я еду в Италию или Испанию. Там я могу наслаждаться солнцем и читать много книг."
-            },
-            {
-                id: 7,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Morgen trinke ich immer <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Kaffee. Ohne <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> kann ich nicht richtig aufwachen. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Freundin trinkt lieber <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Tee.",
-                gaps: [
-                    { id: 1, correct: "Am", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "einen", type: "article" },
-                    { id: 4, correct: "ihn", type: "article" },
-                    { id: 5, correct: "Meine", type: "article" },
-                    { id: 6, correct: "(leer)", type: "article" }
-                ],
-                translation: "Утром я всегда пью кофе. Без него я не могу нормально проснуться. Моя подруга предпочитает чай."
-            },
-            {
-                id: 8,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span></span> Deutschland muss man pünktlich sein. <span class='gap-pair'><span class='gap' data-id='2' data-type='article'>___</span></span> ist sehr wichtig. Ich komme immer <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Zeit, aber <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Freund ist oft zu spät.",
-                gaps: [
-                    { id: 1, correct: "In", type: "preposition" },
-                    { id: 2, correct: "Das", type: "article" },
-                    { id: 3, correct: "zur", type: "article" },
-                    { id: 4, correct: "(leer)", type: "article" },
-                    { id: 5, correct: "mein", type: "article" }
-                ],
-                translation: "В Германии нужно быть пунктуальным. Это очень важно. Я всегда прихожу вовремя, но мой друг часто опаздывает."
-            },
-            {
-                id: 9,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Abend sehe ich oft <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Film. Heute will ich <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> neuen Actionfilm sehen. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> soll sehr spannend sein.",
-                gaps: [
-                    { id: 1, correct: "Am", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "einen", type: "article" },
-                    { id: 4, correct: "den", type: "article" },
-                    { id: 5, correct: "Er", type: "article" }
-                ],
-                translation: "Вечером я часто смотрю фильм. Сегодня я хочу посмотреть новый боевик. Говорят, он очень захватывающий."
-            },
-            {
-                id: 10,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Universität lerne ich <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Mathematik. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> ist nicht einfach, aber <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> macht Spaß. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Professor erklärt sehr gut.",
-                gaps: [
-                    { id: 1, correct: "An", type: "preposition" },
-                    { id: 2, correct: "der", type: "article" },
-                    { id: 3, correct: "(leer)", type: "article" },
-                    { id: 4, correct: "Das", type: "article" },
-                    { id: 5, correct: "es", type: "article" },
-                    { id: 6, correct: "Der", type: "article" }
-                ],
-                translation: "В университете я изучаю математику. Это не легко, но мне нравится. Профессор очень хорошо объясняет."
-            },
-            {
-                id: 11,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Winter fahre ich gerne Ski. <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Alpen sind perfekt dafür. Letztes Jahr war ich <span class='gap-pair'><span class='gap' data-id='4' data-type='preposition'>___</span></span> Österreich. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> war wunderschön.",
-                gaps: [
-                    { id: 1, correct: "Im", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "Die", type: "article" },
-                    { id: 4, correct: "in", type: "preposition" },
-                    { id: 5, correct: "Es", type: "article" }
-                ],
-                translation: "Зимой я люблю кататься на лыжах. Альпы идеально подходят для этого. В прошлом году я был в Австрии. Это было прекрасно."
-            },
-            {
-                id: 12,
-                text: "Ich gehe <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Arzt, weil ich <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Kopfschmerzen habe. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Praxis ist <span class='gap-pair'><span class='gap' data-id='5' data-type='preposition'>___</span> <span class='gap' data-id='6' data-type='article'>___</span></span> nächsten Straße. <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Termin ist um 10 Uhr.",
-                gaps: [
-                    { id: 1, correct: "zum", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "(leer)", type: "article" },
-                    { id: 4, correct: "Die", type: "article" },
-                    { id: 5, correct: "in", type: "preposition" },
-                    { id: 6, correct: "der", type: "article" },
-                    { id: 7, correct: "Der", type: "article" }
-                ],
-                translation: "Я иду к врачу, потому что у меня болит голова. Практика находится на следующей улице. Прием в 10 часов."
-            },
-            {
-                id: 13,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Bahnhof habe ich <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Freund getroffen. Wir sind dann <span class='gap-pair'><span class='gap' data-id='4' data-type='preposition'>___</span> <span class='gap' data-id='5' data-type='article'>___</span></span> Zug <span class='gap-pair'><span class='gap' data-id='6' data-type='preposition'>___</span></span> Hamburg gefahren. <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Fahrt dauerte zwei Stunden.",
-                gaps: [
-                    { id: 1, correct: "Am", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "einen", type: "article" },
-                    { id: 4, correct: "mit", type: "preposition" },
-                    { id: 5, correct: "dem", type: "article" },
-                    { id: 6, correct: "nach", type: "preposition" },
-                    { id: 7, correct: "Die", type: "article" }
-                ],
-                translation: "На вокзале я встретил друга. Затем мы поехали на поезде в Гамбург. Поездка длилась два часа."
-            },
-            {
-                id: 14,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Park spielen viele Kinder. Sie laufen <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Bäumen und <span class='gap-pair'><span class='gap' data-id='5' data-type='preposition'>___</span> <span class='gap' data-id='6' data-type='article'>___</span></span> Wiese. <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Eltern sitzen <span class='gap-pair'><span class='gap' data-id='8' data-type='preposition'>___</span> <span class='gap' data-id='9' data-type='article'>___</span></span> Bänken.",
-                gaps: [
-                    { id: 1, correct: "Im", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "zwischen", type: "preposition" },
-                    { id: 4, correct: "den", type: "article" },
-                    { id: 5, correct: "auf", type: "preposition" },
-                    { id: 6, correct: "der", type: "article" },
-                    { id: 7, correct: "Die", type: "article" },
-                    { id: 8, correct: "auf", type: "preposition" },
-                    { id: 9, correct: "den", type: "article" }
-                ],
-                translation: "В парке играет много детей. Они бегают между деревьями и по лужайке. Родители сидят на скамейках."
-            },
-            {
-                id: 15,
-                text: "Ich lese gerne <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Bett. <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Buch liegt immer <span class='gap-pair'><span class='gap' data-id='4' data-type='preposition'>___</span> <span class='gap' data-id='5' data-type='article'>___</span></span> Nachttisch. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> letzte Seite fehlt <span class='gap-pair'><span class='gap' data-id='7' data-type='preposition'>___</span> <span class='gap' data-id='8' data-type='article'>___</span></span> meinem Exemplar.",
-                gaps: [
-                    { id: 1, correct: "im", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "Das", type: "article" },
-                    { id: 4, correct: "auf", type: "preposition" },
-                    { id: 5, correct: "dem", type: "article" },
-                    { id: 6, correct: "Die", type: "article" },
-                    { id: 7, correct: "in", type: "preposition" },
-                    { id: 8, correct: "(leer)", type: "article" }
-                ],
-                translation: "Я люблю читать в постели. Книга всегда лежит на прикроватной тумбочке. В моем экземпляре не хватает последней страницы."
-            },
-            {
-                id: 16,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Restaurant bestellen wir <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Pizza und <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Salat. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Kellner bringt <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Getränke zuerst.",
-                gaps: [
-                    { id: 1, correct: "Im", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "eine", type: "article" },
-                    { id: 4, correct: "einen", type: "article" },
-                    { id: 5, correct: "Der", type: "article" },
-                    { id: 6, correct: "die", type: "article" }
-                ],
-                translation: "В ресторане мы заказываем пиццу и салат. Официант сначала приносит напитки."
-            },
-            {
-                id: 17,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Geburtstag schenke ich <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Schwester <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Buch. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Thema ist Geschichte. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> freut sich immer <span class='gap-pair'><span class='gap' data-id='7' data-type='preposition'>___</span></span> Geschenke.",
-                gaps: [
-                    { id: 1, correct: "Zum", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "meiner", type: "article" },
-                    { id: 4, correct: "ein", type: "article" },
-                    { id: 5, correct: "Das", type: "article" },
-                    { id: 6, correct: "Sie", type: "article" },
-                    { id: 7, correct: "über", type: "preposition" }
-                ],
-                translation: "На день рождения я дарю сестре книгу. Тема - история. Она всегда радуется подаркам."
-            },
-            {
-                id: 18,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span></span> Regen bleiben wir <span class='gap-pair'><span class='gap' data-id='2' data-type='preposition'>___</span> <span class='gap' data-id='3' data-type='article'>___</span></span> Haus. Wir spielen <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Karten oder sehen <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Fernsehen. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Wetter ist wirklich schlecht.",
-                gaps: [
-                    { id: 1, correct: "Bei", type: "preposition" },
-                    { id: 2, correct: "im", type: "article" },
-                    { id: 3, correct: "(leer)", type: "article" },
-                    { id: 4, correct: "(leer)", type: "article" },
-                    { id: 5, correct: "(leer)", type: "article" },
-                    { id: 6, correct: "Das", type: "article" }
-                ],
-                translation: "В дождь мы остаемся дома. Мы играем в карты или смотрим телевизор. Погода действительно плохая."
-            },
-            {
-                id: 19,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='article'>___</span></span> Arbeit beginnt um 8 Uhr. Ich fahre <span class='gap-pair'><span class='gap' data-id='2' data-type='preposition'>___</span> <span class='gap' data-id='3' data-type='article'>___</span></span> Auto <span class='gap-pair'><span class='gap' data-id='4' data-type='preposition'>___</span> <span class='gap' data-id='5' data-type='article'>___</span></span> Büro. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Straßen sind morgens sehr voll.",
-                gaps: [
-                    { id: 1, correct: "Die", type: "article" },
-                    { id: 2, correct: "mit", type: "preposition" },
-                    { id: 3, correct: "dem", type: "article" },
-                    { id: 4, correct: "ins", type: "article" },
-                    { id: 5, correct: "(leer)", type: "article" },
-                    { id: 6, correct: "Die", type: "article" }
-                ],
-                translation: "Работа начинается в 8 часов. Я еду в офис на машине. Улицы утром очень загружены."
-            },
-            {
-                id: 20,
-                text: "Ich treffe mich <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span></span> Freunden <span class='gap-pair'><span class='gap' data-id='2' data-type='preposition'>___</span> <span class='gap' data-id='3' data-type='article'>___</span></span> Café. Wir trinken <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Kaffee und unterhalten <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span>. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Thema ist oft Politik.",
-                gaps: [
-                    { id: 1, correct: "mit", type: "preposition" },
-                    { id: 2, correct: "im", type: "article" },
-                    { id: 3, correct: "(leer)", type: "article" },
-                    { id: 4, correct: "(leer)", type: "article" },
-                    { id: 5, correct: "uns", type: "article" },
-                    { id: 6, correct: "Das", type: "article" }
-                ],
-                translation: "Я встречаюсь с друзьями в кафе. Мы пьем кофе и разговариваем. Темы часто о политике."
-            },
-            {
-                id: 21,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Schule lernen wir <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Fremdsprachen. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Lehrerin kommt <span class='gap-pair'><span class='gap' data-id='5' data-type='preposition'>___</span></span> England. Sie spricht <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> perfektes Englisch.",
-                gaps: [
-                    { id: 1, correct: "In", type: "preposition" },
-                    { id: 2, correct: "der", type: "article" },
-                    { id: 3, correct: "(leer)", type: "article" },
-                    { id: 4, correct: "Die", type: "article" },
-                    { id: 5, correct: "aus", type: "preposition" },
-                    { id: 6, correct: "(leer)", type: "article" }
-                ],
-                translation: "В школе мы изучаем иностранные языки. Учительница приехала из Англии. Она говорит на идеальном английском."
-            },
-            {
-                id: 22,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Wochenende besuche ich <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Oma. Sie wohnt <span class='gap-pair'><span class='gap' data-id='4' data-type='preposition'>___</span> <span class='gap' data-id='5' data-type='article'>___</span></span> anderen Stadt. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Zugfahrt dauert drei Stunden.",
-                gaps: [
-                    { id: 1, correct: "Am", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "meine", type: "article" },
-                    { id: 4, correct: "in", type: "preposition" },
-                    { id: 5, correct: "einer", type: "article" },
-                    { id: 6, correct: "Die", type: "article" }
-                ],
-                translation: "На выходных я навещаю бабушку. Она живет в другом городе. Поездка на поезде занимает три часа."
-            },
-            {
-                id: 23,
-                text: "Ich kaufe <span class='gap-pair'><span class='gap' data-id='1' data-type='article'>___</span></span> Geschenk <span class='gap-pair'><span class='gap' data-id='2' data-type='preposition'>___</span></span> meinen Vater. <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Geburtstag ist nächste Woche. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> werde <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Uhr schenken.",
-                gaps: [
-                    { id: 1, correct: "ein", type: "article" },
-                    { id: 2, correct: "für", type: "preposition" },
-                    { id: 3, correct: "Sein", type: "article" },
-                    { id: 4, correct: "Ich", type: "article" },
-                    { id: 5, correct: "eine", type: "article" }
-                ],
-                translation: "Я покупаю подарок для моего отца. Его день рождения на следующей неделе. Я подарю ему часы."
-            },
-            {
-                id: 24,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Konzert waren viele Menschen. <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Musik war laut. Wir standen <span class='gap-pair'><span class='gap' data-id='4' data-type='preposition'>___</span> <span class='gap' data-id='5' data-type='article'>___</span></span> Bühne. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Sänger war fantastisch.",
-                gaps: [
-                    { id: 1, correct: "Auf", type: "preposition" },
-                    { id: 2, correct: "dem", type: "article" },
-                    { id: 3, correct: "Die", type: "article" },
-                    { id: 4, correct: "vor", type: "preposition" },
-                    { id: 5, correct: "der", type: "article" },
-                    { id: 6, correct: "Der", type: "article" }
-                ],
-                translation: "На концерте было много людей. Музыка была громкой. Мы стояли перед сценой. Певец был фантастическим."
-            },
-            {
-                id: 25,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Urlaub fahren wir <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Berge. Wir wandern <span class='gap-pair'><span class='gap' data-id='5' data-type='preposition'>___</span></span> Tälern und <span class='gap-pair'><span class='gap' data-id='6' data-type='preposition'>___</span></span> Gipfeln. <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Natur ist atemberaubend.",
-                gaps: [
-                    { id: 1, correct: "Im", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "in", type: "preposition" },
-                    { id: 4, correct: "die", type: "article" },
-                    { id: 5, correct: "durch", type: "preposition" },
-                    { id: 6, correct: "auf", type: "preposition" },
-                    { id: 7, correct: "Die", type: "article" }
-                ],
-                translation: "В отпуске мы едем в горы. Мы путешествуем по долинам и вершинам. Природа захватывает дух."
-            },
-            {
-                id: 26,
-                text: "Ich schreibe <span class='gap-pair'><span class='gap' data-id='1' data-type='article'>___</span></span> Brief <span class='gap-pair'><span class='gap' data-id='2' data-type='preposition'>___</span></span> meiner Tante. Sie wohnt <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span></span> Amerika. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Briefmarke kostet 85 Cent.",
-                gaps: [
-                    { id: 1, correct: "einen", type: "article" },
-                    { id: 2, correct: "an", type: "preposition" },
-                    { id: 3, correct: "in", type: "preposition" },
-                    { id: 4, correct: "Die", type: "article" }
-                ],
-                translation: "Я пишу письмо моей тете. Она живет в Америке. Марка стоит 85 центов."
-            },
-            {
-                id: 27,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Flughafen müssen wir <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Passkontrolle. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Officer prüft <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Pässe. <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Flug geht <span class='gap-pair'><span class='gap' data-id='8' data-type='preposition'>___</span> <span class='gap' data-id='9' data-type='article'>___</span></span> Gate B5.",
-                gaps: [
-                    { id: 1, correct: "Am", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "durch", type: "preposition" },
-                    { id: 4, correct: "die", type: "article" },
-                    { id: 5, correct: "Der", type: "article" },
-                    { id: 6, correct: "die", type: "article" },
-                    { id: 7, correct: "Unser", type: "article" },
-                    { id: 8, correct: "vom", type: "article" },
-                    { id: 9, correct: "(leer)", type: "article" }
-                ],
-                translation: "В аэропорту мы должны пройти паспортный контроль. Офицер проверяет паспорта. Наш рейс отправляется от выхода B5."
-            },
-            {
-                id: 28,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Fitnessstudio trainiere ich <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span></span> Gewichten. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Trainer hilft <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span>. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Training ist anstrengend.",
-                gaps: [
-                    { id: 1, correct: "Im", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "mit", type: "preposition" },
-                    { id: 4, correct: "Der", type: "article" },
-                    { id: 5, correct: "mir", type: "article" },
-                    { id: 6, correct: "Das", type: "article" }
-                ],
-                translation: "В тренажерном зале я тренируюсь с весами. Тренер помогает мне. Тренировка утомительна."
-            },
-            {
-                id: 29,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Party gestern waren viele Gäste. <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Musik war gut. Wir tanzten <span class='gap-pair'><span class='gap' data-id='4' data-type='preposition'>___</span></span> Mitternacht. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Stimmung war super.",
-                gaps: [
-                    { id: 1, correct: "Auf", type: "preposition" },
-                    { id: 2, correct: "der", type: "article" },
-                    { id: 3, correct: "Die", type: "article" },
-                    { id: 4, correct: "bis", type: "preposition" },
-                    { id: 5, correct: "Die", type: "article" }
-                ],
-                translation: "На вчерашней вечеринке было много гостей. Музыка была хорошей. Мы танцевали до полуночи. Настроение было отличным."
-            },
-            {
-                id: 30,
-                text: "Ich helfe <span class='gap-pair'><span class='gap' data-id='1' data-type='article'>___</span></span> Mutter <span class='gap-pair'><span class='gap' data-id='2' data-type='preposition'>___</span> <span class='gap' data-id='3' data-type='article'>___</span></span> Haushalt. Wir putzen <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Wohnung. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Fenster sind sehr schmutzig.",
-                gaps: [
-                    { id: 1, correct: "meiner", type: "article" },
-                    { id: 2, correct: "im", type: "article" },
-                    { id: 3, correct: "(leer)", type: "article" },
-                    { id: 4, correct: "die", type: "article" },
-                    { id: 5, correct: "Die", type: "article" }
-                ],
-                translation: "Я помогаю маме по хозяйству. Мы убираем квартиру. Окна очень грязные."
-            },
-            {
-                id: 31,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Zoo sehen wir <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Tiere. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Elefanten sind <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> größten. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Kinder füttern <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Ziegen.",
-                gaps: [
-                    { id: 1, correct: "Im", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "viele", type: "article" },
-                    { id: 4, correct: "Die", type: "article" },
-                    { id: 5, correct: "die", type: "article" },
-                    { id: 6, correct: "Die", type: "article" },
-                    { id: 7, correct: "die", type: "article" }
-                ],
-                translation: "В зоопарке мы видим много животных. Слоны самые большие. Дети кормят коз."
-            },
-            {
-                id: 32,
-                text: "Ich warte <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Bus <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Haltestelle. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> kommt immer zu spät. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Regen macht <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> nass.",
-                gaps: [
-                    { id: 1, correct: "auf", type: "preposition" },
-                    { id: 2, correct: "den", type: "article" },
-                    { id: 3, correct: "an", type: "preposition" },
-                    { id: 4, correct: "der", type: "article" },
-                    { id: 5, correct: "Er", type: "article" },
-                    { id: 6, correct: "Der", type: "article" },
-                    { id: 7, correct: "mich", type: "article" }
-                ],
-                translation: "Я жду автобус на остановке. Он всегда приходит поздно. Дождь мочит меня."
-            },
-            {
-                id: 33,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Buchhandlung kaufe ich <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Roman. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> handelt <span class='gap-pair'><span class='gap' data-id='5' data-type='preposition'>___</span></span> Liebe. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Autor ist sehr bekannt.",
-                gaps: [
-                    { id: 1, correct: "In", type: "preposition" },
-                    { id: 2, correct: "der", type: "article" },
-                    { id: 3, correct: "einen", type: "article" },
-                    { id: 4, correct: "Es", type: "article" },
-                    { id: 5, correct: "von", type: "preposition" },
-                    { id: 6, correct: "Der", type: "article" }
-                ],
-                translation: "В книжном магазине я покупаю роман. Он о любви. Автор очень известен."
-            },
-            {
-                id: 34,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Schwimmbad springen wir <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Wasser. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> ist kalt. Wir schwimmen <span class='gap-pair'><span class='gap' data-id='6' data-type='preposition'>___</span> <span class='gap' data-id='7' data-type='article'>___</span></span> Becken. <span class='gap-pair'><span class='gap' data-id='8' data-type='article'>___</span></span> Bademeister passt auf.",
-                gaps: [
-                    { id: 1, correct: "Im", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "ins", type: "article" },
-                    { id: 4, correct: "(leer)", type: "article" },
-                    { id: 5, correct: "Es", type: "article" },
-                    { id: 6, correct: "im", type: "article" },
-                    { id: 7, correct: "(leer)", type: "article" },
-                    { id: 8, correct: "Der", type: "article" }
-                ],
-                translation: "В бассейне мы прыгаем в воду. Она холодная. Мы плаваем в бассейне. Спасатель следит."
-            },
-            {
-                id: 35,
-                text: "Ich reise <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Zug <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span></span> Frankfurt. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Fahrt ist angenehm. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> lese <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Buch.",
-                gaps: [
-                    { id: 1, correct: "mit", type: "preposition" },
-                    { id: 2, correct: "dem", type: "article" },
-                    { id: 3, correct: "nach", type: "preposition" },
-                    { id: 4, correct: "Die", type: "article" },
-                    { id: 5, correct: "Ich", type: "article" },
-                    { id: 6, correct: "ein", type: "article" }
-                ],
-                translation: "Я путешествую поездом во Франкфурт. Поездка приятная. Я читаю книгу."
-            },
-            {
-                id: 36,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Museum gibt es <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> alte Gemälde. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Besucher bewundern <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Kunstwerke. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Eintritt ist frei.",
-                gaps: [
-                    { id: 1, correct: "Im", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "viele", type: "article" },
-                    { id: 4, correct: "Die", type: "article" },
-                    { id: 5, correct: "die", type: "article" },
-                    { id: 6, correct: "Der", type: "article" }
-                ],
-                translation: "В музее есть много старых картин. Посетители восхищаются произведениями искусства. Вход бесплатный."
-            },
-            {
-                id: 37,
-                text: "Ich spreche <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Lehrer <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span></span> meinen Noten. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> ist sehr verständnisvoll. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> gibt <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Tipps.",
-                gaps: [
-                    { id: 1, correct: "mit", type: "preposition" },
-                    { id: 2, correct: "dem", type: "article" },
-                    { id: 3, correct: "über", type: "preposition" },
-                    { id: 4, correct: "Er", type: "article" },
-                    { id: 5, correct: "Er", type: "article" },
-                    { id: 6, correct: "mir", type: "article" }
-                ],
-                translation: "Я разговариваю с учителем о моих оценках. Он очень понимающий. Он дает мне советы."
-            },
-            {
-                id: 38,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Theater spielen sie <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> klassisches Stück. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Schauspieler sind talentiert. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Zuschauer applaudieren.",
-                gaps: [
-                    { id: 1, correct: "Im", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "ein", type: "article" },
-                    { id: 4, correct: "Die", type: "article" },
-                    { id: 5, correct: "Die", type: "article" }
-                ],
-                translation: "В театре они играют классическую пьесу. Актеры талантливы. Зрители аплодируют."
-            },
-            {
-                id: 39,
-                text: "Ich fahre <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Fahrrad <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Arbeit. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Strecke ist zehn Kilometer lang. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> morgens ist <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Verkehr stark.",
-                gaps: [
-                    { id: 1, correct: "mit", type: "preposition" },
-                    { id: 2, correct: "dem", type: "article" },
-                    { id: 3, correct: "zur", type: "article" },
-                    { id: 4, correct: "(leer)", type: "article" },
-                    { id: 5, correct: "Die", type: "article" },
-                    { id: 6, correct: "Morgens", type: "article" },
-                    { id: 7, correct: "der", type: "article" }
-                ],
-                translation: "Я езжу на велосипеде на работу. Маршрут длиной десять километров. Утром движение интенсивное."
-            },
-            {
-                id: 40,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Apotheke kaufe ich <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Medikamente. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Apotheker berät <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span>. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Packung kostet 15 Euro.",
-                gaps: [
-                    { id: 1, correct: "In", type: "preposition" },
-                    { id: 2, correct: "der", type: "article" },
-                    { id: 3, correct: "(leer)", type: "article" },
-                    { id: 4, correct: "Der", type: "article" },
-                    { id: 5, correct: "mich", type: "article" },
-                    { id: 6, correct: "Die", type: "article" }
-                ],
-                translation: "В аптеке я покупаю лекарства. Фармацевт консультирует меня. Упаковка стоит 15 евро."
-            },
-            {
-                id: 41,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Strand liegen wir <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Sonne. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Wasser ist blau. Wir schwimmen <span class='gap-pair'><span class='gap' data-id='6' data-type='preposition'>___</span> <span class='gap' data-id='7' data-type='article'>___</span></span> Meer. <span class='gap-pair'><span class='gap' data-id='8' data-type='article'>___</span></span> Wellen sind hoch.",
-                gaps: [
-                    { id: 1, correct: "Am", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "in", type: "preposition" },
-                    { id: 4, correct: "der", type: "article" },
-                    { id: 5, correct: "Das", type: "article" },
-                    { id: 6, correct: "im", type: "article" },
-                    { id: 7, correct: "(leer)", type: "article" },
-                    { id: 8, correct: "Die", type: "article" }
-                ],
-                translation: "На пляже мы лежим на солнце. Вода голубая. Мы плаваем в море. Волны высокие."
-            },
-            {
-                id: 42,
-                text: "Ich koche <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span></span> meiner Freundin. <span class='gap-pair'><span class='gap' data-id='2' data-type='article'>___</span></span> macht <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Salat. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> arbeiten zusammen <span class='gap-pair'><span class='gap' data-id='5' data-type='preposition'>___</span> <span class='gap' data-id='6' data-type='article'>___</span></span> Küche.",
-                gaps: [
-                    { id: 1, correct: "für", type: "preposition" },
-                    { id: 2, correct: "Sie", type: "article" },
-                    { id: 3, correct: "einen", type: "article" },
-                    { id: 4, correct: "Wir", type: "article" },
-                    { id: 5, correct: "in", type: "preposition" },
-                    { id: 6, correct: "der", type: "article" }
-                ],
-                translation: "Я готовлю для моей подруги. Она делает салат. Мы работаем вместе на кухне."
-            },
-            {
-                id: 43,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Konferenz sprechen wir <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span></span> neuen Projekten. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Chef präsentiert <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Pläne. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Kollegen stellen Fragen.",
-                gaps: [
-                    { id: 1, correct: "Auf", type: "preposition" },
-                    { id: 2, correct: "der", type: "article" },
-                    { id: 3, correct: "über", type: "preposition" },
-                    { id: 4, correct: "Der", type: "article" },
-                    { id: 5, correct: "die", type: "article" },
-                    { id: 6, correct: "Die", type: "article" }
-                ],
-                translation: "На конференции мы говорим о новых проектах. Начальник представляет планы. Коллеги задают вопросы."
-            },
-            {
-                id: 44,
-                text: "Ich laufe <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Park <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span></span> Jogging. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Luft ist frisch. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Vögel singen <span class='gap-pair'><span class='gap' data-id='6' data-type='preposition'>___</span> <span class='gap' data-id='7' data-type='article'>___</span></span> Bäumen.",
-                gaps: [
-                    { id: 1, correct: "im", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "zum", type: "article" },
-                    { id: 4, correct: "Die", type: "article" },
-                    { id: 5, correct: "Die", type: "article" },
-                    { id: 6, correct: "in", type: "preposition" },
-                    { id: 7, correct: "den", type: "article" }
-                ],
-                translation: "Я бегаю в парке для пробежки. Воздух свежий. Птицы поют на деревьях."
-            },
-            {
-                id: 45,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Hotelzimmer gibt es <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Bett und <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Schreibtisch. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Fenster zeigt <span class='gap-pair'><span class='gap' data-id='6' data-type='preposition'>___</span> <span class='gap' data-id='7' data-type='article'>___</span></span> Garten.",
-                gaps: [
-                    { id: 1, correct: "Im", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "ein", type: "article" },
-                    { id: 4, correct: "einen", type: "article" },
-                    { id: 5, correct: "Das", type: "article" },
-                    { id: 6, correct: "auf", type: "preposition" },
-                    { id: 7, correct: "den", type: "article" }
-                ],
-                translation: "В гостиничном номере есть кровать и письменный стол. Окно выходит в сад."
-            },
-            {
-                id: 46,
-                text: "Ich studiere <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Universität <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Medizin. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Vorlesungen sind interessant. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Professor ist sehr kompetent.",
-                gaps: [
-                    { id: 1, correct: "an", type: "preposition" },
-                    { id: 2, correct: "der", type: "article" },
-                    { id: 3, correct: "(leer)", type: "article" },
-                    { id: 4, correct: "Die", type: "article" },
-                    { id: 5, correct: "Der", type: "article" }
-                ],
-                translation: "Я изучаю медицину в университете. Лекции интересные. Профессор очень компетентен."
-            },
-            {
-                id: 47,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Geburtstagsfeier singen wir <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> Lieder. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Gäste bringen <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Geschenke. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Kuchen schmeckt lecker.",
-                gaps: [
-                    { id: 1, correct: "Auf", type: "preposition" },
-                    { id: 2, correct: "der", type: "article" },
-                    { id: 3, correct: "(leer)", type: "article" },
-                    { id: 4, correct: "Die", type: "article" },
-                    { id: 5, correct: "(leer)", type: "article" },
-                    { id: 6, correct: "Der", type: "article" }
-                ],
-                translation: "На дне рождения мы поем песни. Гости приносят подарки. Торт вкусный."
-            },
-            {
-                id: 48,
-                text: "Ich fahre <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Taxi <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span> <span class='gap' data-id='4' data-type='article'>___</span></span> Flughafen. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Fahrer kennt <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Weg. <span class='gap-pair'><span class='gap' data-id='7' data-type='article'>___</span></span> Stau verzögert <span class='gap-pair'><span class='gap' data-id='8' data-type='article'>___</span></span> Fahrt.",
-                gaps: [
-                    { id: 1, correct: "mit", type: "preposition" },
-                    { id: 2, correct: "dem", type: "article" },
-                    { id: 3, correct: "zum", type: "article" },
-                    { id: 4, correct: "(leer)", type: "article" },
-                    { id: 5, correct: "Der", type: "article" },
-                    { id: 6, correct: "den", type: "article" },
-                    { id: 7, correct: "Ein", type: "article" },
-                    { id: 8, correct: "die", type: "article" }
-                ],
-                translation: "Я еду в аэропорт на такси. Водитель знает дорогу. Пробка задерживает поездку."
-            },
-            {
-                id: 49,
-                text: "<span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Schloss besichtigen wir <span class='gap-pair'><span class='gap' data-id='3' data-type='article'>___</span></span> alte Räume. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Führer erklärt <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Geschichte. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> Gemälde sind wertvoll.",
-                gaps: [
-                    { id: 1, correct: "Im", type: "article" },
-                    { id: 2, correct: "(leer)", type: "article" },
-                    { id: 3, correct: "die", type: "article" },
-                    { id: 4, correct: "Der", type: "article" },
-                    { id: 5, correct: "die", type: "article" },
-                    { id: 6, correct: "Die", type: "article" }
-                ],
-                translation: "В замке мы осматриваем старые комнаты. Гид объясняет историю. Картины ценны."
-            },
-            {
-                id: 50,
-                text: "Ich arbeite <span class='gap-pair'><span class='gap' data-id='1' data-type='preposition'>___</span> <span class='gap' data-id='2' data-type='article'>___</span></span> Firma <span class='gap-pair'><span class='gap' data-id='3' data-type='preposition'>___</span></span> München. <span class='gap-pair'><span class='gap' data-id='4' data-type='article'>___</span></span> Büro ist modern. <span class='gap-pair'><span class='gap' data-id='5' data-type='article'>___</span></span> Kollegen sind nett. <span class='gap-pair'><span class='gap' data-id='6' data-type='article'>___</span></span> arbeite dort <span class='gap-pair'><span class='gap' data-id='7' data-type='preposition'>___</span></span> fünf Jahren.",
-                gaps: [
-                    { id: 1, correct: "in", type: "preposition" },
-                    { id: 2, correct: "einer", type: "article" },
-                    { id: 3, correct: "in", type: "preposition" },
-                    { id: 4, correct: "Das", type: "article" },
-                    { id: 5, correct: "Die", type: "article" },
-                    { id: 6, correct: "Ich", type: "article" },
-                    { id: 7, correct: "seit", type: "preposition" }
-                ],
-                translation: "Я работаю в компании в Мюнхене. Офис современный. Коллеги милые. Я работаю там пять лет."
-            }
-        ];
-
-        // Game state
-        let currentStoryIndex = 0;
+        let currentMode = 'de_ru';
+        let currentFilter = 'all';
+        let currentWords = [];
+        let currentQuestion = 0;
         let score = 0;
-        let correctAnswers = 0;
-        let selectedGaps = {};
-        let isChecked = false;
-        let currentSelectedGap = null;
+        let wrongAnswers = [];
+        let learnedVerbs = JSON.parse(localStorage.getItem('learnedVerbs') || '[]');
+        let currentSessionLearned = [];
 
-        // DOM elements
-        const storyContainer = document.getElementById('story-container');
-        const optionsContainer = document.getElementById('options-container');
-        const uberProofBtn = document.getElementById('uber-proof-btn');
-        const checkBtn = document.getElementById('check-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const restartBtn = document.getElementById('restart-btn');
-        const restartResultBtn = document.getElementById('restart-result-btn');
-        const quizContainer = document.getElementById('quiz-container');
-        const resultContainer = document.getElementById('result-container');
-        const currentQuestionEl = document.getElementById('current-question');
-        const totalQuestionsEl = document.getElementById('total-questions');
-        const scoreEl = document.getElementById('score');
-        const correctEl = document.getElementById('correct');
-        const progressEl = document.getElementById('progress');
-        const finalScoreEl = document.getElementById('final-score');
-        const resultMessageEl = document.getElementById('result-message');
-        const currentSelectionEl = document.getElementById('current-selection');
-        const proofResultsEl = document.getElementById('proof-results');
-
-        // Initialize the game
-        function init() {
-            currentStoryIndex = 0;
-            score = 0;
-            correctAnswers = 0;
-            selectedGaps = {};
-            isChecked = false;
-            currentSelectedGap = null;
-            
-            totalQuestionsEl.textContent = stories.length;
-            updateStats();
-            loadStory();
-            
-            quizContainer.style.display = 'block';
-            resultContainer.style.display = 'none';
-            proofResultsEl.style.display = 'none';
+        // Установка режима
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
         }
 
-        // Load options based on gap type
-        function loadOptions(gapType) {
-            optionsContainer.innerHTML = '';
+        // Установка фильтра
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            updateFilterInfo();
+        }
+
+        // Обновление информации о фильтре
+        function updateFilterInfo() {
+            let availableWords = [];
             
-            let options = [];
-            if (gapType === 'preposition') {
-                options = prepositions;
-            } else if (gapType === 'article') {
-                options = articles;
+            if (currentFilter === 'all') {
+                availableWords = verbs;
+            } else if (currentFilter === 'learned') {
+                availableWords = verbs.filter(verb => learnedVerbs.includes(verb.id));
+            } else {
+                availableWords = verbs.filter(verb => !learnedVerbs.includes(verb.id));
             }
             
-            // Add empty option
-            options = ["(leer)", ...options];
-            
-            options.forEach(option => {
-                const optionEl = document.createElement('div');
-                optionEl.className = 'option';
-                if (option === "(leer)") {
-                    optionEl.classList.add('empty-option');
-                }
-                optionEl.textContent = option;
-                optionEl.dataset.option = option;
-                
-                optionEl.addEventListener('click', function() {
-                    if (isChecked || !currentSelectedGap) return;
-                    
-                    // Update selected gap
-                    if (option === "(leer)") {
-                        selectedGaps[currentSelectedGap.id] = "";
-                    } else {
-                        selectedGaps[currentSelectedGap.id] = option;
-                    }
-                    
-                    // Update gap display
-                    document.querySelectorAll('.gap').forEach(gap => {
-                        if (parseInt(gap.dataset.id) === currentSelectedGap.id) {
-                            if (option === "(leer)") {
-                                gap.textContent = "___";
-                                gap.classList.remove('filled');
-                            } else {
-                                gap.textContent = option;
-                                gap.classList.add('filled');
-                            }
-                        }
-                    });
-                    
-                    // Update option selection
-                    document.querySelectorAll('.option').forEach(opt => {
-                        opt.classList.remove('selected');
-                    });
-                    this.classList.add('selected');
-                    
-                    // Enable check button if all gaps are filled
-                    const story = stories[currentStoryIndex];
-                    const allFilled = story.gaps.every(gap => selectedGaps[gap.id] !== undefined);
-                    checkBtn.disabled = !allFilled;
-                });
-                
-                optionsContainer.appendChild(optionEl);
-            });
+            document.getElementById('filterInfo').textContent = 
+                `Verfügbar: ${availableWords.length} Verben`;
         }
 
-        // Load current story
-        function loadStory() {
-            const story = stories[currentStoryIndex];
-            currentQuestionEl.textContent = currentStoryIndex + 1;
-            currentSelectionEl.textContent = "Aktuelle Auswahl: Keine Lücke ausgewählt";
+        // Обновление статистики
+        function updateStats() {
+            const learnedCount = learnedVerbs.length;
+            const totalCount = verbs.length;
+            const unlearnedCount = totalCount - learnedCount;
             
-            // Reset all options
-            document.querySelectorAll('.option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
+            document.getElementById('learnedWords').textContent = learnedCount;
+            document.getElementById('totalWords').textContent = totalCount;
+            document.getElementById('unlearnedWords').textContent = unlearnedCount;
             
-            // Set story HTML
-            storyContainer.innerHTML = story.text;
-            
-            // Add translation
-            const translationEl = document.createElement('div');
-            translationEl.className = 'translation';
-            translationEl.textContent = story.translation;
-            storyContainer.appendChild(translationEl);
-            
-            // Add event listeners to gaps
-            document.querySelectorAll('.gap').forEach(gap => {
-                // Set initial values if they exist
-                const gapId = parseInt(gap.dataset.id);
-                if (selectedGaps[gapId] !== undefined && selectedGaps[gapId] !== "") {
-                    gap.textContent = selectedGaps[gapId];
-                    gap.classList.add('filled');
-                }
-                
-                gap.addEventListener('click', function() {
-                    if (isChecked) return;
-                    
-                    const gapId = parseInt(this.dataset.id);
-                    const gapType = this.dataset.type;
-                    
-                    // Deselect all gaps
-                    document.querySelectorAll('.gap').forEach(g => g.classList.remove('selected'));
-                    
-                    // Select current gap
-                    this.classList.add('selected');
-                    currentSelectedGap = { id: gapId, type: gapType };
-                    
-                    // Update selection info
-                    currentSelectionEl.textContent = `Aktuelle Auswahl: Lücke ${gapId} (${gapType})`;
-                    
-                    // Load appropriate options
-                    loadOptions(gapType);
-                    
-                    // Update options selection
-                    document.querySelectorAll('.option').forEach(opt => {
-                        opt.classList.remove('selected');
-                        if (selectedGaps[gapId] === opt.dataset.option) {
-                            opt.classList.add('selected');
-                        }
-                    });
-                });
-            });
-            
-            // Add click event to story container to deselect
-            storyContainer.addEventListener('click', function(e) {
-                if (!e.target.classList.contains('gap')) {
-                    document.querySelectorAll('.gap').forEach(g => g.classList.remove('selected'));
-                    document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
-                    currentSelectedGap = null;
-                    currentSelectionEl.textContent = "Aktuelle Auswahl: Keine Lücke ausgewählt";
-                    optionsContainer.innerHTML = '';
-                }
-            });
-            
-            // Reset buttons
-            checkBtn.disabled = true;
-            nextBtn.disabled = true;
-            isChecked = false;
-            
-            // Update progress
-            progressEl.style.width = `${(currentStoryIndex / stories.length) * 100}%`;
+            updateFilterInfo();
         }
 
-        // UberProofer function
-        function uberProof() {
-            const story = stories[currentStoryIndex];
-            let hasFilledGaps = false;
-            let correctCount = 0;
-            let totalFilled = 0;
+        // Сброс всех изученных слов
+        function resetAll() {
+            if (confirm("Möchten Sie wirklich alle gelernten Verben zurücksetzen?")) {
+                learnedVerbs = [];
+                localStorage.setItem('learnedVerbs', JSON.stringify(learnedVerbs));
+                updateStats();
+                alert("Alle gelernten Verben wurden zurückgesetzt!");
+            }
+        }
+
+        // Начало викторины
+        function startQuiz() {
+            let availableWords = [];
             
-            // Remove any existing hints
-            document.querySelectorAll('.correct-answer-hint').forEach(hint => hint.remove());
+            if (currentFilter === 'all') {
+                availableWords = verbs;
+            } else if (currentFilter === 'learned') {
+                availableWords = verbs.filter(verb => learnedVerbs.includes(verb.id));
+            } else {
+                availableWords = verbs.filter(verb => !learnedVerbs.includes(verb.id));
+            }
             
-            story.gaps.forEach(gap => {
-                const gapEl = document.querySelector(`.gap[data-id="${gap.id}"]`);
-                const userAnswer = selectedGaps[gap.id];
-                
-                if (userAnswer !== undefined) {
-                    hasFilledGaps = true;
-                    totalFilled++;
-                    
-                    if (userAnswer === gap.correct) {
-                        gapEl.classList.remove('incorrect');
-                        gapEl.classList.add('correct');
-                        correctCount++;
-                    } else {
-                        gapEl.classList.remove('correct');
-                        gapEl.classList.add('incorrect');
-                        
-                        // Add correct answer hint above the gap
-                        const hint = document.createElement('div');
-                        hint.className = 'correct-answer-hint';
-                        hint.textContent = gap.correct;
-                        gapEl.style.position = 'relative';
-                        gapEl.appendChild(hint);
-                    }
-                } else {
-                    // Reset unfilled gaps
-                    gapEl.classList.remove('correct', 'incorrect');
-                }
-            });
-            
-            if (!hasFilledGaps) {
-                proofResultsEl.innerHTML = '<strong>Keine ausgefüllten Lücken zum Überprüfen!</strong>';
-                proofResultsEl.style.display = 'block';
+            if (availableWords.length === 0) {
+                alert('Keine Verben verfügbar für den ausgewählten Filter!');
                 return;
             }
             
-            // Show proof results
-            const accuracy = totalFilled > 0 ? Math.round((correctCount / totalFilled) * 100) : 0;
-            proofResultsEl.innerHTML = `
-                <strong>UberProofer Ergebnisse:</strong><br>
-                Ausgefüllte Lücken: ${totalFilled}/${story.gaps.length}<br>
-                Richtige Antworten: ${correctCount}/${totalFilled}<br>
-                Genauigkeit: ${accuracy}%
-            `;
-            proofResultsEl.style.display = 'block';
+            const wordCount = parseInt(document.getElementById('wordCount').value) || 20;
+            currentWords = shuffle([...availableWords]).slice(0, Math.min(wordCount, availableWords.length));
+            currentQuestion = 0;
+            score = 0;
+            wrongAnswers = [];
+            currentSessionLearned = [];
             
-            // Enable next button after UberProof
-            nextBtn.disabled = false;
+            showScreen('quiz');
+            showQuestion();
         }
 
-        // Check all answers
-        function checkAnswers() {
-            const story = stories[currentStoryIndex];
-            let allCorrect = true;
-            
-            story.gaps.forEach(gap => {
-                const gapEl = document.querySelector(`.gap[data-id="${gap.id}"]`);
-                const userAnswer = selectedGaps[gap.id];
-                
-                if (userAnswer === gap.correct) {
-                    gapEl.classList.add('correct');
-                } else {
-                    gapEl.classList.add('incorrect');
-                    allCorrect = false;
-                    
-                    // Add correct answer hint for final check
-                    const hint = document.createElement('div');
-                    hint.className = 'correct-answer-hint';
-                    hint.textContent = gap.correct;
-                    gapEl.style.position = 'relative';
-                    gapEl.appendChild(hint);
-                }
-            });
-            
-            if (allCorrect) {
-                score += 10;
-                correctAnswers++;
+        // Показать вопрос
+        function showQuestion() {
+            if (currentQuestion >= currentWords.length) {
+                showResult();
+                return;
             }
             
-            isChecked = true;
-            checkBtn.disabled = true;
-            nextBtn.disabled = false;
+            const word = currentWords[currentQuestion];
+            const questionType = Math.random() > 0.5 && currentMode === 'mixed' ? 'ru_de' : currentMode;
             
-            // Show final results
-            proofResultsEl.innerHTML = `
-                <strong>Finale Ergebnisse:</strong><br>
-                ${allCorrect ? '🎉 Perfekt! Alle Antworten richtig!' : 'Einige Antworten müssen korrigiert werden.'}<br>
-                Punkte für diese Geschichte: ${allCorrect ? '10' : '0'}
-            `;
-            proofResultsEl.style.display = 'block';
+            let questionText, correctAnswer, options;
             
+            if (questionType === 'de_ru') {
+                questionText = "Was bedeutet:";
+                document.getElementById('wordDisplay').textContent = word.german;
+                correctAnswer = word.russian;
+                options = getRandomOptions(word.russian, 'russian');
+            } else {
+                questionText = "Wie sagt man auf Deutsch:";
+                document.getElementById('wordDisplay').textContent = word.russian;
+                correctAnswer = word.german;
+                options = getRandomOptions(word.german, 'german');
+            }
+            
+            document.getElementById('question').textContent = questionText;
+            document.getElementById('progressText').textContent = `Frage ${currentQuestion + 1} von ${currentWords.length}`;
+            document.getElementById('progressBar').style.width = `${(currentQuestion / currentWords.length) * 100}%`;
+            
+            // Обновляем кнопку "Als gelernt markieren"
+            updateLearnedButton(word);
+            
+            displayOptions(options, correctAnswer, word);
+        }
+
+        // Обновить кнопку изучения
+        function updateLearnedButton(word) {
+            const btn = document.getElementById('learnedBtn');
+            const icon = document.getElementById('learnedIcon');
+            
+            if (learnedVerbs.includes(word.id)) {
+                btn.classList.add('learned');
+                icon.textContent = '✅';
+            } else {
+                btn.classList.remove('learned');
+                icon.textContent = '□';
+            }
+        }
+
+        // Переключить статус изучения
+        function toggleLearned() {
+            const word = currentWords[currentQuestion];
+            if (!word) return;
+            
+            const index = learnedVerbs.indexOf(word.id);
+            
+            if (index === -1) {
+                // Добавляем в изученные
+                learnedVerbs.push(word.id);
+                currentSessionLearned.push(word.id);
+                document.getElementById('learnedBtn').classList.add('learned');
+                document.getElementById('learnedIcon').textContent = '✅';
+            } else {
+                // Убираем из изученных
+                learnedVerbs.splice(index, 1);
+                currentSessionLearned = currentSessionLearned.filter(id => id !== word.id);
+                document.getElementById('learnedBtn').classList.remove('learned');
+                document.getElementById('learnedIcon').textContent = '□';
+            }
+            
+            // Сохраняем в localStorage
+            localStorage.setItem('learnedVerbs', JSON.stringify(learnedVerbs));
             updateStats();
         }
 
-        // Go to next story
-        function nextStory() {
-            currentStoryIndex++;
+        // Получить случайные варианты ответов
+        function getRandomOptions(correctAnswer, type) {
+            const allAnswers = verbs.map(v => type === 'russian' ? v.russian : v.german);
+            const otherAnswers = allAnswers.filter(a => a !== correctAnswer);
+            const randomAnswers = shuffle(otherAnswers).slice(0, 3);
+            return shuffle([...randomAnswers, correctAnswer]);
+        }
+
+        // Показать варианты ответов
+        function displayOptions(options, correctAnswer, word) {
+            const container = document.getElementById('options');
+            container.innerHTML = '';
             
-            if (currentStoryIndex < stories.length) {
-                // Keep selected gaps for the next story
-                loadStory();
+            options.forEach(option => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.textContent = option;
+                div.onclick = () => checkAnswer(option, correctAnswer, word, div);
+                container.appendChild(div);
+            });
+        }
+
+        // Проверить ответ
+        function checkAnswer(selected, correct, word, element) {
+            const allOptions = document.querySelectorAll('.option');
+            allOptions.forEach(opt => opt.onclick = null);
+            
+            // ПОКАЗЫВАЕМ 25-й КАДР ВСЕГДА
+            showSubliminal(word.german, word.russian);
+            
+            if (selected === correct) {
+                element.classList.add('correct');
+                score++;
             } else {
-                showResults();
+                element.classList.add('wrong');
+                wrongAnswers.push(word);
+                allOptions.forEach(opt => {
+                    if (opt.textContent === correct) {
+                        opt.classList.add('correct');
+                    }
+                });
             }
+            
+            setTimeout(() => {
+                currentQuestion++;
+                showQuestion();
+            }, 1500);
         }
 
-        // Show final results
-        function showResults() {
-            const percentage = Math.round((correctAnswers / stories.length) * 100);
+        // Показать 25-й кадр
+        function showSubliminal(german, russian) {
+            document.getElementById('subliminalGerman').textContent = german;
+            document.getElementById('subliminalRussian').textContent = russian;
+            document.getElementById('subliminal').style.display = 'flex';
             
-            finalScoreEl.textContent = `${percentage}%`;
+            setTimeout(() => {
+                document.getElementById('subliminal').style.display = 'none';
+            }, 40); // 40ms - 25-й кадр
+        }
+
+        // Показать результат
+        function showResult() {
+            const percentage = (score / currentWords.length * 100).toFixed(1);
+            document.getElementById('scoreDisplay').textContent = `${score}/${currentWords.length} (${percentage}%)`;
+            document.getElementById('resultDetails').textContent = `Richtige Antworten: ${score} von ${currentWords.length}`;
+            document.getElementById('learnedInSession').textContent = `In dieser Session gelernt: ${currentSessionLearned.length} Verben`;
             
-            let message = '';
-            if (percentage === 100) {
-                message = 'Ausgezeichnet! Perfektes Ergebnis!';
-            } else if (percentage >= 80) {
-                message = 'Sehr gut! Fast fehlerfrei!';
-            } else if (percentage >= 60) {
-                message = 'Gut gemacht! Weiter so!';
-            } else if (percentage >= 40) {
-                message = 'Nicht schlecht, aber du kannst noch besser!';
+            const unlearnedInSession = currentWords.filter(word => !learnedVerbs.includes(word.id)).length;
+            document.getElementById('remainingWords').textContent = `Noch ungelernt in diesem Set: ${unlearnedInSession} Verben`;
+            
+            if (unlearnedInSession > 0) {
+                document.getElementById('repeatBtn').style.display = 'block';
             } else {
-                message = 'Übung macht den Meister! Versuche es noch einmal!';
+                document.getElementById('repeatBtn').style.display = 'none';
             }
             
-            resultMessageEl.textContent = message;
+            showScreen('result');
+        }
+
+        // Повторить невыученные
+        function repeatUnlearned() {
+            const unlearnedWords = currentWords.filter(word => !learnedVerbs.includes(word.id));
             
-            quizContainer.style.display = 'none';
-            resultContainer.style.display = 'block';
+            if (unlearnedWords.length === 0) {
+                alert('Alle Verben sind bereits gelernt!');
+                return;
+            }
+            
+            currentWords = unlearnedWords;
+            currentQuestion = 0;
+            score = 0;
+            wrongAnswers = [];
+            
+            showScreen('quiz');
+            showQuestion();
         }
 
-        // Update statistics
-        function updateStats() {
-            scoreEl.textContent = score;
-            correctEl.textContent = correctAnswers;
+        // Переключение экранов
+        function showScreen(screenName) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenName).classList.add('active');
         }
 
-        // Event listeners
-        uberProofBtn.addEventListener('click', uberProof);
-        checkBtn.addEventListener('click', checkAnswers);
-        nextBtn.addEventListener('click', nextStory);
-        restartBtn.addEventListener('click', init);
-        restartResultBtn.addEventListener('click', init);
+        function backToMenu() {
+            showScreen('menu');
+            updateStats();
+        }
 
-        // Start the game
-        init();
+        // Перемешать массив
+        function shuffle(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // Инициализация
+        function init() {
+            updateStats();
+        }
+
+        // Запуск при загрузке
+        window.onload = init;
     </script>
 </body>
 </html>
